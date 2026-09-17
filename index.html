@@ -21,14 +21,14 @@
     * {
       box-sizing: border-box; margin: 0; padding: 0;
       user-select: none; -webkit-user-select: none;
-      font-family: 'Kanit', sans-serif;
+      touch-action: manipulation;
     }
     html, body {
       width: 100vw; height: 100vh; overflow: hidden;
       background: #7dd3fc; position: fixed; inset: 0;
+      font-family: 'Kanit', sans-serif;
     }
 
-    /* Fullscreen WebGL Canvas */
     #three-container {
       position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 1;
     }
@@ -36,7 +36,6 @@
       width: 100% !important; height: 100% !important; display: block;
     }
 
-    /* Top Center HUD */
     #top-hud {
       position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
       background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(14px);
@@ -52,7 +51,6 @@
       padding: 3px 12px; border-radius: 999px; font-weight: 800; font-family: 'Chakra Petch', sans-serif;
     }
 
-    /* GPS Minimap (Top Right) */
     #minimap-card {
       position: fixed; top: 16px; right: 16px;
       width: 165px; height: 165px;
@@ -68,7 +66,6 @@
       padding: 2px 6px; border-radius: 4px; pointer-events: none;
     }
 
-    /* Speedometer UI (Bottom Center) */
     #speedometer-box {
       position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center; z-index: 50;
@@ -91,7 +88,6 @@
     .speed-unit { font-size: 0.9rem; font-weight: 800; color: #94a3b8; }
     .gear-mode { font-size: 0.85rem; color: #38bdf8; font-weight: 800; margin-left: 6px; }
 
-    /* Virtual Gamepad Buttons */
     #mobile-controls {
       position: fixed; bottom: 25px; left: 0; right: 0;
       display: flex; justify-content: space-between; padding: 0 35px;
@@ -109,7 +105,6 @@
     .v-btn:active { transform: scale(0.92); border-color: #facc15; background: rgba(250, 204, 21, 0.35); }
     .v-btn svg { width: 34px; height: 34px; fill: #ffffff; }
 
-    /* Audio Toggle Button (Top Left) */
     #audio-toggle {
       position: fixed; top: 16px; left: 16px;
       width: 44px; height: 44px; border-radius: 14px;
@@ -120,7 +115,6 @@
     }
     #audio-toggle svg { width: 22px; height: 22px; fill: #38bdf8; }
 
-    /* Overlay Screens & Modals */
     .overlay-screen {
       position: fixed; inset: 0;
       background: radial-gradient(circle at center, rgba(15, 23, 42, 0.94) 0%, rgba(2, 6, 23, 0.98) 100%);
@@ -158,7 +152,6 @@
     }
     .rbx-green-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #00603d; }
 
-    /* Interactive Checkpoint Modal (หน้าต่างตอบคำถามและมินิเกม) */
     #checkpoint-modal {
       position: fixed; inset: 0;
       background: rgba(10, 12, 16, 0.88); backdrop-filter: blur(12px);
@@ -185,24 +178,23 @@
       font-size: 1.18rem; font-weight: 600; margin-bottom: 14px; line-height: 1.5; color: #0f172a;
     }
 
-    /* กล่องพื้นที่มินิเกมจำลอง */
     .minigame-stage {
       background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 16px;
-      padding: 16px; display: flex; flex-direction: column; align-items: center;
+      padding: 18px; display: flex; flex-direction: column; align-items: center;
       justify-content: center; min-height: 140px; gap: 12px; margin-bottom: 14px;
     }
 
-    /* ปุ่ม Shortcut แตะได้บนหน้าจอ */
+    /* ป้ายปุ่มคีย์ลัดเดี่ยวขนาดใหญ่สไตล์เดิม */
     .key-badge-btn {
       display: inline-flex; align-items: center; justify-content: center;
       background: #ffffff; border: 3px solid #0284c7; border-radius: 14px;
-      padding: 12px 28px; font-family: 'Chakra Petch'; font-weight: 700;
-      font-size: 1.45rem; color: #0284c7; box-shadow: 0 5px 0 #bae6fd;
+      padding: 12px 30px; font-family: 'Chakra Petch'; font-weight: 700;
+      font-size: 1.5rem; color: #0284c7; box-shadow: 0 5px 0 #bae6fd;
       cursor: pointer; transition: all 0.15s ease;
     }
+    .key-badge-btn:hover { background: #f0f9ff; }
     .key-badge-btn:active { transform: translateY(3px); box-shadow: none; }
 
-    /* แถบเมนู Ribbon */
     .ribbon-bar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
     .ribbon-btn {
       padding: 10px 16px; border-radius: 10px; border: 2px solid #cbd5e1;
@@ -211,14 +203,12 @@
     }
     .ribbon-btn:hover { background: #e0f2fe; border-color: #38bdf8; }
 
-    /* ตัวอย่างเอกสารจำลอง (Align) */
     .doc-preview-box {
       width: 220px; height: 85px; background: #ffffff;
       border: 2px solid #cbd5e1; border-radius: 8px; padding: 10px;
       display: flex; flex-direction: column; justify-content: center;
     }
 
-    /* ตารางสร้างข้อมูล (Table Grid) */
     .table-picker {
       display: grid; grid-template-columns: repeat(4, 38px); grid-template-rows: repeat(3, 38px); gap: 6px;
     }
@@ -227,7 +217,6 @@
     }
     .table-cell.selected { background: #38bdf8; border-color: #0284c7; }
 
-    /* Knowledge Sheet Modal (ใบความรู้เมื่อตอบผิด) */
     #knowledge-modal {
       position: fixed; inset: 0;
       background: rgba(10, 12, 16, 0.92); backdrop-filter: blur(14px);
@@ -263,15 +252,12 @@
 </head>
 <body>
 
-  <!-- Fullscreen WebGL 3D Canvas Container -->
   <div id="three-container"></div>
 
-  <!-- Audio Toggle (Top Left) -->
   <div id="audio-toggle" onclick="toggleAudio()" title="เปิด/ปิดเสียง">
     <svg id="audio-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
   </div>
 
-  <!-- Top Center HUD -->
   <div id="top-hud">
     <div class="hud-chip">
       <svg class="hud-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -283,17 +269,15 @@
     </div>
     <div class="hud-chip">
       <svg class="hud-icon" style="fill:#10b981;" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
-      <span class="hud-pill" style="background: linear-gradient(135deg, #10b981, #059669);" id="hud-score">0 / 120</span>
+      <span class="hud-pill" style="background: linear-gradient(135deg, #10b981, #059669);" id="hud-score">0 / 20</span>
     </div>
   </div>
 
-  <!-- GPS Minimap (Top Right) -->
   <div id="minimap-card">
     <canvas id="minimapCanvas" width="165" height="165"></canvas>
     <div class="map-tag">GPS MAP (1-12)</div>
   </div>
 
-  <!-- Speedometer (Bottom Center) -->
   <div id="speedometer-box">
     <div class="star-badge">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="#facc15"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
@@ -306,7 +290,6 @@
     </div>
   </div>
 
-  <!-- Virtual Buttons for Mobile / Tablet -->
   <div id="mobile-controls">
     <div class="pad-cluster">
       <div class="v-btn" id="btn-left">
@@ -326,20 +309,18 @@
     </div>
   </div>
 
-  <!-- Start Screen Modal -->
   <div id="start-screen" class="overlay-screen">
     <div class="modal-card">
       <div class="game-h1">WORD ROAD 3D</div>
       <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6;">
         เกมจำลองการขับรถเก็บคะแนนภารกิจ Microsoft Word ม.1 (E1)<br>
-        ขับผ่านถนน 12 ด่านเพื่อปลดล็อกม่านเลเซอร์และสะสมผลสัมฤทธิ์
+        คะแนนเต็ม 20 คะแนน (แตะปุ่มคำสั่งหรือคีย์ลัดเพื่อผ่านด่าน)
       </p>
       
       <div style="background: rgba(31, 41, 55, 0.8); border-radius: 14px; padding: 14px; font-size: 0.85rem; color: #38bdf8; margin: 18px 0; text-align: left; line-height: 1.6;">
-        <b>การบังคับ (ทุกอุปกรณ์):</b><br>
-        • คอมพิวเตอร์: ใช้ <b>ปุ่มลูกศร</b> หรือ <b>ปุ่ม W, A, S, D</b><br>
-        • มือถือ / iPad: สัมผัสปุ่มพวงมาลัยและคันเร่งด้านล่างจอ<br>
-        • หากตอบผิด ระบบจะแสดง <b>ใบความรู้</b> และให้ทำภารกิจแก้ตัวโดยไม่เพิ่มคะแนนเพื่อรักษามาตรฐานผลการเรียนรู้
+        <b>ข้อกำหนดการเก็บคะแนน:</b><br>
+        • ตอบถูกตั้งแต่ครั้งแรก: ได้คะแนนประจำด่านทันที<br>
+        • ตอบผิด: จะเปิด <b>ใบความรู้</b> เพื่อศึกษา และให้ทำภารกิจแก้ตัวผ่านด่านได้ แต่จะไม่ได้คะแนนเพิ่ม (เพื่อป้องกันคะแนนเฟ้อ)
       </div>
 
       <input type="text" id="player-input" class="input-box" placeholder="กรอกชื่อ-นามสกุล หรือเลขที่..." />
@@ -350,7 +331,7 @@
     </div>
   </div>
 
-  <!-- Checkpoint Event Modal (หน้าต่างภารกิจมินิเกมตามโหมดของด่าน) -->
+  <!-- Checkpoint Event Modal -->
   <div id="checkpoint-modal">
     <div class="cp-box">
       <div class="cp-top">
@@ -358,28 +339,28 @@
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
           CHECKPOINT 1
         </span>
-        <span style="font-weight:900; color:#0284c7;" id="cp-pts">+10 คะแนน</span>
+        <span style="font-weight:900; color:#0284c7;" id="cp-pts">+1.5 คะแนน</span>
       </div>
       <div class="q-statement" id="cp-q">ภารกิจปฏิบัติการ...</div>
 
-      <!-- พื้นที่จำลองมินิเกมจริง -->
+      <!-- พื้นที่จำลองมินิเกม -->
       <div class="minigame-stage" id="cp-minigame-area"></div>
 
-      <div style="background: #fefce8; border: 2px solid #fef08a; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; color: #713f12; display: flex; gap: 8px; align-items: center;">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="#ca8a04"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-        <span id="cp-hint-text">คำใบ้...</span>
+      <div style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; color: #475569; display: flex; gap: 8px; align-items: center;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="#64748b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <span>แตะปุ่มบนหน้าจอ หรือกดแป้นพิมพ์คีย์ลัดจริงเพื่อปลดล็อกม่านเลเซอร์</span>
       </div>
     </div>
   </div>
 
-  <!-- Knowledge Sheet Modal (ใบความรู้เมื่อตอบผิด) -->
+  <!-- Knowledge Sheet Modal -->
   <div id="knowledge-modal">
     <div class="knowledge-card">
       <div class="kn-header">
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-        <span>ยังไม่ถูกต้อง! ใบความรู้ประจำด่าน</span>
+        <span>ยังไม่ถูกต้อง! ใบความรู้สรุปแนวคิด</span>
       </div>
-      <div class="kn-subtitle">ศึกษาคำอธิบายและแนวคิดที่ถูกต้องด้านล่างนี้ เพื่อทำภารกิจแก้ตัวและปลดล็อกม่านเลเซอร์</div>
+      <div class="kn-subtitle">ศึกษาคำอธิบายด้านล่างนี้เพื่อทำภารกิจแก้ตัวและเปิดม่านเลเซอร์เพื่อเดินทางต่อ</div>
 
       <div class="kn-box">
         <div class="kn-title" id="kn-title">
@@ -393,7 +374,7 @@
 
       <div class="kn-notice">
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-        <span>รอบแก้ตัวนี้จะช่วยให้รถขับผ่านด่านได้ แต่จะไม่ได้รับคะแนนเพิ่มเพื่อรักษาความถูกต้องของคะแนน</span>
+        <span>รอบแก้ตัวนี้จะช่วยให้รถขับผ่านด่านได้ แต่จะไม่ได้รับคะแนนเพิ่มเพื่อรักษาเกณฑ์คะแนนจริง</span>
       </div>
 
       <button class="rbx-green-btn" onclick="retryMission()">
@@ -411,7 +392,7 @@
 
       <div style="background: #030712; border: 2px dashed #facc15; border-radius: 18px; padding: 20px; margin: 18px 0;">
         <div style="font-size: 0.85rem; color: #94a3b8;">คะแนนรวมทั้งสิ้น (E1)</div>
-        <div id="final-score" style="font-size: 2.8rem; font-weight: 900; color: #facc15; font-family:'Chakra Petch';">0 / 120</div>
+        <div id="final-score" style="font-size: 2.8rem; font-weight: 900; color: #facc15; font-family:'Chakra Petch';">0 / 20</div>
         <div id="final-rank" style="font-size: 1.05rem; font-weight: 800; color: #38bdf8;">ระดับ: ยอดนักขับระดับ Master</div>
       </div>
 
@@ -419,7 +400,7 @@
         รหัสยืนยันผล: WR-CODE-READY
       </div>
 
-      <p style="font-size:0.85rem; color:#38bdf8; margin-bottom:15px;">ถ่ายภาพหน้าจอนี้ส่งคุณครูเพื่อยืนยันคะแนน</p>
+      <p style="font-size:0.85rem; color:#38bdf8; margin-bottom:15px;">บันทึกภาพหน้าจอนี้เพื่อส่งหลักฐานการเรียนรู้</p>
       <button class="rbx-green-btn" onclick="location.reload()">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
         เล่นอีกครั้ง
@@ -430,125 +411,113 @@
   <script>
     const SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_WEB_APP_URL";
 
-    // 12 Checkpoint Tasks Data with Correct Interactive Modes and Knowledge Details
+    // 12 Checkpoint Tasks: รวมคะแนนเต็ม 20 คะแนนพอดี (ด่าน 1-8 ละ 1.5, ด่าน 9-12 ละ 2.0)
+    // โหมด shortcut กลับมาใช้ปุ่มแสดงตรงกลางแบบเดิม แตะหรือกดคีย์ลัดได้
     const missions = [
       {
-        id: 1, title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", pts: 10,
+        id: 1, title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", pts: 1.5,
         mode: "ribbon",
-        q: "ภารกิจ: แตะเลือกแท็บ Ribbon ที่ใช้เปลี่ยนแบบฟอนต์และขนาดตัวอักษร:",
+        q: "ภารกิจ: เลือกแท็บเมนู Ribbon ที่ใช้เปลี่ยนแบบฟอนต์และขนาดตัวอักษร:",
         target: "Home",
-        hint: "คำสั่งเปลี่ยนฟอนต์ จัดขนาด จะรวมอยู่ที่แท็บหลัก 'Home (หน้าแรก)'",
         knTitle: "แถบเมนู Ribbon ใน Microsoft Word",
         knText: "แถบ <b>หน้าแรก (Home)</b> เป็นศูนย์รวมคำสั่งพื้นฐานที่ใช้บ่อยที่สุด ได้แก่ การเปลี่ยนฟอนต์, ปรับขนาดอักษร, ทำตัวหนา/เอียง/ขีดเส้นใต้, และการจัดตำแหน่งย่อหน้า"
       },
       {
-        id: 2, title: "Checkpoint 2: บันทึกไฟล์ด่วน", badge: "Save Master", pts: 10,
+        id: 2, title: "Checkpoint 2: บันทึกเอกสาร", badge: "Save Master", pts: 1.5,
         mode: "shortcut",
-        q: "ภารกิจ: แตะปุ่มด้านล่างเพื่อสั่ง 'บันทึกเอกสาร (Save)':",
+        q: "ภารกิจ: แตะที่ปุ่มด้านล่าง หรือกดบนคีย์บอร์ดจริงเพื่อ 'บันทึกเอกสาร (Save)':",
         keyReq: "s", codeReq: "KeyS", displayKey: "Ctrl + S",
-        hint: "แตะที่ปุ่ม [ Ctrl + S ] ได้โดยตรง หรือกดคีย์ลัดบนแป้นพิมพ์",
         knTitle: "การบันทึกเอกสารด่วน (Save)",
-        knText: "การบันทึกเอกสารที่กำลังทำอยู่ใช้คีย์ลัด <b>Ctrl + S</b> (ย่อมาจาก Save) เป็นปุ่มที่ควรหมั่นกดเป็นประจำเพื่อป้องกันข้อมูลสูญหายเมื่อคอมพิวเตอร์ดับ"
+        knText: "การบันทึกเอกสารใช้คีย์ลัด <b>Ctrl + S</b> (ย่อมาจาก Save) เป็นปุ่มที่ควรหมั่นกดเป็นประจำเพื่อป้องกันข้อมูลสูญหาย"
       },
       {
-        id: 3, title: "Checkpoint 3: ย้อนเวลากู้ข้อความ", badge: "Text Editor", pts: 10,
+        id: 3, title: "Checkpoint 3: ยกเลิกคำสั่งล่าสุด", badge: "Text Editor", pts: 1.5,
         mode: "shortcut",
-        q: "ภารกิจ: เผลอลบข้อความสำคัญ! แตะปุ่มเพื่อ 'ยกเลิกคำสั่ง (Undo)':",
+        q: "ภารกิจ: แตะที่ปุ่มด้านล่าง หรือกดบนคีย์บอร์ดจริงเพื่อ 'ยกเลิกคำสั่งล่าสุด (Undo)':",
         keyReq: "z", codeReq: "KeyZ", displayKey: "Ctrl + Z",
-        hint: "แตะที่ปุ่ม [ Ctrl + Z ] ได้โดยตรง หรือกดคีย์ลัดบนแป้นพิมพ์",
         knTitle: "การยกเลิกคำสั่งล่าสุด (Undo)",
         knText: "เมื่อทำงานพลาดหรือเผลอลบข้อความ ให้ใช้คีย์ลัด <b>Ctrl + Z</b> เพื่อยกเลิกคำสั่งล่าสุด (Undo) ดึงข้อมูลเดิมกลับคืนมาทันที"
       },
       {
-        id: 4, title: "Checkpoint 4: ทำหัวข้อตัวหนา", badge: "Format Master", pts: 10,
+        id: 4, title: "Checkpoint 4: สไตล์ตัวอักษร", badge: "Format Master", pts: 1.5,
         mode: "shortcut",
-        q: "ภารกิจ: แตะปุ่มลัดเพื่อทำข้อความ 'ตัวหนา (Bold)':",
+        q: "ภารกิจ: แตะที่ปุ่มลัดด้านล่าง หรือกดบนแป้นพิมพ์เพื่อทำข้อความ 'ตัวหนา (Bold)':",
         keyReq: "b", codeReq: "KeyB", displayKey: "Ctrl + B",
-        hint: "แตะที่ปุ่ม [ Ctrl + B ] ได้โดยตรง หรือกดคีย์ลัดบนแป้นพิมพ์",
         knTitle: "การเน้นข้อความตัวหนา (Bold)",
         knText: "การปรับแต่งสไตล์ข้อความให้เป็นตัวหนาใช้ไอคอนตัว <b>B</b> (Bold) หรือกดคีย์ลัด <b>Ctrl + B</b> นิยมใช้สำหรับเน้นหัวข้อหรือคำสำคัญ"
       },
       {
-        id: 5, title: "Checkpoint 5: จัดกึ่งกลางหน้ากระดาษ", badge: "Paragraph Pro", pts: 10,
+        id: 5, title: "Checkpoint 5: จัดตำแหน่งย่อหน้า", badge: "Paragraph Pro", pts: 1.5,
         mode: "align",
-        q: "ภารกิจ: แตะปุ่มจัดตำแหน่งเอกสารให้อยู่ 'กึ่งกลางหน้ากระดาษ':",
+        q: "ภารกิจ: ทดลองกดปุ่มจัดตำแหน่งเอกสาร เพื่อวางข้อความให้อยู่ 'กึ่งกลางหน้ากระดาษ':",
         target: "center",
-        hint: "แตะเลือกปุ่ม 'กึ่งกลาง' เพื่อย้ายข้อความมาตรงกลาง",
         knTitle: "การจัดแนวย่อหน้า (Paragraph Alignment)",
-        knText: "การจัดข้อความให้อยู่ตรงกลางหน้ากระดาษพอดีให้ใช้คำสั่ง <b>Center</b> (หรือกด Ctrl + E) ซึ่งเหมาะอย่างยิ่งสำหรับการจัดชื่อเรื่องหรือหัวข้อรายงาน"
+        knText: "การจัดข้อความให้อยู่ตรงกลางหน้ากระดาษพอดีให้ใช้คำสั่ง <b>Center</b> (หรือกด Ctrl + E) ซึ่งเหมาะสำหรับการจัดชื่อเรื่องหรือหัวข้อรายงาน"
       },
       {
-        id: 6, title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", pts: 10,
+        id: 6, title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", pts: 1.5,
         mode: "choice",
-        q: "ภารกิจ: แตะเลือกเครื่องมือใส่ลำดับ 1, 2, 3 ให้ข้อความ:",
+        q: "ภารกิจ: เครื่องมือใดใช้สำหรับสร้างรายการข้อความที่มีลำดับ 1, 2, 3 ก่อนหลัง:",
         target: "Numbering",
-        opts: ["Numbering (ลำดับเลข 1, 2, 3)", "Bullets (จุดกลม)", "Multilevel List (หลายระดับ)"],
-        hint: "ลำดับขั้นตอนก่อน-หลัง ต้องใช้ Numbering (ตัวเลข)",
+        opts: ["Bullets (สัญลักษณ์จุด)", "Numbering (ลำดับเลข)", "Multilevel List (หลายระดับ)"],
         knTitle: "เครื่องมือลำดับเลข (Numbering)",
-        knText: "เมื่อข้อความมีขั้นตอนที่ต้องทำตามลำดับก่อนหลังอย่างชัดเจน ให้ใช้คำสั่ง <b>Numbering (ลำดับเลข)</b> แต่หากเป็นรายการทั่วไปที่สลับลำดับได้ ให้ใช้ <b>Bullets (สัญลักษณ์จุด)</b>"
+        knText: "เมื่อข้อความมีขั้นตอนที่ต้องทำตามลำดับก่อนหลัง ให้ใช้คำสั่ง <b>Numbering (ลำดับเลข)</b> แต่หากเป็นรายการทั่วไปที่สลับลำดับได้ ให้ใช้ <b>Bullets (สัญลักษณ์จุด)</b>"
       },
       {
-        id: 7, title: "Checkpoint 7: ปลดล็อกรูปภาพ", badge: "Media Specialist", pts: 10,
+        id: 7, title: "Checkpoint 7: การตัดข้อความรูปภาพ", badge: "Media Specialist", pts: 1.5,
         mode: "choice",
-        q: "ภารกิจ: แตะเลือกการตัดข้อความ (Wrap Text) เพื่อให้รูปเลื่อนอิสระ:",
+        q: "ภารกิจ: คำสั่ง Wrap Text รูปแบบใดทำให้ข้อความไหลล้อมรอบกรอบรูปภาพอย่างอิสระ:",
         target: "Square",
-        opts: ["Square (จัตุรัส)", "Behind Text (หลังข้อความ)", "In Front of Text (หน้าข้อความ)"],
-        hint: "เลือก Square (จัตุรัส) เพื่อให้ข้อความล้อมรอบภาพอย่างเป็นระเบียบ",
+        opts: ["In Line with Text (แนวเดียวกับข้อความ)", "Square (จัตุรัส)", "Behind Text (หลังข้อความ)"],
         knTitle: "การตัดข้อความล้อมรูปภาพ (Wrap Text)",
-        knText: "เมื่อแทรกรูปภาพเข้ามาแล้วขยับไม่ได้ ให้ตั้งค่า <b>Wrap Text</b> เป็น <b>Square</b> เพื่อให้ข้อความไหลล้อมรอบกรอบสี่เหลี่ยมของภาพและเลื่อนภาพได้อย่างอิสระ"
+        knText: "การตั้งค่า <b>Wrap Text</b> เป็น <b>Square</b> จะช่วยให้ข้อความไหลล้อมรอบกรอบสี่เหลี่ยมของภาพ และทำให้สามารถเลื่อนตำแหน่งภาพได้อย่างอิสระ"
       },
       {
-        id: 8, title: "Checkpoint 8: สร้างตารางข้อมูล", badge: "Table Builder", pts: 10,
+        id: 8, title: "Checkpoint 8: โครงสร้างตาราง", badge: "Table Builder", pts: 1.5,
         mode: "table_grid",
-        q: "ภารกิจ: แตะช่องตารางให้มีขนาด '3 คอลัมน์ x 2 แถว':",
+        q: "ภารกิจ: กำหนดขนาดสร้างตารางข้อมูลจำนวน '3 คอลัมน์ x 2 แถว' ให้ถูกต้อง:",
         targetCols: 3, targetRows: 2,
-        hint: "แตะช่องตาราง แนวนอน 3 ช่อง และแนวตั้ง 2 ช่อง",
         knTitle: "โครงสร้างตาราง (Table Dimension)",
-        knText: "การสร้างตารางใน Word จะนับจำนวนตาม <b>คอลัมน์ (แนวตั้ง)</b> x <b>แถว (แนวนอน)</b> เช่น ตารางขนาด 3 x 2 หมายถึง มี 3 ช่องแนวตั้ง และ 2 แถวแนวนอน"
+        knText: "การสร้างตารางใน Word จะนับตาม <b>คอลัมน์ (แนวตั้ง)</b> x <b>แถว (แนวนอน)</b> ตารางขนาด 3 x 2 จึงหมายถึง มี 3 ช่องแนวตั้ง และ 2 แถวแนวนอน"
       },
       {
-        id: 9, title: "Checkpoint 9: กระดาษแนวนอน", badge: "Layout Pilot", pts: 10,
+        id: 9, title: "Checkpoint 9: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 2.0,
         mode: "choice",
-        q: "ภารกิจ: ปรับเปลี่ยนการวางหน้ากระดาษเป็น 'แนวนอน (Landscape)':",
+        q: "ภารกิจ: หากต้องการพิมพ์เอกสารที่มีตารางกว้าง ต้องตั้งค่าหน้ากระดาษแบบใดในเมนู Orientation:",
         target: "แนวนอน (Landscape)",
-        opts: ["แนวนอน (Landscape)", "แนวตั้ง (Portrait)", "แนวกระจก (Mirror)"],
-        hint: "Landscape คือกระดาษแนวนอน ส่วน Portrait คือแนวตั้ง",
+        opts: ["แนวตั้ง (Portrait)", "แนวนอน (Landscape)", "แนวแบ่งคอลัมน์ (Columns)"],
         knTitle: "การวางแนวกระดาษ (Page Orientation)",
-        knText: "ในแท็บ <b>Layout (เค้าโครง)</b> คำสั่ง <b>Orientation</b> มีให้เลือก 2 แบบ: <b>Portrait (แนวตั้ง)</b> สำหรับพิมพ์เอกสารทั่วไป และ <b>Landscape (แนวนอน)</b> สำหรับตารางหรือรูปภาพขนาดกว้าง"
+        knText: "ในแท็บ <b>Layout (เค้าโครง)</b> คำสั่ง <b>Orientation</b> มี 2 แบบ: <b>Portrait (แนวตั้ง)</b> สำหรับเอกสารทั่วไป และ <b>Landscape (แนวนอน)</b> สำหรับตารางหรือรูปภาพขนาดกว้าง"
       },
       {
-        id: 10, title: "Checkpoint 10: คำสะกดผิด", badge: "Doc Inspector", pts: 10,
+        id: 10, title: "Checkpoint 10: สัญลักษณ์ตรวจคำผิด", badge: "Doc Inspector", pts: 2.0,
         mode: "choice",
-        q: "ภารกิจ: สัญลักษณ์แจ้งเตือนคำสะกดผิดในเอกสาร Word มีลักษณะใด:",
-        target: "เส้นหยักสีแดง",
-        opts: ["เส้นหยักสีแดง", "เส้นขีดทึบสีดำ", "แถบไฮไลต์สีเทา"],
-        hint: "เส้นใต้หยักสีแดงใน Word เตือนว่าสะกดคำผิด",
+        q: "ภารกิจ: ในโปรแกรม Word การตรวจพบคำที่อาจสะกดผิดจะแจ้งเตือนด้วยสัญลักษณ์ใดใต้คำ:",
+        target: "เส้นใต้หยักสีแดง",
+        opts: ["เส้นใต้ขีดทึบสีดำ", "เส้นใต้หยักสีแดง", "เส้นใต้เส้นคู่สีเขียว"],
         knTitle: "การตรวจสอบคำสะกดผิด (Proofing)",
         knText: "ใน Microsoft Word เส้นหยักใต้ข้อความมีความหมายเฉพาะ: <b>เส้นหยักสีแดง</b> หมายถึงสะกดคำผิด ส่วน <b>เส้นหยักสีฟ้า</b> หมายถึงไวยากรณ์หรือการเว้นวรรคผิดพลาด"
       },
       {
-        id: 11, title: "Checkpoint 11: สารบัญอัตโนมัติ", badge: "Style Maestro", pts: 10,
+        id: 11, title: "Checkpoint 11: การทำสารบัญ", badge: "Style Maestro", pts: 2.0,
         mode: "choice",
-        q: "ภารกิจ: แตะเลือกสไตล์ที่ใช้ทำหัวข้อหลักสำหรับสร้างสารบัญอัตโนมัติ:",
+        q: "ภารกิจ: การเตรียมข้อความเพื่อดึงทำสารบัญอัตโนมัติ (Table of Contents) ต้องกำหนดสไตล์ใดให้กับหัวข้อหลัก:",
         target: "Heading 1",
-        opts: ["Heading 1", "Normal (ข้อความปกติ)", "Subtitle (หัวข้อย่อย)"],
-        hint: "Heading 1 ใช้สำหรับกำหนดหัวข้อหลักของรายงาน",
+        opts: ["Title", "Heading 1", "Normal"],
         knTitle: "การใช้ Heading สร้างสารบัญ (Table of Contents)",
-        knText: "การจะให้โปรแกรม Word ดึงสารบัญอัตโนมัติได้ ผู้พิมพ์จะต้องกำหนดรูปแบบหัวข้อรายงานด้วยสไตล์ <b>Heading 1 (หัวเรื่อง 1)</b> หรือ Heading 2 ก่อนเสมอ ไม่ใช่การพิมพ์ตัวหนาธรรมดา"
+        knText: "การจะให้โปรแกรม Word ดึงสารบัญอัตโนมัติได้ ผู้พิมพ์จะต้องกำหนดรูปแบบหัวข้อรายงานด้วยสไตล์ <b>Heading 1 (หัวเรื่อง 1)</b> หรือ Heading 2 ก่อนเสมอ"
       },
       {
-        id: 12, title: "Checkpoint 12: ส่งออกพิมพ์งาน", badge: "Word Grand Master", pts: 10,
+        id: 12, title: "Checkpoint 12: การบันทึกส่งออกไฟล์", badge: "Word Grand Master", pts: 2.0,
         mode: "choice",
-        q: "ภารกิจ: ส่งงานไปพิมพ์โดยไม่ให้ฟอนต์เพี้ยนหรือหน้าเคลื่อน แตะเลือกชนิดไฟล์:",
+        q: "ภารกิจ: การส่งออกไฟล์เอกสารชนิดใดที่คงสภาพหน้ากระดาษและฟอนต์ได้แน่นอนที่สุดสำหรับนำไปพิมพ์งาน:",
         target: ".pdf",
-        opts: [".pdf", ".txt", ".docx"],
-        hint: "ไฟล์ PDF ล็อคหน้ากระดาษและฟอนต์ไม่ให้เพี้ยน 100%",
+        opts: [".docx", ".txt", ".pdf"],
         knTitle: "การส่งออกไฟล์เป็น PDF",
-        knText: "ไฟล์สกุล <b>.pdf (Portable Document Format)</b> จะทำการล็อกการจัดวางหน้ากระดาษ ตำแหน่งภาพ และฟอนต์ไว้อย่างถาวร ทำให้ส่งไปเปิดเครื่องอื่นหรือส่งพิมพ์แล้วไม่เคลื่อนเพี้ยน"
+        knText: "ไฟล์สกุล <b>.pdf (Portable Document Format)</b> จะทำการล็อกการจัดวางหน้ากระดาษ ตำแหน่งภาพ และฟอนต์ไว้อย่างถาวร ทำให้ส่งไปเปิดเครื่องอื่นแล้วไม่เคลื่อนเพี้ยน"
       }
     ];
 
-    // Sound Synthesizer System (Web Audio API)
     let audioCtx = null;
     let isMuted = false;
     let engineOsc = null;
@@ -651,7 +620,6 @@
       document.getElementById("audio-icon").style.fill = isMuted ? "#94a3b8" : "#38bdf8";
     }
 
-    // Three.js Game Variables
     let scene, camera, renderer;
     let carGroup;
     let checkpoints = [];
@@ -662,7 +630,6 @@
     let isModalOpen = false;
     let isGameOver = false;
 
-    // Track whether player made a mistake on current checkpoint to prevent score inflation
     let checkpointFailedAttempts = {};
 
     let keys = { up: false, down: false, left: false, right: false };
@@ -757,7 +724,6 @@
       road.position.z = -1200;
       scene.add(road);
 
-      // Yellow Center Double Line
       for (let z = 50; z > -2600; z -= 14) {
         const lineGeo = new THREE.PlaneGeometry(0.35, 8);
         const lineMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
@@ -771,7 +737,6 @@
         scene.add(rightYellow);
       }
 
-      // White Dashed Lines
       for (let z = 50; z > -2600; z -= 16) {
         const dashGeo = new THREE.PlaneGeometry(0.4, 6);
         const dashMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
@@ -785,7 +750,6 @@
         scene.add(rightDash);
       }
 
-      // Concrete Sidewalks
       const curbGeo = new THREE.BoxGeometry(4, 0.5, 3000);
       const curbMat = new THREE.MeshLambertMaterial({ color: 0xe2e8f0 });
       const leftCurb = new THREE.Mesh(curbGeo, curbMat);
@@ -796,7 +760,6 @@
       rightCurb.position.set(18, 0.25, -1200);
       scene.add(rightCurb);
 
-      // Buildings & Trees
       const colors = [0xef4444, 0x3b82f6, 0xf59e0b, 0x10b981, 0x8b5cf6, 0xec4899, 0x06b6d4, 0xf97316];
       for (let z = 20; z > -2500; z -= 38) {
         const bH1 = 28 + Math.random() * 40;
@@ -955,7 +918,6 @@
 
     function setupInputListeners() {
       window.addEventListener("keydown", e => {
-        // ดักจับคีย์ลัดสำหรับมินิเกม Shortcut
         if (isModalOpen) {
           handleMinigameKeyboard(e);
           return;
@@ -1019,7 +981,6 @@
 
       carPhysics.x = Math.max(-13, Math.min(13, nextX));
 
-      // Obstacle Collision
       obstacles.forEach(ob => {
         if (!ob.hit) {
           const dist = Math.hypot(carPhysics.x - ob.x, carPhysics.z - ob.z);
@@ -1035,7 +996,6 @@
         }
       });
 
-      // Checkpoint Barrier Check
       let laserBlocked = false;
       checkpoints.forEach((cp, idx) => {
         if (!cp.passed) {
@@ -1054,7 +1014,6 @@
       carGroup.position.set(carPhysics.x, 0, carPhysics.z);
       carGroup.rotation.y = carPhysics.angle;
 
-      // Chase Camera Follow
       const cameraOffset = new THREE.Vector3(0, 5.2, 12.5);
       cameraOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), carPhysics.angle);
       camera.position.x = carPhysics.x + cameraOffset.x;
@@ -1077,7 +1036,6 @@
 
     let activeStageIdx = 0;
 
-    // เปิดหน้าต่างภารกิจ Checkpoint และเรนเดอร์มินิเกมตามโหมดของด่านนั้น
     function openCheckpointModal(idx) {
       isModalOpen = true;
       activeStageIdx = idx;
@@ -1089,7 +1047,6 @@
       `;
       document.getElementById("cp-pts").innerText = `+${m.pts} คะแนน`;
       document.getElementById("cp-q").innerText = m.q;
-      document.getElementById("cp-hint-text").innerText = m.hint;
 
       renderCheckpointTask(m, idx);
 
@@ -1101,13 +1058,13 @@
       const stageBox = document.getElementById("cp-minigame-area");
       stageBox.innerHTML = "";
 
-      // โหมด 1: คีย์ลัด (Shortcut Mode)
+      // โหมด 1: ป้ายปุ่มคีย์ลัดเดี่ยว (กดแตะที่ปุ่มหรือกดคีย์บอร์ดจริงได้เลย)
       if (m.mode === "shortcut") {
         stageBox.innerHTML = `
           <div style="text-align:center;">
-            <p style="color:#64748b; font-size:0.95rem; margin-bottom:10px;">แตะที่ปุ่มด้านล่าง หรือกดคีย์ลัดบนแป้นพิมพ์จริง:</p>
+            <p style="color:#64748b; font-size:0.95rem; margin-bottom:12px;">แตะที่ปุ่มด้านล่าง หรือกดคีย์ลัดบนแป้นพิมพ์จริง:</p>
             <button class="key-badge-btn" onclick="submitCorrectTask(${stageIdx})">${m.displayKey}</button>
-            <p style="margin-top:10px; font-weight:600; color:#0284c7; font-size:0.9rem;">แตะที่ปุ่มลัดได้โดยตรงเลย</p>
+            <p style="margin-top:12px; font-weight:600; color:#0284c7; font-size:0.9rem;">แตะที่ปุ่ม [ ${m.displayKey} ] ได้ทันที</p>
           </div>
         `;
       }
@@ -1163,10 +1120,10 @@
             grid.appendChild(cell);
           }
         }
-        stageBox.innerHTML = `<div style="font-size:0.9rem; color:#64748b; margin-bottom:4px;">แตะเลือกขนาด 3 x 2:</div>`;
+        stageBox.innerHTML = `<div style="font-size:0.9rem; color:#64748b; margin-bottom:4px;">แตะช่องเพื่อระบุขนาดตารางที่โจทย์ต้องการ:</div>`;
         stageBox.appendChild(grid);
       }
-      // โหมด 5: ตัวเลือกตัวเลือก (Choice Mode)
+      // โหมด 5: ตัวเลือกคำตอบทั่วไป (Choice Mode)
       else if (m.mode === "choice") {
         const choiceDiv = document.createElement("div");
         choiceDiv.style.display = "flex";
@@ -1222,28 +1179,24 @@
       }
     }
 
-    // เมื่อทำภารกิจสำเร็จ
     function submitCorrectTask(stageIdx) {
       const m = missions[stageIdx];
 
-      // ให้คะแนนเฉพาะกรณีที่ตอบถูกในครั้งแรกเท่านั้น (ป้องกันคะแนนเฟ้อ)
       if (!checkpointFailedAttempts[stageIdx]) {
         score += m.pts;
       }
       playSuccessSound();
 
-      // ปลดล็อกม่านเลเซอร์
       checkpoints[stageIdx].passed = true;
       checkpoints[stageIdx].laser.material.color.setHex(0x10b981);
       checkpoints[stageIdx].laser.material.opacity = 0.15;
 
       currentStage = stageIdx + 1;
       document.getElementById("hud-stage").innerText = `ด่าน ${Math.min(currentStage + 1, 12)} / 12`;
-      document.getElementById("hud-score").innerText = `${score} / 120`;
+      document.getElementById("hud-score").innerText = `${Number(score.toFixed(1))} / 20`;
       document.getElementById("checkpoint-modal").style.display = "none";
       isModalOpen = false;
 
-      // ขยับรถข้ามประตูกั้นไปข้างหน้า
       carPhysics.z -= 4.5;
 
       if (currentStage >= 12) {
@@ -1251,9 +1204,7 @@
       }
     }
 
-    // เมื่อทำภารกิจผิดพลาด
     function submitWrongTask(stageIdx) {
-      // มาร์กว่าด่านนี้เคยตอบผิดแล้ว (ป้องกันคะแนนเฟ้อ)
       checkpointFailedAttempts[stageIdx] = true;
       playWrongSound();
       showKnowledgeSheet(stageIdx);
@@ -1339,15 +1290,16 @@
     function finishGame() {
       isGameOver = true;
       document.getElementById("finish-screen").style.display = "flex";
-      document.getElementById("final-score").innerText = `${score} / 120`;
+      const displayScore = Number(score.toFixed(1));
+      document.getElementById("final-score").innerText = `${displayScore} / 20`;
 
       let rank = "ผู้ขับขี่ฝึกหัด (ควรทบทวนเนื้อหาเพิ่มเติม)";
-      if (score >= 100) rank = "ยอดนักขับระดับ Master (ยอดเยี่ยมมาก)";
-      else if (score >= 80) rank = "นักขับเชี่ยวชาญ Microsoft Word";
-      else if (score >= 60) rank = "ผ่านเกณฑ์การทดสอบ";
+      if (score >= 17) rank = "ยอดนักขับระดับ Master (ยอดเยี่ยมมาก)";
+      else if (score >= 14) rank = "นักขับเชี่ยวชาญ Microsoft Word";
+      else if (score >= 10) rank = "ผ่านเกณฑ์การทดสอบ";
       document.getElementById("final-rank").innerText = `ระดับ: ${rank}`;
 
-      const code = `WR3D-${btoa(playerName).slice(0, 5).toUpperCase()}-${score}PTS-${Date.now().toString().slice(-4)}`;
+      const code = `WR3D-${btoa(playerName).slice(0, 5).toUpperCase()}-${displayScore}PTS-${Date.now().toString().slice(-4)}`;
       document.getElementById("cert-code").innerText = `รหัสยืนยันผลการขับขี่: ${code}`;
 
       if (SCRIPT_URL && !SCRIPT_URL.includes("YOUR_GOOGLE_SCRIPT")) {
@@ -1357,8 +1309,8 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: playerName,
-            score: score,
-            total: 120,
+            score: displayScore,
+            total: 20,
             code: code,
             time: new Date().toLocaleString("th-TH")
           })
