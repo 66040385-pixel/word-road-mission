@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🚗 Word Road: 3-Lane Obstacle Run (E1)</title>
+  <title>🚗 Word Road: 3-Lane Big Obstacles (E1)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
@@ -28,6 +28,7 @@
       flex-direction: column;
       align-items: center;
       padding: 12px;
+      outline: none;
     }
 
     .main-wrapper {
@@ -60,6 +61,7 @@
       border: 5px solid var(--cockpit-frame);
       box-shadow: 0 12px 35px rgba(0,0,0,0.5);
       background: #87ceeb;
+      cursor: pointer;
     }
 
     canvas {
@@ -92,7 +94,7 @@
       position: absolute;
       top: 14px; left: 50%;
       transform: translateX(-50%);
-      width: 190px;
+      width: 220px;
       height: 38px;
       background: #1e293b;
       border: 2px solid #64748b;
@@ -169,7 +171,7 @@
       z-index: 20;
     }
     .pedal-btn {
-      background: rgba(30, 41, 59, 0.9);
+      background: rgba(30, 41, 59, 0.95);
       border: 2px solid #38bdf8;
       color: #fff;
       font-family: 'Chakra Petch';
@@ -182,11 +184,10 @@
     }
     .pedal-btn:active { background: #38bdf8; color: #000; }
 
-    /* Crash Flash Effect */
     .crash-flash {
       position: absolute;
       inset: 0;
-      background: rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.45);
       display: none;
       pointer-events: none;
       z-index: 50;
@@ -297,7 +298,7 @@
     }
   </style>
 </head>
-<body>
+<body tabindex="0">
 
 <div class="main-wrapper">
 
@@ -308,13 +309,13 @@
     <div>📊 ประสิทธิภาพ E1: <span id="e1-val" class="hud-val" style="color:#4ade80">0%</span></div>
   </div>
 
-  <div class="cockpit-viewport">
+  <div class="cockpit-viewport" id="viewport">
     <canvas id="roadCanvas" width="960" height="560"></canvas>
     <div class="crash-flash" id="crash-flash"></div>
 
     <div class="cockpit-overlay">
       <div class="windshield-frame"></div>
-      <div class="rearview-mirror">3-LANES: WATCH OUT! ⚠️</div>
+      <div class="rearview-mirror">CONTROLS: [A] / [D] / [W] 🚗</div>
 
       <div class="dashboard">
         <div class="gauge">
@@ -324,7 +325,7 @@
 
         <div class="gauge">
           <div class="gauge-num" id="dist-num" style="color:var(--sunny-gold)">1000</div>
-          <div class="gauge-label">DIST TO NEXT GATE (M)</div>
+          <div class="gauge-label">DIST TO GATE (M)</div>
         </div>
       </div>
 
@@ -338,10 +339,10 @@
 
       <div class="pedals">
         <div style="display:flex; gap:8px;">
-          <button class="pedal-btn" id="btn-left">◀ โยกซ้าย (A)</button>
-          <button class="pedal-btn" id="btn-right">โยกขวา (D) ▶</button>
+          <button class="pedal-btn" id="btn-left">◀ เลี้ยวซ้าย [A]</button>
+          <button class="pedal-btn" id="btn-right">เลี้ยวขวา [D] ▶</button>
         </div>
-        <button class="pedal-btn" id="btn-gas" style="background:#0284c7; border-color:#38bdf8;">⚡ เร่งเครื่อง (W / ▲)</button>
+        <button class="pedal-btn" id="btn-gas" style="background:#0284c7; border-color:#38bdf8;">⚡ เหยียบคันเร่ง [W / ▲]</button>
       </div>
     </div>
 
@@ -359,7 +360,7 @@
         <div id="ai-tip"><strong>Word Co-Pilot:</strong> ลอดซุ้มด่านสำเร็จ! ตอบคำถามเพื่อไปต่อ</div>
       </div>
 
-      <button id="btn-drive" class="btn-drive-on" onclick="continueDriving()">ลุยต่อสู่ด่านถัดไป ➔</button>
+      <button id="btn-drive" class="btn-drive-on" onclick="continueDriving()">เหยียบคันเร่ง ลุยต่อ ➔</button>
     </div>
 
   </div>
@@ -403,17 +404,14 @@
   // Road Physics
   let speed = 0;
   let maxSpeed = 160;
-  let playerX = 0; // -1 (ซ้ายสุด) ถึง 1 (ขวาสุด)
+  let playerX = 0;
   let roadPosition = 0;
   let distanceToNextGate = 1000;
   let isArrivedAtGate = false;
   let steeringAngle = 0;
 
-  // เลนทั้ง 3 เลน: ซ้าย (-0.6), กลาง (0.0), ขวา (0.6)
   const lanes = [-0.6, 0.0, 0.6];
 
-  // สิ่งกีดขวาง (Obstacles Array)
-  // รับประกันว่าจะมีอย่างน้อย 1 เลนที่ว่างเสมอ
   let obstacles = [
     { z: 0.35, lane: 0, type: 'cone', hit: false },
     { z: 0.65, lane: 2, type: 'barrier', hit: false },
@@ -422,8 +420,7 @@
 
   function spawnObstaclePattern(startZ) {
     const types = ['cone', 'barrier', 'broken_car'];
-    // สุ่มปิด 1 หรือ 2 เลน (ห้ามปิดพร้อมกัน 3 เลน)
-    const blockCount = Math.random() < 0.6 ? 1 : 2;
+    const blockCount = Math.random() < 0.65 ? 1 : 2;
     let chosenLanes = [0, 1, 2].sort(() => Math.random() - 0.5).slice(0, blockCount);
 
     chosenLanes.forEach(laneIdx => {
@@ -436,7 +433,6 @@
     });
   }
 
-  // ต้นไม้ข้างทาง
   let roadsideItems = [];
   for (let i = 0; i < 18; i++) {
     roadsideItems.push({
@@ -454,7 +450,7 @@
     { x: 820, y: 40, scale: 1.4 }
   ];
 
-  // ตรวจจับปุ่มกด A / D / W / ลูกศร ให้ทำงานสมบูรณ์
+  // ระบบดักจับแป้นพิมพ์อย่างแม่นยำด้วย e.code (ใช้ได้ทั้งภาษาไทย/อังกฤษ/Caps Lock)
   const keys = { up: false, left: false, right: false };
   const canvas = document.getElementById('roadCanvas');
   const ctx = canvas.getContext('2d');
@@ -463,33 +459,48 @@
   function init() {
     bindControls();
     updateHUD();
+    // ดึง Focus ให้หน้ารับคีย์บอร์ดได้ทันที
+    window.focus();
+    document.body.focus();
     requestAnimationFrame(gameLoop);
   }
 
   function bindControls() {
-    window.addEventListener('keydown', (e) => {
+    const handleKey = (e, isPressed) => {
       if (isArrivedAtGate) return;
-      const k = e.key.toLowerCase();
-      if (k === 'arrowup' || k === 'w') { keys.up = true; e.preventDefault(); }
-      if (k === 'arrowleft' || k === 'a') { keys.left = true; e.preventDefault(); }
-      if (k === 'arrowright' || k === 'd') { keys.right = true; e.preventDefault(); }
+      const code = e.code;
+      const key = e.key.toLowerCase();
+
+      if (code === 'KeyW' || code === 'ArrowUp' || key === 'w' || key === 'arrowup') {
+        keys.up = isPressed;
+        e.preventDefault();
+      }
+      if (code === 'KeyA' || code === 'ArrowLeft' || key === 'a' || key === 'arrowleft') {
+        keys.left = isPressed;
+        e.preventDefault();
+      }
+      if (code === 'KeyD' || code === 'ArrowRight' || key === 'd' || key === 'arrowright') {
+        keys.right = isPressed;
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('keydown', (e) => handleKey(e, true), false);
+    window.addEventListener('keyup', (e) => handleKey(e, false), false);
+
+    // ดึง Focus เมื่อคลิกที่หน้าจอเกม
+    document.getElementById('viewport').addEventListener('click', () => {
+      window.focus();
     });
 
-    window.addEventListener('keyup', (e) => {
-      const k = e.key.toLowerCase();
-      if (k === 'arrowup' || k === 'w') keys.up = false;
-      if (k === 'arrowleft' || k === 'a') keys.left = false;
-      if (k === 'arrowright' || k === 'd') keys.right = false;
-    });
-
-    const setupBtn = (id, key) => {
+    const setupBtn = (id, action) => {
       const el = document.getElementById(id);
-      const press = (e) => { e.preventDefault(); if (!isArrivedAtGate) keys[key] = true; };
-      const release = (e) => { e.preventDefault(); keys[key] = false; };
-      el.addEventListener('mousedown', press);
-      el.addEventListener('mouseup', release);
-      el.addEventListener('touchstart', press);
-      el.addEventListener('touchend', release);
+      const start = (e) => { e.preventDefault(); if (!isArrivedAtGate) keys[action] = true; };
+      const end = (e) => { e.preventDefault(); keys[action] = false; };
+      el.addEventListener('mousedown', start);
+      el.addEventListener('mouseup', end);
+      el.addEventListener('touchstart', start);
+      el.addEventListener('touchend', end);
     };
     setupBtn('btn-gas', 'up');
     setupBtn('btn-left', 'left');
@@ -507,11 +518,10 @@
   }
 
   function triggerCrash() {
-    speed = Math.max(20, speed * 0.3); // ชะลอความเร็ว
+    speed = Math.max(15, speed * 0.25);
     shields--;
     updateHUD();
 
-    // แสดงเอฟเฟกต์จอสั่นกระพริบแดง
     const flash = document.getElementById('crash-flash');
     flash.style.display = 'block';
     setTimeout(() => { flash.style.display = 'none'; }, 250);
@@ -523,62 +533,54 @@
 
   function gameLoop() {
     if (!isArrivedAtGate) {
-      if (keys.up) speed = Math.min(speed + 1.8, maxSpeed);
+      if (keys.up) speed = Math.min(speed + 2.0, maxSpeed);
       else speed = Math.max(speed - 1.2, 0);
 
-      // เลี้ยวเลน ซ้าย/ขวา
       if (keys.left) {
-        playerX -= 0.032;
-        steeringAngle = Math.max(steeringAngle - 4, -38);
+        playerX -= 0.035;
+        steeringAngle = Math.max(steeringAngle - 4, -40);
       } else if (keys.right) {
-        playerX += 0.032;
-        steeringAngle = Math.min(steeringAngle + 4, 38);
+        playerX += 0.035;
+        steeringAngle = Math.min(steeringAngle + 4, 40);
       } else {
-        steeringAngle *= 0.85;
+        steeringAngle *= 0.82;
       }
 
-      // จำกัดให้อยู่บนขอบถนน 3 เลน (-0.95 ถึง 0.95)
       playerX = Math.max(-0.95, Math.min(0.95, playerX));
       wheelEl.style.transform = `translateX(-50%) rotate(${steeringAngle}deg)`;
 
       roadPosition += speed;
       distanceToNextGate -= (speed * 0.04);
 
-      // เมฆลอย
       clouds.forEach(c => {
         c.x += 0.15;
         if (c.x > canvas.width + 120) c.x = -120;
       });
 
-      // ต้นไม้พุ่งเข้าหาตัว
       roadsideItems.forEach(item => {
         item.z += (speed * 0.00015);
         if (item.z >= 1) item.z -= 1;
       });
 
-      // สิ่งกีดขวางพุ่งเข้าหาตัว (z จาก 0 -> 1)
       for (let i = obstacles.length - 1; i >= 0; i--) {
         let obs = obstacles[i];
         obs.z += (speed * 0.00016);
 
-        // ชนเมื่อ z อยู่ใกล้กระจกหน้ารถ (z ระหว่าง 0.78 ถึง 0.95)
-        if (!obs.hit && obs.z > 0.78 && obs.z < 0.95) {
+        // จุดตรวจจับชน (Hitbox สอดคล้องกับขนาดเลน)
+        if (!obs.hit && obs.z > 0.72 && obs.z < 0.94) {
           const obsX = lanes[obs.lane];
-          // ตรวจว่าผู้เล่นอยู่ในเลนเดียวกับสิ่งกีดขวางหรือไม่
-          if (Math.abs(playerX - obsX) < 0.32) {
+          if (Math.abs(playerX - obsX) < 0.38) {
             obs.hit = true;
             triggerCrash();
           }
         }
 
-        // เมื่อสิ่งกีดขวางหลุดหน้าจอไป ให้ลบออก
         if (obs.z >= 1.05) {
           obstacles.splice(i, 1);
         }
       }
 
-      // สุ่มเกิดสิ่งกีดขวางชุดใหม่ที่ขอบฟ้า (z = 0)
-      if (obstacles.length < 4 && Math.random() < 0.025 && distanceToNextGate > 350) {
+      if (obstacles.length < 4 && Math.random() < 0.03 && distanceToNextGate > 350) {
         spawnObstaclePattern(0.05);
       }
 
@@ -623,7 +625,7 @@
 
     clouds.forEach(c => drawCloud(c.x, c.y, c.scale));
 
-    // 2. เนินเขาเขียว
+    // 2. เนินเขา
     ctx.fillStyle = '#65a30d';
     ctx.beginPath();
     ctx.moveTo(0, horizon);
@@ -642,7 +644,7 @@
     ctx.fillStyle = '#4ade80';
     ctx.fillRect(0, horizon, w, h - horizon);
 
-    // 4. ถนน 3 เลน (3-Lane Highway)
+    // 4. ถนน 3 เลน
     const segments = 60;
     for (let i = 0; i < segments; i++) {
       const z = i / segments;
@@ -659,14 +661,12 @@
 
       const isStripe = Math.floor((roadPosition * 0.08 - i)) % 2 === 0;
 
-      // แถบหญ้าข้างทาง
       ctx.fillStyle = isStripe ? '#22c55e' : '#16a34a';
       ctx.beginPath();
       ctx.moveTo(0, y1); ctx.lineTo(w, y1);
       ctx.lineTo(w, y2); ctx.lineTo(0, y2);
       ctx.fill();
 
-      // ขอบทางแดง-ขาว
       ctx.fillStyle = isStripe ? '#ef4444' : '#ffffff';
       ctx.beginPath();
       ctx.moveTo(x1 - roadW1 * 0.54, y1);
@@ -675,7 +675,6 @@
       ctx.lineTo(x1 + roadW1 * 0.54, y1);
       ctx.fill();
 
-      // ผิวถนนลาดยาง 3 เลน
       ctx.fillStyle = isStripe ? '#475569' : '#334155';
       ctx.beginPath();
       ctx.moveTo(x1 - roadW1 * 0.5, y1);
@@ -684,14 +683,12 @@
       ctx.lineTo(x1 + roadW1 * 0.5, y1);
       ctx.fill();
 
-      // เส้นประสีขาวแบ่งถนนเป็น 3 เลน (2 เส้นประ)
       if (isStripe) {
         ctx.fillStyle = '#ffffff';
         const laneW1 = roadW1 / 3;
         const lineW1 = roadW1 * 0.018;
         const lineW2 = roadW2 * 0.018;
 
-        // เส้นแบ่งเลนซ้าย-กลาง
         const l1_x1 = x1 - (laneW1 * 0.5);
         const l1_x2 = x2 - ((roadW2 / 3) * 0.5);
         ctx.beginPath();
@@ -699,7 +696,6 @@
         ctx.lineTo(l1_x2 + lineW2, y2); ctx.lineTo(l1_x1 + lineW1, y1);
         ctx.fill();
 
-        // เส้นแบ่งเลนกลาง-ขวา
         const l2_x1 = x1 + (laneW1 * 0.5);
         const l2_x2 = x2 + ((roadW2 / 3) * 0.5);
         ctx.beginPath();
@@ -709,7 +705,7 @@
       }
     }
 
-    // 5. วาดต้นไม้ข้างทาง
+    // 5. ต้นไม้ข้างทาง
     let sortedItems = [...roadsideItems].sort((a, b) => a.z - b.z);
     sortedItems.forEach(item => {
       const z = item.z;
@@ -723,7 +719,7 @@
       else drawFlowerBush(itemX, y, scale, item.flowerColor);
     });
 
-    // 6. วาดสิ่งกีดขวางบน 3 เลน (เรียงจากไกล z=0 มาใกล้ z=1)
+    // 6. วาดสิ่งกีดขวางขนาดใหญ่เต็มเลน
     let sortedObstacles = [...obstacles].sort((a, b) => a.z - b.z);
     sortedObstacles.forEach(obs => {
       const z = obs.z;
@@ -733,14 +729,14 @@
       const roadW = (w * 0.14) + (w * 0.94) * Math.pow(z, 2.6);
       const roadCenterX = (w / 2) - (playerX * 180 * (1 - z));
       const scale = Math.pow(z, 2.0);
+      const laneWidth = (roadW / 3);
 
-      // คำนวณพิกัด X ตามเลนของสิ่งกีดขวาง
       const laneOffset = lanes[obs.lane] * (roadW * 0.44);
       const obsX = roadCenterX + laneOffset;
 
-      if (obs.type === 'cone') drawTrafficCone(obsX, y, scale);
-      else if (obs.type === 'barrier') drawBarricade(obsX, y, scale);
-      else if (obs.type === 'broken_car') drawBrokenCar(obsX, y, scale);
+      if (obs.type === 'cone') drawTrafficConeBig(obsX, y, scale, laneWidth);
+      else if (obs.type === 'barrier') drawBarricadeBig(obsX, y, scale, laneWidth);
+      else if (obs.type === 'broken_car') drawBrokenCarBig(obsX, y, scale, laneWidth);
     });
 
     // 7. ซุ้มประตู Checkpoint
@@ -769,90 +765,86 @@
     }
   }
 
-  // วาดกรวยจราจร
-  function drawTrafficCone(x, y, scale) {
+  // สิ่งกีดขวางขนาดใหญ่เต็มความกว้างช่องเลน
+  function drawTrafficConeBig(x, y, scale, laneWidth) {
     ctx.save();
-    // ฐานสีส้ม
+    const coneW = laneWidth * 0.65;
+    const coneH = coneW * 1.35;
+
     ctx.fillStyle = '#ea580c';
     ctx.beginPath();
-    ctx.ellipse(x, y, 18 * scale, 6 * scale, 0, 0, Math.PI * 2);
+    ctx.ellipse(x, y, coneW * 0.5, coneW * 0.16, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // กรวย
     ctx.beginPath();
-    ctx.moveTo(x - 12 * scale, y);
-    ctx.lineTo(x, y - 42 * scale);
-    ctx.lineTo(x + 12 * scale, y);
+    ctx.moveTo(x - coneW * 0.38, y);
+    ctx.lineTo(x, y - coneH);
+    ctx.lineTo(x + coneW * 0.38, y);
     ctx.closePath();
     ctx.fill();
 
-    // แถบสะท้อนแสงสีขาว
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.moveTo(x - 7 * scale, y - 16 * scale);
-    ctx.lineTo(x, y - 28 * scale);
-    ctx.lineTo(x + 7 * scale, y - 16 * scale);
+    ctx.moveTo(x - coneW * 0.22, y - coneH * 0.35);
+    ctx.lineTo(x, y - coneH * 0.65);
+    ctx.lineTo(x + coneW * 0.22, y - coneH * 0.35);
     ctx.closePath();
     ctx.fill();
     ctx.restore();
   }
 
-  // วาดรั้วกั้นทางก่อสร้าง
-  function drawBarricade(x, y, scale) {
+  function drawBarricadeBig(x, y, scale, laneWidth) {
     ctx.save();
-    const bw = 50 * scale;
-    const bh = 32 * scale;
+    const bw = laneWidth * 0.88; // กว้างเกือบเต็มเลน
+    const bh = bw * 0.55;
 
-    // ขาตั้ง
-    ctx.fillStyle = '#475569';
-    ctx.fillRect(x - bw * 0.45, y - bh, 4 * scale, bh);
-    ctx.fillRect(x + bw * 0.4, y - bh, 4 * scale, bh);
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x - bw * 0.45, y - bh, bw * 0.08, bh);
+    ctx.fillRect(x + bw * 0.37, y - bh, bw * 0.08, bh);
 
-    // แผ่นไม้ลายทางขาว-ส้ม
     ctx.fillStyle = '#ea580c';
-    ctx.fillRect(x - bw * 0.5, y - bh * 0.9, bw, bh * 0.4);
+    ctx.fillRect(x - bw * 0.5, y - bh * 0.95, bw, bh * 0.45);
 
     ctx.fillStyle = '#ffffff';
-    for (let i = -bw * 0.4; i < bw * 0.4; i += 12 * scale) {
+    const stripeGap = bw * 0.16;
+    for (let i = -bw * 0.48; i < bw * 0.48; i += stripeGap) {
       ctx.beginPath();
-      ctx.moveTo(x + i, y - bh * 0.9);
-      ctx.lineTo(x + i + 6 * scale, y - bh * 0.9);
+      ctx.moveTo(x + i, y - bh * 0.95);
+      ctx.lineTo(x + i + stripeGap * 0.5, y - bh * 0.95);
       ctx.lineTo(x + i, y - bh * 0.5);
-      ctx.lineTo(x + i - 6 * scale, y - bh * 0.5);
+      ctx.lineTo(x + i - stripeGap * 0.5, y - bh * 0.5);
       ctx.fill();
     }
     ctx.restore();
   }
 
-  // วาดรถเสียจอดเปิดไฟฉุกเฉิน
-  function drawBrokenCar(x, y, scale) {
+  function drawBrokenCarBig(x, y, scale, laneWidth) {
     ctx.save();
-    const cw = 56 * scale;
-    const ch = 38 * scale;
+    const cw = laneWidth * 0.85; // รถขนาดเต็มเลน
+    const ch = cw * 0.68;
 
-    // ล้อ
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x - cw * 0.45, y - 12 * scale, 12 * scale, 12 * scale);
-    ctx.fillRect(x + cw * 0.25, y - 12 * scale, 12 * scale, 12 * scale);
+    ctx.fillRect(x - cw * 0.48, y - ch * 0.25, cw * 0.2, ch * 0.25);
+    ctx.fillRect(x + cw * 0.28, y - ch * 0.25, cw * 0.2, ch * 0.25);
 
-    // ตัวถังรถสีเหลืองเก่า
     ctx.fillStyle = '#eab308';
     ctx.beginPath();
-    ctx.roundRect(x - cw * 0.5, y - ch * 0.85, cw, ch * 0.6, 4 * scale);
+    ctx.roundRect(x - cw * 0.5, y - ch * 0.88, cw, ch * 0.65, 6 * scale);
     ctx.fill();
 
-    // กระจกหลัง
     ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(x - cw * 0.35, y - ch * 0.75, cw * 0.7, ch * 0.25);
+    ctx.beginPath();
+    ctx.roundRect(x - cw * 0.38, y - ch * 0.8, cw * 0.76, ch * 0.3, 4 * scale);
+    ctx.fill();
 
-    // ไฟฉุกเฉินกระพริบสีส้ม
+    // ไฟฉุกเฉินดวงใหญ่
     if (Math.floor(Date.now() * 0.008) % 2 === 0) {
-      ctx.fillStyle = '#ff0000';
-      ctx.shadowColor = '#ff0000';
-      ctx.shadowBlur = 15;
+      ctx.fillStyle = '#ef4444';
+      ctx.shadowColor = '#ef4444';
+      ctx.shadowBlur = 18;
       ctx.beginPath();
-      ctx.arc(x - cw * 0.38, y - ch * 0.4, 4 * scale, 0, Math.PI * 2);
-      ctx.arc(x + cw * 0.38, y - ch * 0.4, 4 * scale, 0, Math.PI * 2);
+      ctx.arc(x - cw * 0.38, y - ch * 0.42, cw * 0.09, 0, Math.PI * 2);
+      ctx.arc(x + cw * 0.38, y - ch * 0.42, cw * 0.09, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
     }
@@ -1004,6 +996,7 @@
           shields = 2;
           modal.style.display = 'none';
           updateHUD();
+          window.focus();
           const btns = document.querySelectorAll('#term-options .opt-btn');
           btns.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
         } else {
@@ -1019,11 +1012,12 @@
   function continueDriving() {
     document.getElementById('terminal').style.display = 'none';
     currentStageIndex++;
+    window.focus();
 
     if (currentStageIndex < 12) {
       distanceToNextGate = 1000;
       isArrivedAtGate = false;
-      obstacles = []; // ล้างสิ่งกีดขวางรอบเก่า
+      obstacles = [];
       spawnObstaclePattern(0.3);
       updateHUD();
     } else {
