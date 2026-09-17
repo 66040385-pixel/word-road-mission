@@ -3,25 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🚗 Word Road 4D: True 3D Cockpit Quest (E1)</title>
+  <title>🚗 Word Road: 3D Multi-Biome Quest (E1)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
-  <!-- โหลด Three.js WebGL Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     :root {
       --cyan: #00f0ff;
-      --gold: #ffd600;
-      --red: #ff3366;
-      --green: #00ff88;
-      --dark: #0b0f19;
+      --gold: #facc15;
+      --red: #ef4444;
+      --green: #22c55e;
+      --bg: #0b1120;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
     body {
-      background: var(--dark);
+      background: var(--bg);
       color: #fff;
       font-family: 'Sarabun', sans-serif;
       min-height: 100vh;
@@ -42,7 +41,7 @@
 
     /* HUD Bar */
     .hud-bar {
-      background: rgba(18, 26, 43, 0.9);
+      background: rgba(15, 23, 42, 0.92);
       border: 2px solid var(--cyan);
       border-radius: 12px;
       padding: 10px 20px;
@@ -50,7 +49,7 @@
       justify-content: space-between;
       align-items: center;
       font-family: 'Chakra Petch', sans-serif;
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+      box-shadow: 0 4px 20px rgba(0, 240, 255, 0.2);
     }
     .hud-val { color: var(--cyan); font-weight: bold; font-size: 1.15rem; }
 
@@ -61,8 +60,8 @@
       height: 560px;
       border-radius: 18px;
       overflow: hidden;
-      border: 4px solid #1e293b;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      border: 4px solid #334155;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.8);
       background: #000;
     }
 
@@ -72,46 +71,19 @@
       display: block;
     }
 
-    /* 4D Temporal Glitch Effect */
-    .temporal-warp {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      display: none;
-      background: radial-gradient(circle, transparent 40%, rgba(0, 240, 255, 0.3) 100%);
-      mix-blend-mode: screen;
-      filter: blur(1px);
-      animation: warpPulse 0.15s infinite;
-      z-index: 10;
-    }
-    @keyframes warpPulse {
-      0% { transform: scale(1); filter: hue-rotate(0deg); }
-      50% { transform: scale(1.02); filter: hue-rotate(180deg); }
-      100% { transform: scale(1); filter: hue-rotate(360deg); }
-    }
-
-    /* Cockpit HUD Overlay */
-    .cockpit-ui {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      z-index: 20;
-    }
-
-    /* แดชบอร์ดคนขับ */
+    /* แดชบอร์ดคนขับด้านล่าง */
     .dash-panel {
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 140px;
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, rgba(10, 15, 29, 0.98) 50%);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(10, 15, 29, 0.95) 60%);
       border-top: 3px solid rgba(0, 240, 255, 0.4);
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      padding: 0 40px 14px 40px;
+      padding: 0 35px 14px 35px;
+      pointer-events: none;
+      z-index: 20;
     }
 
     .meter-block { font-family: 'Chakra Petch'; text-align: center; }
@@ -128,7 +100,7 @@
       z-index: 30;
     }
     .ctrl-btn {
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.9);
       border: 2px solid var(--cyan);
       color: #fff;
       font-family: 'Chakra Petch';
@@ -144,7 +116,7 @@
     .damage-flash {
       position: absolute;
       inset: 0;
-      background: rgba(255, 51, 102, 0.45);
+      background: rgba(239, 68, 68, 0.5);
       display: none;
       pointer-events: none;
       z-index: 50;
@@ -157,7 +129,7 @@
       transform: translateX(-50%);
       width: 90%;
       max-width: 780px;
-      background: rgba(11, 17, 32, 0.96);
+      background: rgba(15, 23, 42, 0.96);
       backdrop-filter: blur(14px);
       border: 2px solid var(--cyan);
       border-radius: 16px;
@@ -197,8 +169,8 @@
       transition: all 0.2s;
     }
     .opt-btn:hover:not(:disabled) { background: rgba(0, 240, 255, 0.2); border-color: var(--cyan); }
-    .opt-btn.correct { background: rgba(0, 255, 136, 0.3) !important; border-color: var(--green) !important; color: var(--green) !important; }
-    .opt-btn.wrong { background: rgba(255, 51, 102, 0.3) !important; border-color: var(--red) !important; color: var(--red) !important; }
+    .opt-btn.correct { background: rgba(34, 197, 94, 0.3) !important; border-color: var(--green) !important; color: var(--green) !important; }
+    .opt-btn.wrong { background: rgba(239, 68, 68, 0.3) !important; border-color: var(--red) !important; color: var(--red) !important; }
 
     .ai-bubble {
       background: rgba(0, 120, 212, 0.15);
@@ -230,47 +202,44 @@
 
   <div class="hud-bar">
     <div>🛡️ พลังเกราะ: <span id="health-ui" class="hud-val">❤️❤️❤️</span></div>
-    <div>🚩 โซนด่าน: <span id="stage-ui" class="hud-val">ด่าน 1 / 12 (Meadow)</span></div>
+    <div>🚩 ด่านปัจจุบัน: <span id="stage-ui" class="hud-val">ด่าน 1 / 12</span></div>
     <div>⭐ ดาวสะสม: <span id="star-ui" class="hud-val">0 ⭐</span></div>
     <div>📊 ประสิทธิภาพ E1: <span id="e1-ui" class="hud-val" style="color:var(--green)">0%</span></div>
   </div>
 
   <div class="viewport-3d" id="viewport">
     <div id="webgl-canvas"></div>
-    <div class="temporal-warp" id="time-warp"></div>
     <div class="damage-flash" id="crash-flash"></div>
 
-    <div class="cockpit-ui">
-      <div class="dash-panel">
-        <div class="meter-block">
-          <div class="meter-val" id="speed-meter">0</div>
-          <div class="meter-lbl">WARP SPEED (KM/H)</div>
-        </div>
-        <div class="meter-block">
-          <div class="meter-val" id="dist-meter" style="color:var(--gold)">1000</div>
-          <div class="meter-lbl">DISTANCE TO GATE (M)</div>
-        </div>
+    <div class="dash-panel">
+      <div class="meter-block">
+        <div class="meter-val" id="speed-meter">0</div>
+        <div class="meter-lbl">SPEED (KM/H)</div>
       </div>
+      <div class="meter-block">
+        <div class="meter-val" id="dist-meter" style="color:var(--gold)">1000</div>
+        <div class="meter-lbl">DIST TO GATE (M)</div>
+      </div>
+    </div>
 
-      <div class="controls-layer">
-        <div style="display:flex; gap:8px;">
-          <button class="ctrl-btn" id="btn-left">◀ โยกซ้าย (A)</button>
-          <button class="ctrl-btn" id="btn-right">โยกขวา (D) ▶</button>
-        </div>
-        <button class="ctrl-btn" id="btn-gas" style="background:#0284c7; border-color:var(--cyan);">⚡ เร่งความเร็ว (W / ▲)</button>
+    <div class="controls-layer">
+      <div style="display:flex; gap:8px;">
+        <button class="ctrl-btn" id="btn-left">◀ สลับเลนซ้าย (A)</button>
+        <button class="ctrl-btn" id="btn-right">สลับเลนขวา (D) ▶</button>
       </div>
+      <button class="ctrl-btn" id="btn-gas" style="background:#0284c7; border-color:var(--cyan);">⚡ เร่งเครื่อง (W / ▲)</button>
     </div>
 
     <!-- Terminal -->
     <div class="stage-terminal" id="terminal">
       <div class="term-title">
-        <span id="term-name">🚧 CHECKPOINT 1: รู้จัก MICROSOFT WORD</span>
+        <span id="term-name">🚧 CHECKPOINT 1</span>
         <span id="term-badge" style="font-size:0.85rem; color:var(--gold);">🏅 Word Beginner</span>
       </div>
       <div class="term-q" id="term-q">...</div>
       <div class="opt-grid" id="term-opts"></div>
-      <div class="ai-bubble" id="ai-msg"><strong>4D Assistant:</strong> พิกัดมิติเสถียรแล้ว! ตอบคำถามเพื่อเปิดเกตมิติต่อไป</div>
-      <button id="btn-continue" class="btn-next-gate" onclick="continueVoyage()">ทะลุมิติต่อไป ➔</button>
+      <div class="ai-bubble" id="ai-msg"><strong>Word AI:</strong> ตอบคำถามให้ถูกต้องเพื่อเดินทางต่อ</div>
+      <button id="btn-continue" class="btn-next-gate" onclick="continueVoyage()">เดินทางต่อไป ➔</button>
     </div>
 
   </div>
@@ -293,160 +262,205 @@
     { id: 12, title: "Checkpoint 12: การส่งออกเอกสารสมบูรณ์", topic: "Export PDF & Finish", badge: "Word Grand Master", q: "หากต้องการส่งงานไปพิมพ์โดยไม่ให้ฟอนต์เพี้ยนหรือหน้าเคลื่อน ควรส่งออกเป็นไฟล์ใด?", opts: [".txt", ".docx", ".pdf", ".html"], ans: 2, hint: "PDF ล็อคโครงสร้างหน้ากระดาษได้คงที่ที่สุด" }
   ];
 
+  // 3 Biomes Config (การตั้งค่า 3 ภูมิประเทศ)
+  const biomes = [
+    { name: "Meadow Spring (ทุ่งหญ้าสดใส)", sky: 0x60a5fa, ground: 0x15803d, road: 0x334155, fog: 0x93c5fd, foliage: 0x22c55e, trunk: 0x78350f },
+    { name: "Sunset Canyon (หุบเขาอาทิตย์อัสดง)", sky: 0xf97316, ground: 0xb45309, road: 0x292524, fog: 0xfdba74, foliage: 0xd97706, trunk: 0x451a03 },
+    { name: "Cyber Route (ทางหลวงราตรีนีออน)", sky: 0x0f172a, ground: 0x030712, road: 0x1e1b4b, fog: 0x312e81, foliage: 0x06b6d4, trunk: 0x4f46e5 }
+  ];
+
   let curStage = 0;
   let shields = 3;
   let scoreE1 = 0;
   let stars = 0;
   let stageTries = 0;
 
-  // 3-Lane Setup ในพิกัดแกน X ของ Three.js
-  const laneX = [-3.8, 0, 3.8];
+  // 3-Lane Positions (แกน X: ซ้าย=-4, กลาง=0, ขวา=4)
+  const laneX = [-4.0, 0, 4.0];
   let curLane = 1;
   let targetCamX = 0;
   let carSpeed = 0;
   let distanceGate = 1000;
   let isArrived = false;
   let isGas = false;
+  let isBlocked = false; // รถติดสิ่งกีดขวาง
 
-  // Three.js Core Variables
+  // Three.js Engine Variables
   let scene, camera, renderer;
-  let roadMesh, stripesGroup;
+  let groundMesh, roadMesh, stripesGroup;
+  let mountainGroup;
   let treePool = [];
   let obstaclePool = [];
   let checkpointGate;
+  let ambientLight, dirLight;
 
   function initThree() {
     const container = document.getElementById('webgl-canvas');
     scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x0a1424, 0.015);
 
-    camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 400);
-    camera.position.set(0, 2.2, 0); // ตำแหน่งสายตาคนขับ Cockpit
+    camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 500);
+    camera.position.set(0, 2.2, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
 
-    // แสงในฉาก 3D
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(10, 30, 20);
+    dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(20, 50, 20);
+    dirLight.castShadow = true;
     scene.add(dirLight);
 
-    buildWorld();
+    buildScene();
+    applyBiome(0);
     bindEvents();
     updateHUD();
     animate();
   }
 
-  function buildWorld() {
-    // 1. พื้นดิน/ทุ่งหญ้า 3D
-    const groundGeo = new THREE.PlaneGeometry(300, 500);
-    const groundMat = new THREE.MeshLambertMaterial({ color: 0x16a34a });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.05;
-    scene.add(ground);
+  function buildScene() {
+    // 1. พื้นดินกว้างใหญ่
+    const groundGeo = new THREE.PlaneGeometry(600, 600);
+    const groundMat = new THREE.MeshLambertMaterial({ color: 0x15803d });
+    groundMesh = new THREE.Mesh(groundGeo, groundMat);
+    groundMesh.rotation.x = -Math.PI / 2;
+    groundMesh.position.y = -0.05;
+    scene.add(groundMesh);
 
-    // 2. ถนนแอสฟัลต์ 3 เลน (กว้าง 12 เมตร)
-    const roadGeo = new THREE.PlaneGeometry(12, 500);
-    const roadMat = new THREE.MeshLambertMaterial({ color: 0x222a38 });
+    // 2. ตัวถนนลาดยาง 3 เลน (กว้าง 13 เมตร)
+    const roadGeo = new THREE.PlaneGeometry(13, 600);
+    const roadMat = new THREE.MeshLambertMaterial({ color: 0x334155 });
     roadMesh = new THREE.Mesh(roadGeo, roadMat);
     roadMesh.rotation.x = -Math.PI / 2;
     scene.add(roadMesh);
 
     // ขอบทางแดง-ขาว
-    const curbGeo = new THREE.PlaneGeometry(0.6, 500);
+    const curbGeo = new THREE.PlaneGeometry(0.7, 600);
     const curbMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
     const leftCurb = new THREE.Mesh(curbGeo, curbMat);
     leftCurb.rotation.x = -Math.PI / 2;
-    leftCurb.position.set(-6.3, 0.01, 0);
+    leftCurb.position.set(-6.8, 0.01, 0);
     scene.add(leftCurb);
 
     const rightCurb = leftCurb.clone();
-    rightCurb.position.set(6.3, 0.01, 0);
+    rightCurb.position.set(6.8, 0.01, 0);
     scene.add(rightCurb);
 
     // 3. เส้นประแบ่ง 3 เลน
     stripesGroup = new THREE.Group();
-    const stripeGeo = new THREE.PlaneGeometry(0.2, 4);
+    const stripeGeo = new THREE.PlaneGeometry(0.25, 5);
     const stripeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    for (let z = 0; z > -250; z -= 8) {
+    for (let z = 0; z > -300; z -= 10) {
       const leftStripe = new THREE.Mesh(stripeGeo, stripeMat);
       leftStripe.rotation.x = -Math.PI / 2;
-      leftStripe.position.set(-2, 0.02, z);
+      leftStripe.position.set(-2.15, 0.02, z);
       stripesGroup.add(leftStripe);
 
       const rightStripe = new THREE.Mesh(stripeGeo, stripeMat);
       rightStripe.rotation.x = -Math.PI / 2;
-      rightStripe.position.set(2, 0.02, z);
+      rightStripe.position.set(2.15, 0.02, z);
       stripesGroup.add(rightStripe);
     }
     scene.add(stripesGroup);
 
-    // 4. ต้นไม้ 3D ขนาดใหญ่ขนาบข้างทาง
-    for (let i = 0; i < 20; i++) {
-      const tree = create3DTree();
-      tree.position.set(i % 2 === 0 ? -10 - Math.random() * 4 : 10 + Math.random() * 4, 0, -i * 15);
+    // 4. ภูเขาพาโนรามาด้านหลัง (Low-Poly Mountains)
+    mountainGroup = new THREE.Group();
+    const mtnGeo = new THREE.ConeGeometry(35, 60, 5);
+    const mtnMat = new THREE.MeshLambertMaterial({ color: 0x334155 });
+    for (let i = -6; i <= 6; i++) {
+      const mtn = new THREE.Mesh(mtnGeo, mtnMat);
+      mtn.position.set(i * 35, 25, -280);
+      mtn.scale.y = 0.8 + Math.random() * 0.5;
+      mountainGroup.add(mtn);
+    }
+    scene.add(mountainGroup);
+
+    // 5. ต้นไม้ใหญ่ขนาบข้างทาง
+    for (let i = 0; i < 24; i++) {
+      const tree = createBigTree();
+      tree.position.set(i % 2 === 0 ? -12 - Math.random() * 8 : 12 + Math.random() * 8, 0, -i * 16);
       scene.add(tree);
       treePool.push(tree);
     }
 
-    // 5. ซุ้มประตู Checkpoint 3D
-    checkpointGate = create3DGate();
+    // 6. ซุ้มประตู Checkpoint
+    checkpointGate = createGate();
     checkpointGate.position.set(0, 0, -350);
     scene.add(checkpointGate);
 
-    // 6. สุ่มสร้างสิ่งกีดขวาง 3D ชุดแรก
-    spawn3DObstacleWave(-60);
-    spawn3DObstacleWave(-120);
+    // สิ่งกีดขวางชุดแรกที่ระยะปลอดภัย (ไกล Z = -70 และ -130)
+    spawnWave(-70);
+    spawnWave(-130);
   }
 
-  function create3DTree() {
+  function applyBiome(biomeIdx) {
+    const b = biomes[biomeIdx];
+    scene.background = new THREE.Color(b.sky);
+    scene.fog = new THREE.Fog(b.fog, 100, 320);
+
+    groundMesh.material.color.setHex(b.ground);
+    roadMesh.material.color.setHex(b.road);
+
+    treePool.forEach(tree => {
+      tree.children[0].material.color.setHex(b.trunk);
+      tree.children[1].material.color.setHex(b.foliage);
+    });
+  }
+
+  function createBigTree() {
     const group = new THREE.Group();
-    // ลำต้น
-    const trunkGeo = new THREE.CylinderGeometry(0.5, 0.7, 5, 8);
-    const trunkMat = new THREE.MeshLambertMaterial({ color: 0x5c3a21 });
-    const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-    trunk.position.y = 2.5;
+    // ลำต้นใหญ่
+    const trunk = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.9, 1.2, 7, 7),
+      new THREE.MeshLambertMaterial({ color: 0x78350f })
+    );
+    trunk.position.y = 3.5;
     group.add(trunk);
 
-    // พุ่มใบไม้ 3 ชั้น
-    const leafMat = new THREE.MeshLambertMaterial({ color: 0x15803d });
-    for (let l = 0; l < 3; l++) {
-      const leafGeo = new THREE.ConeGeometry(3.5 - l * 0.7, 4, 8);
-      const leaves = new THREE.Mesh(leafGeo, leafMat);
-      leaves.position.y = 4.5 + l * 2.2;
-      group.add(leaves);
-    }
+    // พุ่มไม้ใหญ่
+    const foliage = new THREE.Mesh(
+      new THREE.DodecahedronGeometry(5.5),
+      new THREE.MeshLambertMaterial({ color: 0x22c55e })
+    );
+    foliage.position.y = 9.5;
+    group.add(foliage);
+
     return group;
   }
 
-  function create3DGate() {
+  function createGate() {
     const group = new THREE.Group();
-    const pillarMat = new THREE.MeshLambertMaterial({ color: 0x0284c7 });
-    const p1 = new THREE.Mesh(new THREE.BoxGeometry(1, 10, 1), pillarMat);
-    p1.position.set(-6, 5, 0);
+    const mat = new THREE.MeshLambertMaterial({ color: 0x0284c7 });
+    const p1 = new THREE.Mesh(new THREE.BoxGeometry(1.4, 12, 1.4), mat);
+    p1.position.set(-7, 6, 0);
     const p2 = p1.clone();
-    p2.position.set(6, 5, 0);
+    p2.position.set(7, 6, 0);
 
-    const beam = new THREE.Mesh(new THREE.BoxGeometry(14, 2, 1.2), new THREE.MeshLambertMaterial({ color: 0x0369a1 }));
-    beam.position.set(0, 9, 0);
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(16, 2.8, 1.8), new THREE.MeshLambertMaterial({ color: 0x0369a1 }));
+    beam.position.set(0, 11, 0);
 
     group.add(p1); group.add(p2); group.add(beam);
     return group;
   }
 
-  function spawn3DObstacleWave(zPos) {
+  // ระบบการันตี 1 เลนปลอดภัยเสมอ 100%
+  function spawnWave(zPos) {
+    const types = ['cone', 'barrier'];
+    
+    // สุ่มเลือก 1 เลนที่ "ต้องปลอดภัยเสมอ"
     const safeLane = Math.floor(Math.random() * 3);
-    const blockedLanes = [0, 1, 2].filter(l => l !== safeLane);
-    const count = Math.random() < 0.5 ? 1 : 2;
+    
+    // สิ่งกีดขวางจะเกิดเฉพาะเลนที่เหลือเท่านั้น (สูงสุด 1 หรือ 2 ตัว)
+    const availableLanes = [0, 1, 2].filter(l => l !== safeLane);
+    const blockCount = Math.random() < 0.4 ? 1 : 2;
+    const lanesToBlock = availableLanes.sort(() => Math.random() - 0.5).slice(0, blockCount);
 
-    blockedLanes.slice(0, count).forEach(laneIdx => {
-      const obs = create3DObstacle();
+    lanesToBlock.forEach(laneIdx => {
+      const obs = createObstacle(types[Math.floor(Math.random() * types.length)]);
       obs.position.set(laneX[laneIdx], 0, zPos);
       obs.lane = laneIdx;
       obs.hit = false;
@@ -455,21 +469,37 @@
     });
   }
 
-  function create3DObstacle() {
+  function createObstacle(type) {
     const group = new THREE.Group();
-    // กรวยจราจรเรืองแสง 3D ขนาดเต็มเลน
-    const coneGeo = new THREE.ConeGeometry(1.4, 2.8, 12);
-    const coneMat = new THREE.MeshLambertMaterial({ color: 0xea580c });
-    const cone = new THREE.Mesh(coneGeo, coneMat);
-    cone.position.y = 1.4;
+    if (type === 'cone') {
+      // กรวยส้มขนาดใหญ่เต็มเลน
+      const cone = new THREE.Mesh(
+        new THREE.ConeGeometry(1.6, 3.4, 10),
+        new THREE.MeshLambertMaterial({ color: 0xea580c })
+      );
+      cone.position.y = 1.7;
 
-    const baseGeo = new THREE.BoxGeometry(2.4, 0.3, 2.4);
-    const baseMat = new THREE.MeshLambertMaterial({ color: 0x222a38 });
-    const base = new THREE.Mesh(baseGeo, baseMat);
-    base.position.y = 0.15;
+      const base = new THREE.Mesh(
+        new THREE.BoxGeometry(2.6, 0.4, 2.6),
+        new THREE.MeshLambertMaterial({ color: 0x1e293b })
+      );
+      base.position.y = 0.2;
+      group.add(base); group.add(cone);
+    } else {
+      // รั้วไม้กั้นทางขนาดใหญ่เต็มช่องเลน
+      const bar = new THREE.Mesh(
+        new THREE.BoxGeometry(3.6, 1.5, 0.5),
+        new THREE.MeshLambertMaterial({ color: 0xea580c })
+      );
+      bar.position.y = 1.8;
 
-    group.add(base);
-    group.add(cone);
+      const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2, 0.3), new THREE.MeshLambertMaterial({ color: 0x334155 }));
+      leg1.position.set(-1.4, 1.0, 0);
+      const leg2 = leg1.clone();
+      leg2.position.set(1.4, 1.0, 0);
+
+      group.add(bar); group.add(leg1); group.add(leg2);
+    }
     return group;
   }
 
@@ -478,6 +508,7 @@
     if (dir === -1 && curLane > 0) curLane--;
     else if (dir === 1 && curLane < 2) curLane++;
     targetCamX = laneX[curLane];
+    isBlocked = false; // ปลดล็อกสถานะหยุดเมื่อผู้เล่นเปลี่ยนเลนหลบ
   }
 
   function bindEvents() {
@@ -509,82 +540,86 @@
     for(let i=0; i<3; i++) hearts += (i < shields) ? "❤️" : "🖤";
     document.getElementById('health-ui').innerText = hearts;
 
-    const biomeNames = ["Meadow", "Sunset Canyon", "Cyber Route"];
-    const biome = biomeNames[Math.floor(curStage / 4)];
-    document.getElementById('stage-ui').innerText = `ด่าน ${curStage + 1} / 12 (${biome})`;
+    const bIdx = Math.min(2, Math.floor(curStage / 4));
+    document.getElementById('stage-ui').innerText = `ด่าน ${curStage + 1} / 12 (${biomes[bIdx].name.split(' ')[0]})`;
     document.getElementById('star-ui').innerText = `${stars} ⭐`;
 
     const pct = Math.round((scoreE1 / 120) * 100);
     document.getElementById('e1-ui').innerText = `${scoreE1}/120 (${pct}%)`;
   }
 
+  // ระบบชนแล้วรถหยุดสนิท บังคับโยกหลบ
   function triggerCrash() {
-    carSpeed = Math.max(10, carSpeed * 0.2);
+    carSpeed = 0; // หยุดรถทันที
+    isBlocked = true;
     shields--;
     updateHUD();
 
     const flash = document.getElementById('crash-flash');
     flash.style.display = 'block';
-    setTimeout(() => { flash.style.display = 'none'; }, 250);
-  }
+    setTimeout(() => { flash.style.display = 'none'; }, 300);
 
-  // 4D Time-Warp Effect (ปรากฏการณ์บิดเบี้ยวมิติกาลเวลา)
-  function toggleTimeWarp(enable) {
-    document.getElementById('time-warp').style.display = enable ? 'block' : 'none';
+    if (shields <= 0) {
+      alert("🚨 เกราะรถหมด! เข้าสู่ระบบซ่อมบำรุงฉุกเฉิน (ฟื้นฟูเกราะ 2 หน่วย)");
+      shields = 2;
+      updateHUD();
+    }
   }
 
   function animate() {
     requestAnimationFrame(animate);
 
     if (!isArrived) {
-      // 1. ระบบฟิสิกส์การเร่งความเร็ว
-      if (isGas) carSpeed = Math.min(carSpeed + 1.2, 140);
-      else carSpeed = Math.max(carSpeed - 0.8, 0);
+      // เร่งความเร็ว (ถ้าติดสิ่งกีดขวางอยู่จะไม่ให้เดินหน้า ต้องเลี้ยวหลบก่อน)
+      if (isGas && !isBlocked) {
+        carSpeed = Math.min(carSpeed + 1.6, 140);
+      } else {
+        carSpeed = Math.max(carSpeed - 1.5, 0);
+      }
 
-      // 2. การสไลด์เข้าเลน (Smooth Camera Translation)
-      camera.position.x += (targetCamX - camera.position.x) * 0.12;
+      // สไลด์มุมกล้องเข้าเลนอย่างนุ่มนวล
+      camera.position.x += (targetCamX - camera.position.x) * 0.16;
 
-      // 3. เลื่อนวัตถุ 3D ผ่านตัวรถ (Forward Motion)
-      const forwardDelta = carSpeed * 0.012;
+      const delta = carSpeed * 0.012;
 
       // เลื่อนเส้นประถนน
       stripesGroup.children.forEach(s => {
-        s.position.z += forwardDelta;
-        if (s.position.z > 5) s.position.z -= 250;
+        s.position.z += delta;
+        if (s.position.z > 5) s.position.z -= 300;
       });
 
       // เลื่อนต้นไม้
       treePool.forEach(t => {
-        t.position.z += forwardDelta;
-        if (t.position.z > 10) t.position.z -= 280;
+        t.position.z += delta;
+        if (t.position.z > 10) t.position.z -= 360;
       });
 
-      // เลื่อนและตรวจสอบการชนสิ่งกีดขวาง
+      // ตรวจสอบสิ่งกีดขวาง
       for (let i = obstaclePool.length - 1; i >= 0; i--) {
         const obs = obstaclePool[i];
-        obs.position.z += forwardDelta;
+        obs.position.z += delta;
 
-        // ตรวจจับชนในระยะพิกัด Z = -2.5 ถึง 0
-        if (!obs.hit && obs.position.z > -3.0 && obs.position.z < 0) {
-          if (curLane === obs.lane && carSpeed > 5) {
+        // ชนเมื่ออยู่ในเลนเดียวกันและรถเคลื่อนเข้ามาประชิด (Z = -3.5 ถึง 0.5)
+        if (!obs.hit && obs.position.z > -3.5 && obs.position.z < 0.5) {
+          if (curLane === obs.lane) {
             obs.hit = true;
             triggerCrash();
           }
         }
 
-        // ลบสิ่งกีดขวางที่เลยหลังรถไปแล้ว
-        if (obs.position.z > 8) {
+        // ลบสิ่งกีดขวางที่หลุดหลังรถ
+        if (obs.position.z > 10) {
           scene.remove(obs);
           obstaclePool.splice(i, 1);
         }
       }
 
-      // สุ่มเกิดระลอกใหม่ที่ระยะ Z = -180
+      // สุ่มเกิดสิ่งกีดขวางใหม่ที่ระยะ Z = -160
       if (obstaclePool.length < 4 && distanceGate > 300 && Math.random() < 0.02) {
-        spawn3DObstacleWave(-180);
+        spawnWave(-160);
       }
 
-      // 4. ซุ้มประตู Checkpoint เลื่อนเข้ามา
+      // เลื่อนซุ้มประตูเข้ามา
       distanceGate -= (carSpeed * 0.035);
       if (distanceGate < 400) {
         checkpointGate.position.z = -(distanceGate * 0.8);
@@ -605,7 +640,6 @@
   }
 
   function reachCheckpoint() {
-    toggleTimeWarp(true); // เปิด 4D Time-Shift Effect
     const st = stageData[curStage];
     stageTries = 0;
 
@@ -645,7 +679,7 @@
       stars += addStars;
 
       document.getElementById('ai-msg').innerHTML = `
-        <strong style="color:var(--green)">4D Assistant:</strong> พิกัดถูกต้อง! ปลดล็อกมิติเวลาสำเร็จ (+${addScore} คะแนน E1 | ${addStars} ⭐)
+        <strong style="color:var(--green)">Word AI:</strong> คำตอบถูกต้อง! (+${addScore} คะแนน E1 | ${addStars} ⭐)
       `;
 
       updateHUD();
@@ -658,7 +692,7 @@
       updateHUD();
 
       document.getElementById('ai-msg').innerHTML = `
-        <strong style="color:var(--red)">4D Assistant:</strong> มิติเวลาคลาดเคลื่อน! คำใบ้: ${st.hint}
+        <strong style="color:var(--red)">Word AI:</strong> ยังไม่ถูกนะ! คำใบ้: ${st.hint}
       `;
 
       setTimeout(() => {
@@ -668,30 +702,27 @@
   }
 
   function continueVoyage() {
-    toggleTimeWarp(false);
     document.getElementById('terminal').style.display = 'none';
     curStage++;
 
     if (curStage < 12) {
       distanceGate = 1000;
       isArrived = false;
+      isBlocked = false;
       checkpointGate.position.z = -350;
 
-      // ล้างสิ่งกีดขวางรอบเก่า
+      // ล้างสิ่งกีดขวางเดิมและสุ่มใหม่ที่ระยะปลอดภัย
       obstaclePool.forEach(obs => scene.remove(obs));
       obstaclePool = [];
-      spawn3DObstacleWave(-80);
+      spawnWave(-80);
 
-      // เปลี่ยนธีมสีท้องฟ้าและหมอกตามกลุ่มด่าน (Biomes)
-      if (curStage >= 8) {
-        scene.fog.color.setHex(0x180b2b); // Cyber Neon Fog
-      } else if (curStage >= 4) {
-        scene.fog.color.setHex(0xb45309); // Sunset Canyon Fog
-      }
+      // สลับธีมแผนที่ตามด่าน (ด่าน 1-4 = ทุ่งหญ้า, 5-8 = หุบเขาส้ม, 9-12 = ราตรีนีออน)
+      const bIdx = Math.min(2, Math.floor(curStage / 4));
+      applyBiome(bIdx);
 
       updateHUD();
     } else {
-      alert(`🏆 ยินดีด้วย! คุณพิชิตครบทั้ง 12 มิติด่านสำเร็จแล้ว!\nคะแนนรวม E1: ${scoreE1}/120 (${Math.round((scoreE1/120)*100)}%)\nพร้อมทะลุมิติสู่เกม E2 (Word Jump) ต่อไป!`);
+      alert(`🏆 ยินดีด้วย! คุณขับรถพิชิตครบทั้ง 12 Checkpoints สำเร็จแล้ว!\nคะแนนรวม E1: ${scoreE1}/120 (${Math.round((scoreE1/120)*100)}%)\nพร้อมก้าวสู่เกม E2 (Word Jump) ต่อไป!`);
     }
   }
 
