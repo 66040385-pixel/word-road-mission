@@ -194,8 +194,8 @@
 
     <div class="game-grid">
       
-      <!-- การ์ดเกมที่ 1: Word Road (ลิงก์ไปยังไฟล์ word_road.html หรือโฟลเดอร์ word_road) -->
-      <div class="game-card road-theme" onclick="openGame('./word_road.html')">
+      <!-- การ์ดเกมที่ 1: Word Road -->
+      <div class="game-card road-theme" onclick="openGame('word_road')">
         <div class="card-icon">
           <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
         </div>
@@ -207,8 +207,8 @@
         </div>
       </div>
 
-      <!-- การ์ดเกมที่ 2: Word Jump Game (ลิงก์ไปยังไฟล์ wordjumpgame.html หรือโฟลเดอร์ wordjumpgame) -->
-      <div class="game-card jump-theme" onclick="openGame('./wordjumpgame.html')">
+      <!-- การ์ดเกมที่ 2: Word Jump Game -->
+      <div class="game-card jump-theme" onclick="openGame('wordjumpgame')">
         <div class="card-icon">
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.59L16.59 13 18 14.41 12 20.41l-6-6L7.41 13 11 16.59V4h2v12.59z" transform="rotate(180 12 12)"/></svg>
         </div>
@@ -229,9 +229,8 @@
   </div>
 
   <script>
-    function openGame(filePath) {
-      // หากใน GitHub วางไฟล์เป็นโฟลเดอร์ ให้เปลี่ยนเป็น openGame('./word_road/') แทนได้ครับ
-      window.location.assign(filePath);
+    function openGame(fileName) {
+      window.location.assign(fileName);
     }
   </script>
 
