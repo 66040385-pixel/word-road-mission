@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Hunter Cyber Mission - Perfect Edition</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100dvh;
+      min-height: -webkit-fill-available;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%);
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      position: fixed;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.96);
+      border: 2px solid rgba(255, 117, 143, 0.4);
+      border-radius: 28px;
+      padding: clamp(16px, 3.5vw, 24px);
+      max-width: 480px;
+      width: min(90%, 480px);
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 117, 143, 0.2);
+      backdrop-filter: blur(20px);
+      max-height: 88dvh;
+      overflow-y: auto;
+      z-index: 100;
+      position: relative;
+      color: #0f172a;
+    }
+    h1 {
+      color: #e01e37;
+      margin: 0 0 6px 0;
+      font-size: clamp(20px, 5vw, 26px);
+      letter-spacing: 0.5px;
+      font-weight: 900;
+    }
+    h2 {
+      color: #e01e37;
+      font-weight: 800;
+      font-size: clamp(18px, 4.5vw, 22px);
+      margin: 0 0 10px 0;
+    }
+    .btn {
+      background: linear-gradient(135deg, #ff758f 0%, #ff4d6d 100%);
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 18px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      margin: 8px 0;
+      box-shadow: 0 8px 20px rgba(255, 77, 109, 0.35);
+      display: block;
+      transition: all 0.15s ease;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-sweet-green {
+      background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+      transition: all 0.15s ease;
+    }
+    .btn-sweet-green:active { transform: scale(0.97); }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      margin: 5px 0 10px 0;
+      border-radius: 16px;
+      border: 2px solid #ffccd5;
+      background: #fff5f7;
+      color: #e01e37;
+      text-align: center;
+      font-size: 15px;
+      font-weight: bold;
+      outline: none;
+      user-select: auto;
+      -webkit-user-select: auto;
+      transition: all 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: #ff4d6d;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(255, 77, 109, 0.15);
+    }
+    .pin-display {
+      font-size: clamp(32px, 8vw, 42px);
+      letter-spacing: 6px;
+      font-weight: 900;
+      color: #e01e37;
+      background: #ffe4e6;
+      padding: 6px;
+      border-radius: 18px;
+      margin: 8px 0;
+      border: 2.5px dashed #ff758f;
+    }
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+      padding: 12px;
+      border-radius: 18px;
+      width: fit-content;
+      margin: 8px auto;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      border: 1px solid #ffe4e6;
+    }
+    .badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin: 8px 0;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    .badge-player {
+      background: #ffe4e6;
+      border: 1.5px solid #ff758f;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #e01e37;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(255, 117, 143, 0.2);
+    }
+    .badge-kick-btn {
+      background: #e11d48;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+    }
+    .badge-kick-btn:active { transform: scale(0.9); }
+    .hidden { display: none !important; }
+
+    #teacher-auth-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      padding: 16px;
+    }
+    .teacher-auth-card {
+      background: rgba(255, 255, 255, 0.98);
+      border: 2px solid rgba(255, 117, 143, 0.5);
+      border-radius: 24px;
+      padding: 24px 20px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+      color: #0f172a;
+    }
+
+    #view-host-live {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100dvh;
+      background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #090d16 100%);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      padding: max(env(safe-area-inset-top, 12px), 12px) max(env(safe-area-inset-right, 16px), 16px) max(env(safe-area-inset-bottom, 12px), 12px) max(env(safe-area-inset-left, 16px), 16px);
+      overflow: hidden;
+      gap: 10px;
+    }
+    .host-header-card {
+      background: rgba(30, 41, 59, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 12px 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .host-leader-bar {
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.18) 0%, rgba(251, 191, 36, 0.05) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      padding: 10px 18px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+    .host-table-wrapper {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 8px 12px;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.4);
+    }
+    .host-table-wrapper::-webkit-scrollbar { width: 6px; }
+    .host-table-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    #game-wrapper {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100dvh;
+      background: #e0f2fe;
+      overflow: hidden;
+      z-index: 50;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .game-top-bar {
+      position: absolute;
+      top: max(env(safe-area-inset-top, 8px), 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(95%, 480px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+      z-index: 70;
+      pointer-events: none;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 2px solid rgba(255, 117, 143, 0.45);
+      border-radius: 30px;
+      padding: 6px 10px;
+      box-shadow: 0 10px 25px rgba(255, 117, 143, 0.18), 0 4px 10px rgba(0, 0, 0, 0.05);
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    .stat-pill {
+      background: #ffffff;
+      border: 1.5px solid #ffccd5;
+      padding: 5px 8px;
+      border-radius: 16px;
+      font-weight: 800;
+      font-size: clamp(11px, 2.7vw, 13px);
+      color: #0f172a;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .btn-top-quiz {
+      background: linear-gradient(135deg, #ff758f, #ff4d6d);
+      border: 1.5px solid #ffffff;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 16px;
+      font-weight: 900;
+      font-size: clamp(11px, 2.7vw, 13px);
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 77, 109, 0.35);
+      pointer-events: auto;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-music-toggle {
+      background: #ffffff;
+      border: 1.5px solid #bae6fd;
+      border-radius: 16px;
+      padding: 5px 8px;
+      font-size: clamp(12px, 2.8vw, 14px);
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 768px) {
+      .game-top-bar {
+        top: 20px;
+        width: auto;
+        min-width: 650px;
+        padding: 8px 20px;
+        border-radius: 32px;
+        gap: 16px;
+      }
+      .stat-pill {
+        font-size: 15px;
+        padding: 8px 18px;
+        border-radius: 18px;
+      }
+      .btn-top-quiz {
+        font-size: 15px;
+        padding: 8px 22px;
+        border-radius: 18px;
+      }
+      .btn-music-toggle {
+        font-size: 16px;
+        padding: 8px 16px;
+        border-radius: 18px;
+      }
+    }
+
+    .controls-bar {
+      position: absolute;
+      bottom: max(env(safe-area-inset-bottom, 12px), 16px);
+      left: max(env(safe-area-inset-left, 12px), 14px);
+      right: max(env(safe-area-inset-right, 12px), 14px);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      z-index: 80;
+      pointer-events: none;
+    }
+    .touch-dpad-container {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 2.5px solid rgba(255, 255, 255, 0.95);
+      border-radius: 36px;
+      padding: 8px;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.22);
+      display: flex;
+      gap: 10px;
+      pointer-events: auto;
+    }
+    .touch-btn-arrow {
+      width: clamp(64px, 15vw, 76px);
+      height: clamp(64px, 15vw, 76px);
+      border-radius: 24px;
+      background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+      border: 2.5px solid #bae6fd;
+      color: #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(26px, 6vw, 32px);
+      font-weight: 900;
+      box-shadow: 0 5px 0 #7dd3fc, 0 8px 16px rgba(2, 132, 199, 0.18);
+      transition: all 0.08s ease;
+      cursor: pointer;
+      touch-action: none;
+    }
+    .touch-btn-arrow.active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #7dd3fc;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+    .action-pad {
+      pointer-events: auto;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .touch-btn-jump {
+      width: clamp(78px, 18vw, 92px);
+      height: clamp(78px, 18vw, 92px);
+      border-radius: 50%;
+      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+      border: 4px solid #ffffff;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 7px 0 #047857, 0 12px 24px rgba(16, 185, 129, 0.38);
+      transition: all 0.08s ease;
+      cursor: pointer;
+      touch-action: none;
+      font-size: clamp(32px, 7.5vw, 40px);
+      line-height: 1;
+    }
+    .touch-btn-jump.active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #047857;
+      background: #059669;
+    }
+
+    #toast-msg {
+      position: absolute;
+      top: max(env(safe-area-inset-top, 16px), 16px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.94);
+      color: white;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      z-index: 250;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    #toast-msg.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(8px);
+    }
+
+    .cheer-box {
+      background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+      border: 2px dashed #ff758f;
+      border-radius: 18px;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 13px;
+      line-height: 1.4;
+      color: #9f1239;
+      font-weight: bold;
+    }
+
+    .error-review-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 10px;
+      margin: 8px 0;
+      max-height: 120px;
+      overflow-y: auto;
+      text-align: left;
+      font-size: 12px;
+      color: #334155;
+    }
+
+    #quiz-modal, #questionBankModal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 14px;
+    }
+    .quiz-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 440px;
+      border: 2.5px solid #ff758f;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      max-height: 85dvh;
+      overflow-y: auto;
+    }
+    .quiz-option {
+      background: #fff5f7;
+      border: 1.5px solid #ffccd5;
+      color: #e01e37;
+      padding: 10px 14px;
+      border-radius: 14px;
+      width: 100%;
+      margin: 6px 0;
+      cursor: pointer;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .quiz-option:active { background: #ff758f; color: white; border-color: #ff758f; }
+
+    .leaderboard-table, .host-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 4px;
+      margin-top: 4px;
+      text-align: left;
+      font-size: 13px;
+    }
+    .leaderboard-table th {
+      color: #64748b;
+      padding: 8px 6px;
+      border-bottom: 2px solid #e2e8f0;
+      font-size: 12px;
+    }
+    .leaderboard-table td {
+      padding: 8px 6px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .host-table th {
+      color: #94a3b8;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(15, 23, 42, 0.4);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .host-table td {
+      padding: 9px 10px;
+      font-size: 13px;
+      background: rgba(30, 41, 59, 0.45);
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .host-table tr td:first-child {
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+    .host-table tr td:last-child {
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+
+    .qb-modal-card {
+      background: #ffffff;
+      border: 2.5px solid #ff758f;
+      border-radius: 24px;
+      padding: 20px;
+      max-width: 680px;
+      width: 95%;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+      max-height: 86dvh;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      color: #0f172a;
+      overflow: hidden;
+    }
+    .qb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1.5px solid #ffe4e6;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .qb-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+    .qb-tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      border: 1.5px solid #ffccd5;
+      background: #fff5f7;
+      color: #e01e37;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .qb-tab-btn.active {
+      background: #ff4d6d;
+      color: white;
+      border-color: #ff4d6d;
+      box-shadow: 0 3px 10px rgba(255, 77, 109, 0.3);
+    }
+    .qb-body-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .qb-question-card {
+      background: #ffffff;
+      border: 1.5px solid #fecdd3;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .qb-btn-edit {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #2563eb;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .qb-btn-edit:hover { background: #2563eb; color: white; }
+    .qb-btn-delete {
+      background: #fff1f2;
+      border: 1px solid #fda4af;
+      color: #e11d48;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .qb-btn-delete:hover { background: #e11d48; color: white; }
+    .qb-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    @media (max-width: 520px) {
+      .qb-form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script>
+    function switchScreen(id) {
+      ['view-mode', 'view-host', 'view-host-live', 'view-join', 'view-waiting', 'game-wrapper', 'view-result'].forEach(function(v) {
+        var el = document.getElementById(v);
+        if (el) el.classList.add('hidden');
+      });
+      var target = document.getElementById(id);
+      if (target) target.classList.remove('hidden');
+    }
+  </script>
+</head>
+<body>
+
+  <div id="toast-msg">แจ้งเตือน</div>
+
+  <div id="teacher-auth-modal" class="hidden">
+    <div class="teacher-auth-card">
+      <div style="font-size: 38px; margin-bottom: 6px;">👑</div>
+      <h3 style="margin: 0 0 6px 0; font-size: 18px; color: #e01e37; font-weight: 900;">ยืนยันตัวตนผู้สอน</h3>
+      <p style="font-size: 12px; color: #64748b; margin: 0 0 14px 0;">กรุณากรอกรหัสผ่านสำหรับคุณครู (รหัสเริ่มต้น: 1234)</p>
+      
+      <input type="password" id="input-teacher-pwd" placeholder="รหัสผ่านคุณครู..." maxlength="10" style="margin-bottom: 12px; font-size: 16px;">
+      
+      <div style="display: flex; gap: 8px;">
+        <button class="btn" style="background: #94a3b8; margin: 0; padding: 10px;" onclick="closeTeacherModal()">ยกเลิก</button>
+        <button class="btn btn-sweet-green" style="margin: 0; padding: 10px;" onclick="verifyTeacherPassword()">เข้าสู่ระบบ</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-mode" class="container">
+    <h1>HUNTER CYBER MISSION</h1>
+    <p style="color: #64748b; font-size:14px; margin-bottom: 20px;">เกมตอบคำถามชิงความสูง (Word Master)</p>
+    <button class="btn" id="btn-mode-host" onclick="openTeacherModal()">👑 คุณครู / ผู้สอน (Host)</button>
+    <button class="btn" id="btn-mode-join" style="background:#475569;" onclick="switchScreen('view-join')">🎮 นักเรียน / ผู้เรียน (Join)</button>
+  </div>
+
+  <div id="view-host" class="container hidden">
+    <h2>ห้องควบคุมโฮสต์</h2>
+    <p style="margin-bottom:2px; font-size:13px; color:#64748b;">รหัสเข้าห้อง (Room PIN):</p>
+    <div id="host-pin" class="pin-display">------</div>
+    
+    <div class="qr-container">
+      <div id="qrcode"></div>
+      <span style="color:#e01e37; font-size:11px; font-weight:bold; margin-top:4px;">สแกนเพื่อเข้าห้อง</span>
+    </div>
+    
+    <button class="btn" id="btn-copy-link" style="padding:9px; font-size:12px; margin:4px 0 10px 0;">📋 คัดลอกลิงก์ส่งให้นักเรียน</button>
+
+    <div style="text-align: left; margin-top: 6px;">
+      <label style="color:#64748b; font-size:13px; font-weight:bold;">⚡ ค่าพลังงานเริ่มต้น:</label>
+      <select id="select-energy">
+        <option value="3">3 ⚡ (ท้าทายสุดๆ)</option>
+        <option value="5" selected>5 ⚡ (มาตรฐาน)</option>
+        <option value="8">8 ⚡ (ปานกลาง)</option>
+        <option value="10">10 ⚡ (ง่าย)</option>
+        <option value="15">15 ⚡ (สบายๆ)</option>
+        <option value="20">20 ⚡ (กระโดดรัว)</option>
+      </select>
+
+      <label style="color:#64748b; font-size:13px; font-weight:bold;">⏱️ ระยะเวลาแข่งขัน:</label>
+      <select id="select-duration">
+        <option value="1">1 นาที (ทดสอบ)</option>
+        <option value="3" selected>3 นาที</option>
+        <option value="5">5 นาที</option>
+        <option value="10">10 นาที</option>
+      </select>
+    </div>
+
+    <p style="margin: 10px 0 4px 0; font-size:13px; color:#64748b;">ผู้เล่นในห้อง (<span id="player-count">0</span> คน):</p>
+    <div id="host-players" class="badge-list"></div>
+    <button id="btn-start" class="btn btn-sweet-green" disabled>🚀 เริ่มการแข่งขัน</button>
+  </div>
+
+  <div id="view-host-live" class="hidden">
+    <div class="host-header-card">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button onclick="location.reload()" style="padding: 7px 12px; background: #334155; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 11px; cursor: pointer;">
+          🔙 ออกจากห้อง
+        </button>
+        <div style="text-align: left;">
+          <h2 style="font-size: 16px; font-weight: 900; color: #fb7185; margin: 0; line-height: 1.2;">👑 HOST DASHBOARD</h2>
+          <p style="font-size: 11px; color: #94a3b8; margin: 0;">ห้อง: <span id="live-room-pin" style="font-weight: 900; color: #fda4af;">------</span> | ออนไลน์: <span id="live-player-count" style="font-weight: 900; color: #34d399;">0</span> คน</p>
+        </div>
+      </div>
+      
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <button onclick="openQuestionBankModal()" style="padding: 7px 12px; background: #4f46e5; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 11px; cursor: pointer; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);">
+          📝 จัดการคลังคำถาม (<span id="total-q-count">20</span>)
+        </button>
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 12px; font-family: monospace; font-size: 17px; color: #fde047; font-weight: 900;">
+          ⏱️ <span id="host-timer-text">03:00</span>
+        </div>
+        <button onclick="exportDataCSV()" class="btn-sweet-green" style="width: auto; padding: 7px 14px; margin: 0; font-size: 11px;">
+          📥 Excel (.csv)
+        </button>
+      </div>
+    </div>
+
+    <div class="host-leader-bar">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 26px;">👑</span>
+        <div style="text-align: left;">
+          <div style="font-size: 10px; color: #fcd34d; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">ผู้นำอันดับ 1</div>
+          <div id="leader-name" style="font-size: 16px; font-weight: 900; color: white;">รอเริ่มกระโดด...</div>
+        </div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size: 10px; color: #fcd34d; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">ระยะทางนำ</div>
+        <div id="leader-meters" style="font-size: 20px; font-weight: 900; color: #facc15; font-family: monospace;">0 m</div>
+      </div>
+    </div>
+
+    <div class="host-table-wrapper">
+      <table class="host-table">
+        <thead>
+          <tr>
+            <th style="width: 70px; text-align: center;">อันดับ</th>
+            <th>ชื่อผู้เรียน</th>
+            <th style="text-align: center;">ความสูง (เมตร)</th>
+            <th style="text-align: center;">ถูก</th>
+            <th style="text-align: center;">ผิด</th>
+            <th style="text-align: center;">ความแม่นยำ</th>
+            <th style="text-align: center;">พลังงาน</th>
+          </tr>
+        </thead>
+        <tbody id="host-live-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="questionBankModal" class="hidden">
+    <div class="qb-modal-card">
+      <div class="qb-header">
+        <div>
+          <h2 style="font-size: 16px; font-weight: 900; color: #e01e37; margin: 0;">
+            📝 คลังข้อสอบ & จัดการคำถาม
+          </h2>
+          <p style="font-size: 11px; color: #64748b; margin: 2px 0 0 0;">มีข้อสอบทั้งหมด <b id="bank-q-count" style="color: #e01e37;">20</b> ข้อ</p>
+        </div>
+        <button onclick="closeQuestionBankModal()" style="padding: 5px 12px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px; font-weight: bold; font-size: 11px; cursor: pointer;">✕ ปิด</button>
+      </div>
+
+      <div class="qb-tabs">
+        <button id="qb-tab-view" class="qb-tab-btn active" onclick="switchQbTab('view')">📋 รายการข้อสอบ</button>
+        <button id="qb-tab-add" class="qb-tab-btn" onclick="prepareAddQuestion()">➕ เพิ่ม / แก้ไขข้อสอบ</button>
+      </div>
+
+      <div class="qb-body-scroll">
+        <div id="qb-panel-view">
+          <div id="questionBankList"></div>
+        </div>
+
+        <div id="qb-panel-add" class="hidden">
+          <div style="background: #fff5f7; border: 1.5px solid #ffccd5; border-radius: 18px; padding: 14px;">
+            <input type="hidden" id="edit-q-id" value="">
+            <label id="form-q-title" style="font-size: 12px; font-weight: bold; color: #e01e37; display: block; margin-bottom: 4px;">โจทย์คำถาม:</label>
+            <input id="new-q-text" type="text" placeholder="พิมพ์โจทย์คำถาม..." style="margin-bottom: 10px; text-align: left; padding: 10px;">
+            
+            <label style="font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">ตัวเลือก 4 ข้อ:</label>
+            <div class="qb-form-grid">
+              <input id="new-q-a1" type="text" placeholder="ตัวเลือก A" style="text-align: left; padding: 8px; margin-bottom: 6px;">
+              <input id="new-q-a2" type="text" placeholder="ตัวเลือก B" style="text-align: left; padding: 8px; margin-bottom: 6px;">
+              <input id="new-q-a3" type="text" placeholder="ตัวเลือก C" style="text-align: left; padding: 8px; margin-bottom: 6px;">
+              <input id="new-q-a4" type="text" placeholder="ตัวเลือก D" style="text-align: left; padding: 8px; margin-bottom: 6px;">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 12px; font-weight: bold; color: #0f172a;">เฉลย:</span>
+                <select id="new-q-correct" style="width: auto; margin: 0; padding: 6px 10px; font-size: 13px;">
+                  <option value="0">A</option>
+                  <option value="1">B</option>
+                  <option value="2">C</option>
+                  <option value="3">D</option>
+                </select>
+              </div>
+              <button onclick="saveQuestionItem()" class="btn-sweet-green" style="width: auto; padding: 8px 18px; margin: 0; font-size: 12px;" id="btn-save-question">
+                บันทึกข้อสอบ ➕
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-join" class="container hidden">
+    <h2>เข้าสู่สมรภูมิขนมหวาน</h2>
+    <input type="text" id="input-pin" placeholder="รหัสห้อง 6 หลัก" maxlength="6" inputmode="numeric">
+    <input type="text" id="input-name" placeholder="ชื่อเล่นของคุณ" maxlength="12">
+    <button class="btn" id="btn-do-join">เข้าสู่ห้อง</button>
+    <button class="btn" style="background:#64748b; padding:10px;" onclick="switchScreen('view-mode')">ย้อนกลับ</button>
+  </div>
+
+  <div id="view-waiting" class="container hidden">
+    <h2>ห้องเตรียมพร้อม</h2>
+    <p>รหัสห้อง: <b id="wait-pin" style="color:#e01e37;"></b></p>
+    <p>ผู้เล่น: <b id="wait-name" style="color:#10b981;"></b></p>
+    <p style="color: #f59e0b; margin-top:16px; font-size:14px; font-weight:bold;">⏳ รอสัญญาณปล่อยตัวจากผู้สอน...</p>
+  </div>
+
+  <div id="game-wrapper" class="hidden">
+    <canvas id="gameCanvas"></canvas>
+
+    <div class="game-top-bar">
+      <div class="stat-pill">⚡ <span id="ui-energy" style="color:#d97706;">5</span></div>
+      <button class="btn-top-quiz" id="btn-open-quiz">⚡ คำถาม (+5)</button>
+      <div class="stat-pill">⏱️ <span id="ui-timer">00:00</span></div>
+      <div class="stat-pill">🎯 <span id="ui-height" style="color:#0284c7;">0</span>m</div>
+      <button class="btn-music-toggle" id="btn-toggle-music">🔊</button>
+    </div>
+
+    <div class="controls-bar">
+      <div class="touch-dpad-container">
+        <div class="touch-btn-arrow" id="btn-left">◀</div>
+        <div class="touch-btn-arrow" id="btn-right">▶</div>
+      </div>
+      <div class="action-pad">
+        <div class="touch-btn-jump" id="btn-jump">▲</div>
+      </div>
+    </div>
+
+    <div id="quiz-modal" class="hidden">
+      <div class="quiz-card">
+        <h3 id="quiz-title" style="margin:0 0 10px 0; font-size:16px; color:#e01e37;">⚡ ตอบคำถาม (+5 ⚡)</h3>
+        <p id="quiz-q-text" style="font-weight:bold; font-size:13px; margin:10px 0; color:#0f172a; line-height:1.4; text-align: left;"></p>
+        <div id="quiz-options-list"></div>
+        <button class="btn hidden" id="btn-close-quiz" style="background:#64748b; margin-top:8px; padding:8px;">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-result" class="container hidden">
+    <h2 style="color:#d97706; margin-bottom:4px;">🏁 หมดเวลาการแข่งขัน!</h2>
+    <p style="color:#64748b; font-size:12px; margin:0 0 6px 0;">ตารางสรุปคะแนนและสถิติการเรียนรู้</p>
+    
+    <div id="cheer-message" class="cheer-box">
+      🌟 ยอดเยี่ยมมากทุกคน! ไม่ว่าจะอยู่อันดับไหน ความพยายามในการเรียนรู้และฝึกฝนในวันนี้คือพัฒนาการที่ดีเยี่ยม ก้าวต่อไปนะ! 💖
+    </div>
+
+    <div style="font-weight: bold; font-size: 12px; color: #1e293b; text-align: left; margin-top: 8px;">📝 รายการข้อสอบที่ควรทบทวน:</div>
+    <div id="student-error-review" class="error-review-box">
+      กำลังประมวลผลสถิติ...
+    </div>
+
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          <th>อันดับ/ผู้เล่น</th>
+          <th style="text-align:center;">ความสูง</th>
+          <th style="text-align:center;">ถูก (⚡)</th>
+          <th style="text-align:center;">ผิด</th>
+        </tr>
+      </thead>
+      <tbody id="result-leaderboard-body"></tbody>
+    </table>
+
+    <button class="btn btn-excel hidden" id="btn-export-excel">📥 บันทึกคะแนนลงใน Excel (.csv)</button>
+    <button class="btn" id="btn-play-again" style="margin-top:8px; background:#475569;">🔄 เริ่มเกมใหม่</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import { getDatabase, ref, set, update, onValue, push, remove, get } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA9RMnSd0hFU1g3dySplJI1wEkKZxERsc0",
+      authDomain: "hunter-cyber-mission.firebaseapp.com",
+      databaseURL: "https://hunter-cyber-mission-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "hunter-cyber-mission",
+      storageBucket: "hunter-cyber-mission.firebasestorage.app",
+      messagingSenderId: "1039291880413",
+      appId: "1:1039291880413:web:fe7815591317e09ad91c34",
+      measurementId: "G-HC5E16JK92"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const TEACHER_PASSWORD = "1234";
+
+    window.openTeacherModal = function() {
+      document.getElementById('input-teacher-pwd').value = "";
+      document.getElementById('teacher-auth-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('input-teacher-pwd').focus(), 150);
+    };
+
+    window.closeTeacherModal = function() {
+      document.getElementById('teacher-auth-modal').classList.add('hidden');
+    };
+
+    window.verifyTeacherPassword = function() {
+      const pwd = document.getElementById('input-teacher-pwd').value;
+      if (pwd === TEACHER_PASSWORD) {
+        closeTeacherModal();
+        window.onHostClick();
+      } else {
+        alert("❌ รหัสผ่านไม่ถูกต้อง เฉพาะคุณครูเท่านั้นครับ");
+        document.getElementById('input-teacher-pwd').value = "";
+        document.getElementById('input-teacher-pwd').focus();
+      }
+    };
+
+    document.getElementById('input-teacher-pwd').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') verifyTeacherPassword();
+    });
+
+    const SWEET_PALETTES = [
+      { main: '#ff758f', dark: '#e01e37', blush: '#ff4d6d' },
+      { main: '#38bdf8', dark: '#0284c7', blush: '#7dd3fc' },
+      { main: '#34d399', dark: '#059669', blush: '#6ee7b7' },
+      { main: '#fbbf24', dark: '#d97706', blush: '#fcd34d' },
+      { main: '#c084fc', dark: '#7c3aed', blush: '#d8b4fe' },
+      { main: '#f472b6', dark: '#db2777', blush: '#f9a8d4' },
+      { main: '#2dd4bf', dark: '#0d9488', blush: '#5eead4' },
+      { main: '#a3e635', dark: '#65a30d', blush: '#bef264' }
+    ];
+
+    let quizData = [
+      { id: 1, q: "ปุ่มลัดใดใช้สำหรับ 'ปิดหน้าต่างเอกสารปัจจุบัน' ในโปรแกรม Microsoft Word?", c: ["Ctrl + W", "Ctrl + S", "Ctrl + N", "Ctrl + O"], a: 0 },
+      { id: 2, q: "หากต้องการขึ้น 'หน้าใหม่' (Page Break) ทันทีโดยไม่ต้องกด Enter หลายครั้ง ควรใช้ปุ่มลัดใด?", c: ["Shift + Enter", "Ctrl + Enter", "Alt + Enter", "Tab + Enter"], a: 1 },
+      { id: 3, q: "เครื่องมือ 'Text Highlight Color' (รูปปากกาเน้นข้อความ) มีประโยชน์อย่างไร?", c: ["เปลี่ยนสีของตัวอักษรทั้งหมด", "ไฮไลต์สีพื้นหลังของข้อความที่เลือกเพื่อเน้นจุดสำคัญ", "ลบข้อความที่เลือกทิ้ง", "ขีดเส้นใต้ข้อความแบบหนา"], a: 1 },
+      { id: 4, q: "หากต้องการแทรก 'รูปร่างอัตโนมัติ' เช่น สี่เหลี่ยม วงกลม หรือลูกศร ควรเลือกคำสั่งใด?", c: ["Insert → Shapes", "Layout → Margins", "Home → Paragraph", "View → Zoom"], a: 0 },
+      { id: 5, q: "หากต้องการจัดข้อความให้ 'ชิดขวา' หน้ากระดาษ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + L", "Ctrl + E", "Ctrl + R", "Ctrl + J"], a: 2 },
+      { id: 6, q: "เครื่องมือ 'WordArt' ในแท็บ Insert มีหน้าที่หลักคืออะไร?", c: ["ใส่ตารางคำนวณ", "สร้างข้อความศิลป์ที่มีรูปแบบสวยงามและมีมิติ", "วาดภาพลายเส้นแบบอิสระ", "ใส่กรอบหน้ากระดาษ"], a: 1 },
+      { id: 7, q: "หากต้องการตรวจสอบการสะกดคำและไวยากรณ์ (Spelling & Grammar) ในเอกสาร ควรไปที่แท็บใด?", c: ["Home", "Insert", "Layout", "Review"], a: 3 },
+      { id: 8, q: "เครื่องมือ 'Page Borders' (เส้นขอบหน้ากระดาษ) อยู่ในแท็บใดของ Microsoft Word?", c: ["Home", "Insert", "Design", "View"], a: 2 },
+      { id: 9, q: "หากต้องการปรับ 'การตัดข้อความรอบรูปภาพ' (Wrap Text) ต้องคลิกที่รูปภาพแล้วเลือกแท็บใด?", c: ["Picture Format", "Table Design", "References", "Mailings"], a: 0 },
+      { id: 10, q: "นามสกุลไฟล์เอกสารมาตรฐานของโปรแกรม Microsoft Word ในปัจจุบันคืออะไร?", c: [".xlsx", ".pptx", ".docx", ".html"], a: 2 },
+      { id: 11, q: "หากต้องการเปิดเอกสาร Word ที่มีอยู่แล้ว ควรใช้คำสั่งใด?", c: ["New", "Open", "Close", "Print"], a: 1 },
+      { id: 12, q: "หากต้องการเปลี่ยนขนาดตัวอักษรใน Microsoft Word ควรใช้เครื่องมือใด?", c: ["Font Size", "Font Color", "Paragraph", "Styles"], a: 0 },
+      { id: 13, q: "ปุ่มลัด Ctrl + C มีหน้าที่อะไร?", c: ["วางข้อความ", "ตัดข้อความ", "คัดลอกข้อความ", "บันทึกเอกสาร"], a: 2 },
+      { id: 14, q: "หากต้องการค้นหาคำหรือข้อความบางคำภายในเอกสารอย่างรวดเร็ว ควรใช้ปุ่มลัดใด?", c: ["Ctrl + F", "Ctrl + H", "Ctrl + E", "Ctrl + K"], a: 0 },
+      { id: 15, q: "เครื่องมือ Bullets ใน Microsoft Word ใช้สำหรับทำอะไร?", c: ["สร้างรายการแบบหัวข้อย่อย", "เปลี่ยนสีตัวอักษร", "แทรกรูปภาพ", "เปลี่ยนขนาดกระดาษ"], a: 0 },
+      { id: 16, q: "หากต้องการทำให้ข้อความมีเส้นขีดใต้ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + B", "Ctrl + I", "Ctrl + U", "Ctrl + P"], a: 2 },
+      { id: 17, q: "หากต้องการตั้งระยะขอบกระดาษของเอกสาร ควรเลือกคำสั่งใด?", c: ["Layout → Margins", "Insert → Table", "Home → Font", "Review → Language"], a: 0 },
+      { id: 18, q: "หากต้องการพิมพ์เอกสารออกทางเครื่องพิมพ์ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + S", "Ctrl + P", "Ctrl + C", "Ctrl + F"], a: 1 },
+      { id: 19, q: "หากต้องการแทนที่คำหนึ่งด้วยอีกคำหนึ่งทั่วทั้งเอกสารอย่างรวดเร็ว ควรใช้คำสั่งใด?", c: ["Find", "Replace", "Zoom", "Copy"], a: 1 },
+      { id: 20, q: "หากต้องการใส่หมายเลขหน้าให้กับเอกสาร ควรเลือกคำสั่งใด?", c: ["Insert → Page Number", "Home → Numbering", "Layout → Margins", "Review → Track Changes"], a: 0 }
+    ];
+
+    quizData.sort((a, b) => a.id - b.id);
+
+    let currentPin = null;
+    let myPlayerId = null;
+    let playerName = "Agent";
+    let isHost = false;
+    let energy = 5;
+    let currentMeters = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let currentQ = 0;
+    let totalAnsweredCount = 0;
+    let isGameOver = false;
+    let timerInterval = null;
+    let allPlayersData = {};
+    let isTrapped = false;
+    let trapImmunity = 0;
+    let myStyleIndex = 0;
+    let releaseFromTrapCallback = null;
+
+    let myQuizAnswers = {};
+    quizData.forEach(q => {
+      myQuizAnswers[q.id] = { firstResult: null };
+    });
+
+    const smoothPositions = {};
+
+    let walkCycle = 0;
+    let blinkTimer = 0;
+    let isBlinking = false;
+    let facing = 'right';
+
+    let audioCtx = null;
+    let isMusicPlaying = false;
+    let musicInterval = null;
+
+    function initMusic() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playTone(freq, duration, type = 'square', gainVal = 0.05) {
+      if (!audioCtx || !isMusicPlaying) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    const melody = [
+      { f: 261.63, d: 0.2 }, { f: 329.63, d: 0.2 }, { f: 392.00, d: 0.2 }, { f: 523.25, d: 0.3 },
+      { f: 392.00, d: 0.2 }, { f: 440.00, d: 0.2 }, { f: 523.25, d: 0.4 },
+      { f: 349.23, d: 0.2 }, { f: 440.00, d: 0.2 }, { f: 523.25, d: 0.2 }, { f: 587.33, d: 0.3 },
+      { f: 523.25, d: 0.2 }, { f: 392.00, d: 0.4 }
+    ];
+    let noteIdx = 0;
+
+    function startBackgroundMusic() {
+      initMusic();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      isMusicPlaying = true;
+      document.getElementById('btn-toggle-music').innerText = "🔊";
+      if (musicInterval) clearInterval(musicInterval);
+      musicInterval = setInterval(() => {
+        if (!isMusicPlaying) return;
+        const note = melody[noteIdx % melody.length];
+        playTone(note.f, note.d, 'triangle', 0.06);
+        if (noteIdx % 2 === 0) playTone(note.f / 2, 0.15, 'square', 0.03);
+        noteIdx++;
+      }, 230);
+    }
+
+    document.getElementById('btn-toggle-music').onclick = () => {
+      initMusic();
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      isMusicPlaying = !isMusicPlaying;
+      document.getElementById('btn-toggle-music').innerText = isMusicPlaying ? "🔊" : "🔇";
+    };
+
+    function showToast(text) {
+      const el = document.getElementById('toast-msg');
+      el.innerText = text;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2000);
+    }
+
+    const clouds = [
+      { x: 50,  y: 100, scale: 0.9, speed: 0.3 },
+      { x: 220, y: 200, scale: 1.2, speed: 0.4 },
+      { x: 120, y: 400, scale: 0.8, speed: 0.25 },
+      { x: 300, y: 550, scale: 1.0, speed: 0.35 }
+    ];
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    window.openQuestionBankModal = function() {
+      switchQbTab('view');
+      renderQuestionBankList();
+      document.getElementById('questionBankModal').classList.remove('hidden');
+    };
+
+    window.closeQuestionBankModal = function() {
+      document.getElementById('questionBankModal').classList.add('hidden');
+    };
+
+    window.switchQbTab = function(tab) {
+      const tabView = document.getElementById('qb-tab-view');
+      const tabAdd = document.getElementById('qb-tab-add');
+      const panelView = document.getElementById('qb-panel-view');
+      const panelAdd = document.getElementById('qb-panel-add');
+
+      if (tab === 'view') {
+        tabView.classList.add('active');
+        tabAdd.classList.remove('active');
+        panelView.classList.remove('hidden');
+        panelAdd.classList.add('hidden');
+      } else {
+        tabAdd.classList.add('active');
+        tabView.classList.remove('active');
+        panelAdd.classList.remove('hidden');
+        panelView.classList.add('hidden');
+      }
+    };
+
+    window.prepareAddQuestion = function() {
+      document.getElementById('edit-q-id').value = "";
+      document.getElementById('form-q-title').innerText = "โจทย์คำถามใหม่:";
+      document.getElementById('btn-save-question').innerText = "บันทึกข้อสอบ ➕";
+      document.getElementById('new-q-text').value = "";
+      document.getElementById('new-q-a1').value = "";
+      document.getElementById('new-q-a2').value = "";
+      document.getElementById('new-q-a3').value = "";
+      document.getElementById('new-q-a4').value = "";
+      document.getElementById('new-q-correct').value = "0";
+      switchQbTab('add');
+    };
+
+    window.editQuestion = function(id) {
+      const item = quizData.find(q => q.id === id);
+      if (!item) return;
+
+      document.getElementById('edit-q-id').value = item.id;
+      document.getElementById('form-q-title').innerText = `แก้ไขโจทย์คำถาม (ข้อ ID: ${item.id}):`;
+      document.getElementById('btn-save-question').innerText = "อัปเดตข้อสอบ 💾";
+
+      document.getElementById('new-q-text').value = item.q;
+      document.getElementById('new-q-a1').value = item.c[0] || "";
+      document.getElementById('new-q-a2').value = item.c[1] || "";
+      document.getElementById('new-q-a3').value = item.c[2] || "";
+      document.getElementById('new-q-a4').value = item.c[3] || "";
+      document.getElementById('new-q-correct').value = item.a;
+
+      switchQbTab('add');
+    };
+
+    window.saveQuestionItem = function() {
+      const editId = document.getElementById('edit-q-id').value;
+      const qText = document.getElementById('new-q-text').value.trim();
+      const a1 = document.getElementById('new-q-a1').value.trim();
+      const a2 = document.getElementById('new-q-a2').value.trim();
+      const a3 = document.getElementById('new-q-a3').value.trim();
+      const a4 = document.getElementById('new-q-a4').value.trim();
+      const correctIdx = parseInt(document.getElementById('new-q-correct').value);
+
+      if (!qText || !a1 || !a2 || !a3 || !a4) {
+        return alert('กรุณากรอกโจทย์และตัวเลือกให้ครบทั้ง 4 ข้อครับ');
+      }
+
+      if (editId) {
+        const idNum = parseInt(editId);
+        const itemIdx = quizData.findIndex(q => q.id === idNum);
+        if (itemIdx !== -1) {
+          quizData[itemIdx].q = qText;
+          quizData[itemIdx].c = [a1, a2, a3, a4];
+          quizData[itemIdx].a = correctIdx;
+          showToast('💾 อัปเดตข้อสอบเรียบร้อย!');
+        }
+      } else {
+        const newId = quizData.length > 0 ? Math.max(...quizData.map(q => q.id)) + 1 : 1;
+        quizData.push({
+          id: newId,
+          q: qText,
+          c: [a1, a2, a3, a4],
+          a: correctIdx
+        });
+        myQuizAnswers[newId] = { firstResult: null };
+        showToast('➕ บันทึกข้อสอบใหม่สำเร็จ!');
+      }
+
+      renderQuestionBankList();
+      switchQbTab('view');
+    };
+
+    window.renderQuestionBankList = function() {
+      const listEl = document.getElementById('questionBankList');
+      document.getElementById('total-q-count').innerText = quizData.length;
+      document.getElementById('bank-q-count').innerText = quizData.length;
+      listEl.innerHTML = "";
+
+      quizData.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = "qb-question-card";
+        div.innerHTML = `
+          <div style="flex: 1;">
+            <div style="font-weight: 800; font-size: 12px; color: #0f172a; line-height: 1.4;">
+              ${index + 1}. ${item.q}
+            </div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.4;">
+              ${item.c.map((c, i) => `
+                <div style="margin-bottom: 2px;">
+                  <span style="${i === item.a ? 'color: #059669; font-weight: 800; background: #ecfdf5; padding: 1px 6px; border-radius: 6px;' : ''}">
+                    (${String.fromCharCode(65+i)}) ${c} ${i === item.a ? '✓' : ''}
+                  </span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <button onclick="editQuestion(${item.id})" class="qb-btn-edit">แก้ไข</button>
+            <button onclick="deleteQuestion(${item.id})" class="qb-btn-delete">ลบ</button>
+          </div>
+        `;
+        listEl.appendChild(div);
+      });
+    };
+
+    window.deleteQuestion = function(id) {
+      if (quizData.length <= 3) {
+        return alert('ต้องมีข้อสอบอย่างน้อย 3 ข้อครับ');
+      }
+      quizData = quizData.filter(q => q.id !== id);
+      renderQuestionBankList();
+      showToast('🗑️ ลบคำถามเรียบร้อย');
+    };
+
+    window.kickPlayer = function(pid) {
+      if (!currentPin || !isHost) return;
+      remove(ref(db, `rooms/${currentPin}/players/${pid}`));
+      showToast('เตะผู้เล่นออกจากห้องแล้ว');
+    };
+
+    window.onHostClick = function() {
+      isHost = true;
+      switchScreen('view-host');
+      currentPin = Math.floor(100000 + Math.random() * 900000).toString();
+      document.getElementById('host-pin').innerText = currentPin;
+
+      const joinUrl = window.location.origin + window.location.pathname + '?pin=' + currentPin;
+      document.getElementById('qrcode').innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: joinUrl,
+        width: 120,
+        height: 120
+      });
+
+      document.getElementById('btn-copy-link').onclick = () => {
+        navigator.clipboard.writeText(joinUrl);
+        showToast('📋 คัดลอกลิงก์เรียบร้อย');
+      };
+
+      set(ref(db, `rooms/${currentPin}`), { status: 'waiting' });
+
+      onValue(ref(db, `rooms/${currentPin}/players`), (snap) => {
+        allPlayersData = snap.val() || {};
+        const keys = Object.keys(allPlayersData);
+        document.getElementById('live-player-count').innerText = keys.length;
+        document.getElementById('player-count').innerText = keys.length;
+        
+        const list = document.getElementById('host-players');
+        list.innerHTML = "";
+        keys.forEach(k => {
+          const b = document.createElement('div');
+          b.className = 'badge-player';
+          b.innerHTML = `<span>${allPlayersData[k].name}</span><button class="badge-kick-btn" onclick="kickPlayer('${k}')" title="ลบออกจากห้อง">✕</button>`;
+          list.appendChild(b);
+        });
+        document.getElementById('btn-start').disabled = keys.length === 0;
+        renderHostLiveTable();
+      });
+
+      onValue(ref(db, `rooms/${currentPin}/status`), (snap) => {
+        const currentStatus = snap.val();
+        if (currentStatus === 'ended') {
+          showFinalLeaderboard();
+        } else if (currentStatus === 'waiting' && !isHost) {
+          isGameOver = false;
+          currentMeters = 0;
+          correctCount = 0;
+          wrongCount = 0;
+          currentQ = 0;
+          totalAnsweredCount = 0;
+          switchScreen('view-waiting');
+        }
+      });
+    };
+
+    document.getElementById('btn-start').onclick = async () => {
+      const minutes = parseInt(document.getElementById('select-duration').value) || 3;
+      const initialEnergy = parseInt(document.getElementById('select-energy').value) || 5;
+      const endTime = Date.now() + (minutes * 60 * 1000);
+
+      quizData.sort((a, b) => a.id - b.id);
+
+      const playerUpdates = {};
+      Object.keys(allPlayersData).forEach(pid => {
+        playerUpdates[`players/${pid}/height`] = 0;
+        playerUpdates[`players/${pid}/correct`] = 0;
+        playerUpdates[`players/${pid}/wrong`] = 0;
+      });
+
+      await update(ref(db, `rooms/${currentPin}`), {
+        status: 'playing',
+        endTime: endTime,
+        initialEnergy: initialEnergy,
+        ...playerUpdates
+      });
+
+      document.getElementById('live-room-pin').innerText = currentPin;
+      switchScreen('view-host-live');
+
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        const remainSec = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+        const formatted = formatTime(remainSec);
+        document.getElementById('host-timer-text').innerText = formatted;
+        
+        if (currentPin) {
+          update(ref(db, `rooms/${currentPin}`), { timerText: formatted });
+        }
+
+        if (remainSec <= 0) {
+          clearInterval(timerInterval);
+          update(ref(db, `rooms/${currentPin}`), { status: 'ended' });
+        }
+      }, 500);
+    };
+
+    document.getElementById('btn-do-join').onclick = async () => {
+      isHost = false;
+      const pin = document.getElementById('input-pin').value.trim();
+      const name = document.getElementById('input-name').value.trim();
+      if (!pin || !name) return alert('กรุณากรอก PIN และชื่อ');
+
+      const roomSnap = await get(ref(db, `rooms/${pin}`));
+      const room = roomSnap.val();
+      if (!room) return alert('ไม่พบห้องนี้');
+
+      if (room.status !== 'waiting') {
+        return alert('⚠️ การแข่งขันเริ่มต้นไปแล้วหรือสิ้นสุดแล้ว ไม่สามารถเข้าร่วมได้ในขณะนี้');
+      }
+
+      const existingPlayers = room.players || {};
+      const isNameTaken = Object.values(existingPlayers).some(p => p.name && p.name.trim().toLowerCase() === name.toLowerCase());
+      if (isNameTaken) {
+        return alert('⚠️ ชื่อนี้มีผู้เล่นคนอื่นใช้ในห้องแล้ว กรุณาตั้งชื่อใหม่');
+      }
+
+      playerName = name;
+      myStyleIndex = Math.floor(Math.random() * SWEET_PALETTES.length);
+
+      onValue(ref(db, `rooms/${pin}`), (snap) => {
+        const liveRoom = snap.val();
+        if (!liveRoom) return;
+
+        if (myPlayerId && liveRoom.players && !liveRoom.players[myPlayerId]) {
+          alert('คุณถูกผู้สอนนำออกจากห้อง');
+          location.reload();
+          return;
+        }
+
+        if (!myPlayerId) {
+          currentPin = pin;
+          const pRef = push(ref(db, `rooms/${pin}/players`));
+          myPlayerId = pRef.key;
+          set(pRef, {
+            name: playerName,
+            height: 0,
+            x: 200,
+            y: 400,
+            facing: 'right',
+            styleIndex: myStyleIndex,
+            correct: 0,
+            wrong: 0,
+            quizStats: myQuizAnswers
+          });
+          document.getElementById('wait-pin').innerText = pin;
+          document.getElementById('wait-name').innerText = name;
+          switchScreen('view-waiting');
+
+          onValue(ref(db, `rooms/${pin}/players`), (pSnap) => {
+            allPlayersData = pSnap.val() || {};
+          });
+        }
+
+        if (liveRoom.status === 'playing' && !isGameOver && document.getElementById('game-wrapper').classList.contains('hidden')) {
+          energy = liveRoom.initialEnergy !== undefined ? liveRoom.initialEnergy : 5;
+          document.getElementById('ui-energy').innerText = energy;
+
+          switchScreen('game-wrapper');
+          initSweetPlatformer();
+          startPlayerTimer(liveRoom.endTime);
+          startBackgroundMusic();
+        }
+
+        if (liveRoom.status === 'ended' && !isGameOver) {
+          endGame();
+        }
+
+        if (liveRoom.status === 'waiting' && isGameOver) {
+          isGameOver = false;
+          currentMeters = 0;
+          correctCount = 0;
+          wrongCount = 0;
+          currentQ = 0;
+          totalAnsweredCount = 0;
+          switchScreen('view-waiting');
+        }
+      });
+    };
+
+    document.getElementById('btn-export-excel').onclick = exportDataCSV;
+
+    function exportDataCSV() {
+      const sorted = Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0));
+
+      if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
+
+      let csvContent = "\uFEFF";
+      let header = "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูกรวม (ข้อ),ตอบผิดรวม (ข้อ),ความแม่นยำ (%)";
+      
+      const fixedQuizList = [...quizData].sort((a, b) => a.id - b.id);
+      fixedQuizList.forEach((q, idx) => {
+        header += `,ข้อ ${idx + 1}`;
+      });
+      csvContent += header + "\n";
+
+      sorted.forEach((p, idx) => {
+        const correct = p.correct || 0;
+        const wrong = p.wrong || 0;
+        const total = correct + wrong;
+        const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
+        const safeName = `"${(p.name || 'Agent').replace(/"/g, '""')}"`;
+        
+        let row = `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${accuracy}%`;
+
+        const pStats = p.quizStats || {};
+        fixedQuizList.forEach(q => {
+          const qStat = pStats[q.id] || { firstResult: null };
+          let resText = qStat.firstResult || "ยังไม่ได้ทำ";
+          row += `,"${resText}"`;
+        });
+        csvContent += row + "\n";
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `คะแนนเกม_ผลรอบแรก_${currentPin || 'SweetWord'}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('btn-open-quiz').onclick = () => triggerQuizModal(false);
+    document.getElementById('btn-close-quiz').onclick = () => {
+      if (energy > 0 && !isTrapped) document.getElementById('quiz-modal').classList.add('hidden');
+    };
+
+    document.getElementById('btn-play-again').onclick = async () => {
+      totalAnsweredCount = 0;
+      if (isHost && currentPin) {
+        await update(ref(db, `rooms/${currentPin}`), {
+          status: 'waiting'
+        });
+        switchScreen('view-host');
+      } else {
+        switchScreen('view-waiting');
+      }
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const pinParam = urlParams.get('pin');
+    if (pinParam) {
+      document.getElementById('input-pin').value = pinParam;
+      switchScreen('view-join');
+    }
+
+    function renderHostLiveTable() {
+      const tbody = document.getElementById('host-live-table');
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      const sorted = Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0));
+
+      if (sorted.length > 0) {
+        document.getElementById('leader-name').innerText = sorted[0].name || 'Agent';
+        document.getElementById('leader-meters').innerText = (sorted[0].height || 0) + " m";
+      }
+
+      sorted.forEach((p, idx) => {
+        const correct = p.correct || 0;
+        const wrong = p.wrong || 0;
+        const total = correct + wrong;
+        const accuracyNum = total > 0 ? ((correct / total) * 100) : 0;
+        const accuracy = total > 0 ? accuracyNum.toFixed(0) + "%" : "0%";
+
+        let rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:#334155; color:#cbd5e1; font-weight:800; font-size:11px;">${idx + 1}</span>`;
+        if (idx === 0) {
+          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #facc15, #ca8a04); color:#78350f; font-weight:900; font-size:12px; box-shadow:0 0 10px rgba(250, 204, 21, 0.5);">🥇</span>`;
+        } else if (idx === 1) {
+          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #f1f5f9, #94a3b8); color:#1e293b; font-weight:900; font-size:12px; box-shadow:0 0 10px rgba(203, 213, 225, 0.4);">🥈</span>`;
+        } else if (idx === 2) {
+          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #fdba74, #ea580c); color:#431407; font-weight:900; font-size:12px; box-shadow:0 0 10px rgba(249, 115, 22, 0.4);">🥉</span>`;
+        }
+
+        tbody.innerHTML += `
+          <tr style="transition: transform 0.15s ease;">
+            <td style="text-align: center;">${rankBadge}</td>
+            <td style="font-weight: 800; color: white;">${p.name || 'Agent'}</td>
+            <td style="text-align: center; font-family: monospace; font-weight: 900; color: #38bdf8; font-size: 14px;">${p.height || 0} m</td>
+            <td style="text-align: center; font-weight: 800; color: #34d399;">${correct}</td>
+            <td style="text-align: center; font-weight: 800; color: #fb7185;">${wrong}</td>
+            <td style="text-align: center;">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <div style="width: 42px; height: 5px; background: #334155; border-radius: 4px; overflow: hidden;">
+                  <div style="width: ${accuracyNum}%; height: 100%; background: #34d399;"></div>
+                </div>
+                <span style="color: #cbd5e1; font-size: 11px; font-weight: bold; width: 32px;">${accuracy}</span>
+              </div>
+            </td>
+            <td style="text-align: center; font-weight: 800; color: #fde047;">⚡ ${p.energy !== undefined ? p.energy : energy}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function startPlayerTimer(endTime) {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        const remainSec = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+        document.getElementById('ui-timer').innerText = formatTime(remainSec);
+
+        if (remainSec <= 0) {
+          clearInterval(timerInterval);
+          endGame();
+        }
+      }, 500);
+    }
+
+    function endGame() {
+      isGameOver = true;
+      if (timerInterval) clearInterval(timerInterval);
+      if (musicInterval) clearInterval(musicInterval);
+      isMusicPlaying = false;
+      document.getElementById('quiz-modal').classList.add('hidden');
+      showFinalLeaderboard();
+    }
+
+    function showFinalLeaderboard() {
+      const tbody = document.getElementById('result-leaderboard-body');
+      tbody.innerHTML = "";
+
+      const sorted = Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0));
+
+      sorted.forEach((p, idx) => {
+        let badge = `#${idx + 1}`;
+        if (idx === 0) badge = "🥇 1";
+        else if (idx === 1) badge = "🥈 2";
+        else if (idx === 2) badge = "🥉 3";
+
+        const isMe = (p.name === playerName);
+        tbody.innerHTML += `
+          <tr style="${isMe ? 'background: #ffe4e6; font-weight:bold;' : ''}">
+            <td>${badge} 🍬 ${p.name} ${isMe ? '(คุณ)' : ''}</td>
+            <td style="text-align:center; color:#0284c7;">${p.height || 0} m</td>
+            <td style="text-align:center; color:#10b981;">${p.correct || 0}</td>
+            <td style="text-align:center; color:#ef4444;">${p.wrong || 0}</td>
+          </tr>
+        `;
+      });
+
+      const reviewBox = document.getElementById('student-error-review');
+      reviewBox.innerHTML = "";
+      let wrongItemsCount = 0;
+
+      quizData.forEach((q) => {
+        const stat = myQuizAnswers[q.id] || { firstResult: null };
+        if (stat.firstResult === 'ผิด') {
+          wrongItemsCount++;
+          const div = document.createElement('div');
+          div.className = "mb-1.5 pb-1.5 border-b border-slate-200";
+          div.innerHTML = `❌ <b>โจทย์:</b> ${q.q} <br><span style="color: #e11d48; font-weight: 600;">(รอบแรกตอบ: ผิด)</span>`;
+          reviewBox.appendChild(div);
+        }
+      });
+
+      if (wrongItemsCount === 0) {
+        reviewBox.innerHTML = "🎉 สุดยอดมาก! คุณตอบคำถามถูกต้องหมดทุกข้อโดยไม่มีข้อผิดพลาดเลย!";
+      }
+
+      const myRank = sorted.findIndex(p => p.name === playerName);
+      const cheerEl = document.getElementById('cheer-message');
+      if (myRank === 0) {
+        cheerEl.innerHTML = "🏆 ยอดเยี่ยมที่สุด! คุณคว้าอันดับ 1 มาครองได้อย่างสง่างาม ทั้งทักษะการกระโดดและความรู้ Word สุดยอดมากๆ! 🌟";
+      } else if (myRank >= 1 && myRank <= 2) {
+        cheerEl.innerHTML = "🎉 เก่งมากๆ! คุณติด Top 3 บนโพเดียม เก่งและมีความพยายามสูงมาก ภูมิใจในตัวเองได้เลย! 💖";
+      } else {
+        cheerEl.innerHTML = "🌟 ยอดเยี่ยมมาก! ทุกความสูงและทุกคำถามที่ตอบ คือก้าวสำคัญของการเรียนรู้ ฝึกฝนต่อไปเรื่อยๆ คุณทำได้ดียิ่งขึ้นแน่นอน สู้ๆ นะ! 💪✨";
+      }
+
+      const btnExcel = document.getElementById('btn-export-excel');
+      if (isHost) {
+        btnExcel.classList.remove('hidden');
+      } else {
+        btnExcel.classList.add('hidden');
+      }
+
+      switchScreen('view-result');
+    }
+
+    function triggerQuizModal(fromTrap = false) {
+      if (isGameOver) return;
+      
+      const q = quizData[currentQ % quizData.length];
+      document.getElementById('quiz-q-text').innerText = `(ข้อที่ ${(currentQ % quizData.length) + 1}/${quizData.length}) ${q.q}`;
+      const list = document.getElementById('quiz-options-list');
+      list.innerHTML = "";
+
+      const modalTitle = document.getElementById('quiz-title');
+
+      if (fromTrap) {
+        modalTitle.innerText = "🚨 ติดกับดัก! ตอบให้ถูกเพื่อปลดปล่อย";
+        modalTitle.style.color = "#ef4444";
+      } else if (energy <= 0) {
+        modalTitle.innerText = "⚠️ พลังงานหมด! ตอบให้ถูกเพื่อชาร์จ (+5 ⚡)";
+        modalTitle.style.color = "#d97706";
+      } else {
+        modalTitle.innerText = "⚡ ตอบคำถามชาร์จพลังงาน (+5 ⚡)";
+        modalTitle.style.color = "#e01e37";
+      }
+
+      q.c.forEach((choice, idx) => {
+        const b = document.createElement('button');
+        b.className = 'quiz-option';
+        b.innerText = `${String.fromCharCode(65 + idx)}. ${choice}`;
+        b.onclick = () => {
+          const isCorrect = (idx === q.a);
+
+          // นับและบันทึกลง Excel เฉพาะ 20 ข้อแรกเท่านั้น
+          if (totalAnsweredCount < 20) {
+            if (!myQuizAnswers[q.id]) {
+              myQuizAnswers[q.id] = { firstResult: null };
+            }
+            if (myQuizAnswers[q.id].firstResult === null) {
+              myQuizAnswers[q.id].firstResult = isCorrect ? 'ถูก' : 'ผิด';
+            }
+            totalAnsweredCount++;
+          }
+
+          if (isCorrect) {
+            document.getElementById('quiz-modal').classList.add('hidden');
+            if (fromTrap) {
+              isTrapped = false;
+              trapImmunity = 100;
+              if (releaseFromTrapCallback) releaseFromTrapCallback();
+              showToast('🔓 ถูกต้อง! ปลดล็อกกับดักแล้ว');
+            } else {
+              energy += 5;
+              correctCount += 1;
+              document.getElementById('ui-energy').innerText = energy;
+              showToast('🎉 ถูกต้อง! +5 ⚡');
+            }
+            currentQ++;
+
+            if (currentPin && myPlayerId && !fromTrap) {
+              update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
+                correct: correctCount,
+                wrong: wrongCount,
+                quizStats: myQuizAnswers,
+                energy: energy
+              });
+            }
+          } else {
+            showToast('❌ ผิด! ลองตอบข้อนี้ดู');
+            if (!fromTrap) {
+              wrongCount += 1;
+              if (currentPin && myPlayerId) {
+                update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
+                  wrong: wrongCount,
+                  quizStats: myQuizAnswers
+                });
+              }
+            }
+            currentQ++;
+            triggerQuizModal(fromTrap);
+          }
+        };
+        list.appendChild(b);
+      });
+
+      document.getElementById('quiz-modal').classList.remove('hidden');
+    }
+
+    function drawCuteCloud(ctx, x, y, scale) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.beginPath();
+      ctx.arc(x, y, 20 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 18 * scale, y - 10 * scale, 24 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 40 * scale, y, 20 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 20 * scale, y + 8 * scale, 18 * scale, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#ff8fa3';
+      ctx.beginPath();
+      ctx.arc(x + 10 * scale, y + 2 * scale, 3 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 30 * scale, y + 2 * scale, 3 * scale, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath();
+      ctx.arc(x + 14 * scale, y - 2 * scale, 2.5 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 26 * scale, y - 2 * scale, 2.5 * scale, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawSkyBackground(ctx, width, height, camY) {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, height);
+      skyGrad.addColorStop(0, '#93c5fd');
+      skyGrad.addColorStop(0.5, '#bae6fd');
+      skyGrad.addColorStop(1, '#e0f2fe');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      clouds.forEach(c => {
+        c.x += c.speed;
+        if (c.x > width + 80) c.x = -80;
+        const cy = (c.y - camY * 0.25) % (height * 1.5);
+        drawCuteCloud(ctx, c.x, cy < 0 ? cy + height * 1.5 : cy, c.scale);
+      });
+    }
+
+    function drawCuteCharacter(ctx, cx, cy, r, isMoving = false, customColor = null, charFacing = 'right', charBlink = false, charName = '', charTrapped = false) {
+      ctx.save();
+      const color = customColor || SWEET_PALETTES[0];
+
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.12)';
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + r + 3, 14, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const legOffset = isMoving ? Math.sin(walkCycle) * 5 : 0;
+      ctx.fillStyle = color.dark;
+      ctx.beginPath();
+      ctx.arc(cx - 8, cy + r + 2 + legOffset, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx + 8, cy + r + 2 - legOffset, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = color.dark;
+      ctx.beginPath();
+      ctx.arc(cx - 14, cy - r + 4, 7, 0, Math.PI * 2);
+      ctx.arc(cx + 14, cy - r + 4, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffb3c6';
+      ctx.beginPath();
+      ctx.arc(cx - 14, cy - r + 4, 4, 0, Math.PI * 2);
+      ctx.arc(cx + 14, cy - r + 4, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = color.main;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      ctx.fillStyle = color.blush;
+      ctx.beginPath();
+      ctx.arc(cx - 11, cy + 5, 4.5, 0, Math.PI * 2);
+      ctx.arc(cx + 11, cy + 5, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      const eyeLook = (charFacing === 'left') ? -4 : 4;
+
+      if (charBlink) {
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(cx - 6 + eyeLook, cy - 1, 3, 0.2, Math.PI - 0.2);
+        ctx.arc(cx + 6 + eyeLook, cy - 1, 3, 0.2, Math.PI - 0.2);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(cx - 6 + eyeLook, cy - 2, 4, 0, Math.PI * 2);
+        ctx.arc(cx + 6 + eyeLook, cy - 2, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(cx - 7 + eyeLook, cy - 3.5, 1.8, 0, Math.PI * 2);
+        ctx.arc(cx + 5 + eyeLook, cy - 3.5, 1.8, 0, Math.PI * 2);
+        ctx.arc(cx - 5 + eyeLook, cy - 0.5, 0.9, 0, Math.PI * 2);
+        ctx.arc(cx + 7 + eyeLook, cy - 0.5, 0.9, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx + (eyeLook * 0.4), cy + 4, 3.5, 0.2, Math.PI - 0.2);
+      ctx.stroke();
+
+      if (charName) {
+        ctx.fillStyle = '#e01e37';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`🍓 ${charName}`, cx, cy - r - 8);
+      }
+
+      if (charTrapped) {
+        ctx.fillStyle = '#ef4444';
+        ctx.font = 'bold 10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚠️ ติดกับดัก!', cx, cy - r - 20);
+      }
+
+      ctx.restore();
+    }
+
+    function drawCutePlatform(ctx, p, dy) {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.06)';
+      ctx.shadowOffsetY = 4;
+
+      let px = p.x;
+      let py = dy;
+
+      if (p.isDisappearing && p.stepped) {
+        px += (Math.random() - 0.5) * 4;
+        ctx.globalAlpha = Math.max(0.2, 1 - (p.stepTimer / 90));
+      }
+
+      if (p.type === 'waffle') {
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, p.h, 12);
+        ctx.fill();
+        ctx.strokeStyle = '#f97316';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.roundRect(px + p.w / 2 - 10, py - 5, 20, 9, 3);
+        ctx.fill();
+        ctx.strokeStyle = '#eab308';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+      } else if (p.type === 'jelly') {
+        ctx.fillStyle = '#a7f3d0';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, p.h, 12);
+        ctx.fill();
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(px + 15, py + 8, 3, 0, Math.PI * 2);
+        ctx.arc(px + p.w - 18, py + 9, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (p.type === 'ice') {
+        ctx.fillStyle = '#cffafe';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, p.h, 12);
+        ctx.fill();
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.roundRect(px + 6, py + 3, p.w - 12, 4, 2);
+        ctx.fill();
+
+      } else if (p.type === 'disappear') {
+        ctx.fillStyle = '#fbcfe8';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, p.h, 10);
+        ctx.fill();
+        ctx.strokeStyle = '#db2777';
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+      } else if (p.type === 'cake') {
+        ctx.fillStyle = '#ffe4e6';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, p.h, 12);
+        ctx.fill();
+        ctx.fillStyle = '#fb7185';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, 7, [12, 12, 0, 0]);
+        ctx.fill();
+        ctx.strokeStyle = '#f43f5e';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+      } else {
+        ctx.fillStyle = '#b45309';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, p.h, 10);
+        ctx.fill();
+        ctx.fillStyle = '#78350f';
+        for (let i = 8; i < p.w - 12; i += 20) {
+          ctx.fillRect(px + i, py + 4, 14, p.h - 8);
+        }
+      }
+
+      ctx.restore();
+    }
+
+    function initSweetPlatformer() {
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      window.addEventListener('orientationchange', () => setTimeout(resize, 200));
+
+      const player = {
+        x: canvas.width / 2 - 17,
+        y: canvas.height - 120,
+        w: 34,
+        h: 40,
+        vx: 0,
+        vy: 0,
+        speed: 5.6,
+        jumpPower: -15.4,
+        grounded: false,
+        onIce: false
+      };
+
+      releaseFromTrapCallback = () => {
+        player.vy = -13.0;
+        player.grounded = false;
+      };
+
+      let cameraY = 0;
+      let lastNetworkSync = 0;
+
+      const platforms = [
+        { x: -100, y: canvas.height - 60, w: 2500, h: 100, type: 'cake' }
+      ];
+      const boosters = [];
+      const traps = [];
+
+      let lastY = canvas.height - 110;
+      const screenW = Math.max(360, canvas.width);
+      const platTypes = ['waffle', 'jelly', 'cake', 'choco', 'ice'];
+      const TOTAL_PLATFORMS = 380;
+
+      for (let i = 0; i < TOTAL_PLATFORMS; i++) {
+        const pR1 = Math.sin(i * 77 + 2) * 10000;
+        const norm1 = pR1 - Math.floor(pR1);
+        const pR2 = Math.cos(i * 41 + 5) * 10000;
+        const norm2 = pR2 - Math.floor(pR2);
+
+        let w = 135;
+        if (i < 30) {
+          w = Math.floor(norm1 * 20) + 125;
+        } else if (i < 100) {
+          w = Math.floor(norm1 * 20) + 95;
+        } else {
+          w = Math.floor(norm1 * 20) + 75;
+        }
+
+        const distY = 48;
+        lastY -= distY;
+
+        let type = platTypes[i % platTypes.length];
+        let isDisappearing = false;
+
+        if (i > 25 && norm2 < 0.22 && type !== 'ice') {
+          type = 'disappear';
+          isDisappearing = true;
+        }
+
+        let isMoving = false;
+        let baseStartX = 0;
+        let moveAmplitude = 0;
+        let movePeriod = 2000;
+
+        const moveChance = i < 30 ? 0.2 : (i < 100 ? 0.45 : 0.65);
+        if (i > 4 && norm1 < moveChance && !isDisappearing) {
+          isMoving = true;
+          moveAmplitude = (i < 80 ? 45 : 70) + norm2 * 30;
+          movePeriod = (i < 80 ? 2400 : 1800) + norm1 * 600;
+        }
+
+        const xSpan = screenW - w - 40;
+        const x = (i % 2 === 0) 
+          ? (norm2 * (xSpan * 0.45) + 20) 
+          : (screenW - w - 20 - norm2 * (xSpan * 0.45));
+        baseStartX = x;
+
+        platforms.push({ 
+          x: x, 
+          baseX: baseStartX,
+          y: lastY, 
+          w: w, 
+          h: 22, 
+          type: type,
+          isMoving: isMoving,
+          moveAmplitude: moveAmplitude,
+          movePeriod: movePeriod,
+          isDisappearing: isDisappearing,
+          stepped: false,
+          stepTimer: 0,
+          broken: false
+        });
+
+        if (i > 2 && (norm1 > 0.85 || i % 18 === 0)) {
+          boosters.push({ x: x + w / 2 - 14, y: lastY - 8, w: 28, h: 8, parentIdx: platforms.length - 1 });
+        }
+
+        if (i > 5 && norm2 < 0.25 && !isMoving && !isDisappearing) {
+          traps.push({ x: x + w / 2 - 10, y: lastY - 5, w: 20, h: 5 });
+        }
+      }
+
+      const keys = { left: false, right: false };
+
+      const setupButton = (id, keyName, dir) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        const startAction = (e) => {
+          if (e.cancelable) e.preventDefault();
+          el.classList.add('active');
+          if (isTrapped) return;
+          if (energy <= 0) {
+            triggerQuizModal(false);
+            return;
+          }
+          keys[keyName] = true;
+          facing = dir;
+        };
+
+        const stopAction = (e) => {
+          if (e.cancelable) e.preventDefault();
+          el.classList.remove('active');
+          keys[keyName] = false;
+        };
+
+        el.addEventListener('touchstart', startAction, { passive: false });
+        el.addEventListener('touchend', stopAction, { passive: false });
+        el.addEventListener('mousedown', startAction);
+        el.addEventListener('mouseup', stopAction);
+        el.addEventListener('mouseleave', stopAction);
+      };
+
+      setupButton('btn-left', 'left', 'left');
+      setupButton('btn-right', 'right', 'right');
+
+      const btnJump = document.getElementById('btn-jump');
+      const jumpStart = (e) => {
+        if (e.cancelable) e.preventDefault();
+        btnJump.classList.add('active');
+        doJump();
+      };
+      const jumpEnd = (e) => {
+        if (e.cancelable) e.preventDefault();
+        btnJump.classList.remove('active');
+      };
+      btnJump.addEventListener('touchstart', jumpStart, { passive: false });
+      btnJump.addEventListener('touchend', jumpEnd, { passive: false });
+      btnJump.addEventListener('mousedown', jumpStart);
+      btnJump.addEventListener('mouseup', jumpEnd);
+      btnJump.addEventListener('mouseleave', jumpEnd);
+
+      window.addEventListener('keydown', (e) => {
+        if (isGameOver || isTrapped) return;
+        if (energy <= 0) {
+          triggerQuizModal(false);
+          return;
+        }
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') { 
+          keys.left = true; facing = 'left'; 
+          document.getElementById('btn-left').classList.add('active');
+        }
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') { 
+          keys.right = true; facing = 'right'; 
+          document.getElementById('btn-right').classList.add('active');
+        }
+        if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') {
+          btnJump.classList.add('active');
+          doJump();
+        }
+      });
+
+      window.addEventListener('keyup', (e) => {
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') { 
+          keys.left = false; 
+          document.getElementById('btn-left').classList.remove('active');
+        }
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') { 
+          keys.right = false; 
+          document.getElementById('btn-right').classList.remove('active');
+        }
+        if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') {
+          btnJump.classList.remove('active');
+        }
+      });
+
+      function doJump(isBoost = false) {
+        if (isGameOver || isTrapped) return;
+        if (player.grounded || isBoost) {
+          if (energy > 0 || isBoost) {
+            if (!isBoost) energy -= 1;
+            player.vy = isBoost ? -20.5 : player.jumpPower;
+            player.grounded = false;
+            document.getElementById('ui-energy').innerText = energy;
+
+            if (energy === 0 && !isBoost) {
+              setTimeout(() => triggerQuizModal(false), 380);
+            }
+          } else {
+            triggerQuizModal(false);
+          }
+        }
+      }
+
+      function gameLoop() {
+        if (isGameOver) return;
+
+        const W = canvas.width;
+        const H = canvas.height;
+        const currentTime = Date.now();
+
+        if (trapImmunity > 0) trapImmunity--;
+
+        blinkTimer++;
+        if (blinkTimer > 180) {
+          isBlinking = true;
+          if (blinkTimer > 192) {
+            isBlinking = false;
+            blinkTimer = 0;
+          }
+        }
+
+        platforms.forEach((p, idx) => {
+          if (p.isMoving) {
+            const phase = (currentTime % p.movePeriod) / p.movePeriod * Math.PI * 2;
+            p.x = p.baseX + Math.sin(phase) * p.moveAmplitude;
+
+            boosters.forEach(b => {
+              if (b.parentIdx === idx) {
+                b.x = p.x + p.w / 2 - 14;
+              }
+            });
+          }
+
+          if (p.isDisappearing && p.stepped && !p.broken) {
+            p.stepTimer++;
+            if (p.stepTimer > 70) {
+              p.broken = true;
+              setTimeout(() => {
+                p.broken = false;
+                p.stepped = false;
+                p.stepTimer = 0;
+              }, 2200);
+            }
+          }
+        });
+
+        const isMoving = (keys.left || keys.right) && energy > 0 && !isTrapped;
+        if (isMoving) {
+          walkCycle += 0.25;
+        }
+
+        if (energy <= 0 || isTrapped) {
+          player.vx = 0;
+          keys.left = false;
+          keys.right = false;
+        } else if (player.onIce) {
+          if (keys.left) player.vx = Math.max(player.vx - 0.4, -player.speed * 1.15);
+          else if (keys.right) player.vx = Math.min(player.vx + 0.4, player.speed * 1.15);
+          else player.vx *= 0.96;
+        } else {
+          if (keys.left && !keys.right) player.vx = -player.speed;
+          else if (keys.right && !keys.left) player.vx = player.speed;
+          else player.vx = 0;
+        }
+
+        player.x += player.vx;
+        if (player.x < 10) player.x = 10;
+        if (player.x + player.w > W - 10) player.x = W - player.w - 10;
+
+        player.vy += 0.65;
+        if (player.vy > 14) player.vy = 14;
+        player.y += player.vy;
+
+        player.grounded = false;
+        player.onIce = false;
+
+        platforms.forEach(p => {
+          if (p.broken) return;
+
+          if (
+            player.x + player.w * 0.75 > p.x &&
+            player.x + player.w * 0.25 < p.x + p.w &&
+            player.y + player.h >= p.y &&
+            player.y + player.h <= p.y + p.h * 0.5 + player.vy &&
+            player.vy >= 0
+          ) {
+            player.grounded = true;
+            player.vy = 0;
+            player.y = p.y - player.h;
+
+            if (p.type === 'ice') {
+              player.onIce = true;
+            }
+
+            if (p.isDisappearing && !p.stepped) {
+              p.stepped = true;
+            }
+          }
+        });
+
+        boosters.forEach(b => {
+          if (
+            player.x + player.w > b.x &&
+            player.x < b.x + b.w &&
+            player.y + player.h >= b.y &&
+            player.y + player.h <= b.y + b.h + player.vy &&
+            player.vy >= 0
+          ) {
+            doJump(true);
+          }
+        });
+
+        if (!isTrapped && trapImmunity === 0) {
+          traps.forEach(t => {
+            if (
+              player.x + player.w * 0.7 > t.x &&
+              player.x + player.w * 0.3 < t.x + t.w &&
+              player.y + player.h >= t.y &&
+              player.y + player.h <= t.y + t.h + 8
+            ) {
+              isTrapped = true;
+              player.vy = 0;
+              triggerQuizModal(true);
+            }
+          });
+        }
+
+        const targetCamY = player.y - (H * 0.6);
+        cameraY += (targetCamY - cameraY) * 0.12;
+
+        currentMeters = Math.max(0, Math.floor(((canvas.height - 60) - (player.y + player.h)) / 6.5));
+        document.getElementById('ui-height').innerText = currentMeters;
+
+        const now = Date.now();
+        if (now - lastNetworkSync > 110) {
+          lastNetworkSync = now;
+          if (currentPin && myPlayerId) {
+            update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
+              x: Math.round(player.x),
+              y: Math.round(player.y),
+              facing: facing,
+              styleIndex: myStyleIndex,
+              height: currentMeters,
+              correct: correctCount,
+              wrong: wrongCount,
+              quizStats: myQuizAnswers,
+              energy: energy
+            });
+          }
+        }
+
+        drawSkyBackground(ctx, W, H, cameraY);
+
+        platforms.forEach(p => {
+          if (p.broken) return;
+          const dy = p.y - cameraY;
+          if (dy + p.h < -50 || dy > H + 50) return;
+          drawCutePlatform(ctx, p, dy);
+        });
+
+        boosters.forEach(b => {
+          const dy = b.y - cameraY;
+          if (dy < -40 || dy > H + 40) return;
+          ctx.fillStyle = '#10b981';
+          ctx.beginPath();
+          ctx.roundRect(b.x, dy, b.w, b.h, 4);
+          ctx.fill();
+          ctx.fillStyle = '#34d399';
+          ctx.fillRect(b.x + 4, dy + 2, b.w - 8, 2);
+        });
+
+        traps.forEach(t => {
+          const dy = t.y - cameraY;
+          if (dy < -40 || dy > H + 40) return;
+          ctx.fillStyle = '#ef4444';
+          ctx.beginPath();
+          ctx.roundRect(t.x, dy, t.w, t.h, 3);
+          ctx.fill();
+        });
+
+        Object.entries(allPlayersData).forEach(([pid, other]) => {
+          if (pid === myPlayerId || other.x === undefined || other.y === undefined) return;
+
+          if (!smoothPositions[pid]) {
+            smoothPositions[pid] = { x: other.x, y: other.y };
+          }
+
+          smoothPositions[pid].x += (other.x - smoothPositions[pid].x) * 0.22;
+          smoothPositions[pid].y += (other.y - smoothPositions[pid].y) * 0.22;
+
+          const ox = smoothPositions[pid].x + 17;
+          const oy = smoothPositions[pid].y + 18 - cameraY;
+
+          if (oy > -60 && oy < H + 60) {
+            const otherColor = SWEET_PALETTES[other.styleIndex || 0];
+            drawCuteCharacter(ctx, ox, oy, 20, false, otherColor, other.facing || 'right', false, other.name || 'Agent', false);
+          }
+        });
+
+        const drawX = player.x + player.w / 2;
+        const drawY = player.y + 18 - cameraY;
+        const myColor = SWEET_PALETTES[myStyleIndex];
+        drawCuteCharacter(ctx, drawX, drawY, 20, isMoving, myColor, facing, isBlinking, playerName, isTrapped);
+
+        requestAnimationFrame(gameLoop);
+      }
+
+      gameLoop();
+    }
+  </script>
+</body>
+</html>
