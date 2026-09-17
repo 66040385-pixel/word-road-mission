@@ -6,6 +6,12 @@
   <title>Hunter Cyber Mission - Perfect Edition</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
+    :root {
+      --primary: #0284c7;
+      --pink-main: #ff758f;
+      --pink-dark: #e01e37;
+      --surface: rgba(255, 255, 255, 0.96);
+    }
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -13,653 +19,261 @@
       -webkit-user-select: none;
     }
     html, body {
-      margin: 0;
-      padding: 0;
-      width: 100vw;
-      height: 100dvh;
+      margin: 0; padding: 0;
+      width: 100vw; height: 100dvh;
       min-height: -webkit-fill-available;
       overflow: hidden;
       background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%);
       color: #f8fafc;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      position: fixed;
+      position: fixed; inset: 0;
     }
     body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
     .container {
-      background: rgba(255, 255, 255, 0.96);
+      background: var(--surface);
       border: 2px solid rgba(255, 117, 143, 0.4);
       border-radius: 28px;
       padding: clamp(16px, 3.5vw, 24px);
-      max-width: 480px;
-      width: min(90%, 480px);
+      max-width: 480px; width: min(90%, 480px);
       text-align: center;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 117, 143, 0.2);
       backdrop-filter: blur(20px);
-      max-height: 88dvh;
-      overflow-y: auto;
-      z-index: 100;
-      position: relative;
-      color: #0f172a;
+      max-height: 88dvh; overflow-y: auto;
+      z-index: 100; position: relative; color: #0f172a;
     }
     h1 {
-      color: #e01e37;
-      margin: 0 0 6px 0;
-      font-size: clamp(20px, 5vw, 26px);
-      letter-spacing: 0.5px;
-      font-weight: 900;
+      color: var(--pink-dark); margin: 0 0 6px 0;
+      font-size: clamp(20px, 5vw, 26px); font-weight: 900;
     }
     h2 {
-      color: #e01e37;
-      font-weight: 800;
-      font-size: clamp(18px, 4.5vw, 22px);
-      margin: 0 0 10px 0;
+      color: var(--pink-dark); font-weight: 800;
+      font-size: clamp(18px, 4.5vw, 22px); margin: 0 0 10px 0;
     }
     .btn {
       background: linear-gradient(135deg, #ff758f 0%, #ff4d6d 100%);
-      color: white;
-      border: none;
-      padding: 13px;
-      border-radius: 18px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      width: 100%;
-      margin: 8px 0;
-      box-shadow: 0 8px 20px rgba(255, 77, 109, 0.35);
-      display: block;
+      color: white; border: none; padding: 13px; border-radius: 18px;
+      font-size: 14px; font-weight: 800; cursor: pointer; width: 100%;
+      margin: 8px 0; box-shadow: 0 8px 20px rgba(255, 77, 109, 0.35);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
       transition: all 0.15s ease;
     }
+    .btn svg { width: 18px; height: 18px; fill: currentColor; }
     .btn:active { transform: scale(0.97); }
+    
     .btn-sweet-green {
       background: linear-gradient(135deg, #34d399 0%, #059669 100%);
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 18px;
-      font-weight: 800;
-      cursor: pointer;
-      width: 100%;
+      color: white; border: none; padding: 12px; border-radius: 18px;
+      font-weight: 800; cursor: pointer; width: 100%;
       box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
-      transition: all 0.15s ease;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
+    .btn-sweet-green svg { width: 18px; height: 18px; fill: currentColor; }
     .btn-sweet-green:active { transform: scale(0.97); }
 
     input, select {
-      width: 100%;
-      padding: 12px 14px;
-      margin: 5px 0 10px 0;
-      border-radius: 16px;
-      border: 2px solid #ffccd5;
-      background: #fff5f7;
-      color: #e01e37;
-      text-align: center;
-      font-size: 15px;
-      font-weight: bold;
-      outline: none;
-      user-select: auto;
-      -webkit-user-select: auto;
-      transition: all 0.2s;
+      width: 100%; padding: 12px 14px; margin: 5px 0 10px 0;
+      border-radius: 16px; border: 2px solid #ffccd5; background: #fff5f7;
+      color: var(--pink-dark); text-align: center; font-size: 15px; font-weight: bold;
+      outline: none; transition: all 0.2s;
     }
     input:focus, select:focus {
-      border-color: #ff4d6d;
-      background: #ffffff;
+      border-color: #ff4d6d; background: #ffffff;
       box-shadow: 0 0 0 4px rgba(255, 77, 109, 0.15);
     }
     .pin-display {
-      font-size: clamp(32px, 8vw, 42px);
-      letter-spacing: 6px;
-      font-weight: 900;
-      color: #e01e37;
-      background: #ffe4e6;
-      padding: 6px;
-      border-radius: 18px;
-      margin: 8px 0;
-      border: 2.5px dashed #ff758f;
+      font-size: clamp(32px, 8vw, 42px); letter-spacing: 6px; font-weight: 900;
+      color: var(--pink-dark); background: #ffe4e6; padding: 6px;
+      border-radius: 18px; margin: 8px 0; border: 2.5px dashed #ff758f;
     }
     .qr-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: #fff;
-      padding: 12px;
-      border-radius: 18px;
-      width: fit-content;
-      margin: 8px auto;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-      border: 1px solid #ffe4e6;
+      display: flex; flex-direction: column; align-items: center; background: #fff;
+      padding: 12px; border-radius: 18px; width: fit-content; margin: 8px auto;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08); border: 1px solid #ffe4e6;
     }
     .badge-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: center;
-      margin: 8px 0;
-      max-height: 100px;
-      overflow-y: auto;
+      display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+      margin: 8px 0; max-height: 100px; overflow-y: auto;
     }
     .badge-player {
-      background: #ffe4e6;
-      border: 1.5px solid #ff758f;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      color: #e01e37;
-      font-weight: bold;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      background: #ffe4e6; border: 1.5px solid #ff758f; padding: 5px 10px;
+      border-radius: 20px; font-size: 12px; color: var(--pink-dark); font-weight: bold;
+      display: inline-flex; align-items: center; gap: 6px;
       box-shadow: 0 2px 6px rgba(255, 117, 143, 0.2);
     }
     .badge-kick-btn {
-      background: #e11d48;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      font-size: 10px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      line-height: 1;
-      padding: 0;
+      background: #e11d48; color: white; border: none; border-radius: 50%;
+      width: 18px; height: 18px; font-size: 10px; font-weight: bold;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    .badge-kick-btn:active { transform: scale(0.9); }
+
+    /* กล่องวิธีเล่นสำหรับนักเรียน */
+    .how-to-play-card {
+      background: #fff5f7; border: 1.5px solid #ffccd5; border-radius: 18px;
+      padding: 12px 14px; margin: 12px 0; text-align: left; font-size: 12.5px;
+      color: #334155; line-height: 1.5; box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .how-to-play-card b { color: var(--pink-dark); }
+    .instruction-row {
+      display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px;
+    }
+    .instruction-row svg { width: 16px; height: 16px; fill: var(--pink-dark); flex-shrink: 0; margin-top: 2px; }
+
     .hidden { display: none !important; }
 
     #teacher-auth-modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 300;
-      padding: 16px;
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center;
+      z-index: 300; padding: 16px;
     }
     .teacher-auth-card {
-      background: rgba(255, 255, 255, 0.98);
-      border: 2px solid rgba(255, 117, 143, 0.5);
-      border-radius: 24px;
-      padding: 24px 20px;
-      max-width: 360px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
-      color: #0f172a;
+      background: rgba(255, 255, 255, 0.98); border: 2px solid rgba(255, 117, 143, 0.5);
+      border-radius: 24px; padding: 24px 20px; max-width: 360px; width: 100%;
+      text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35); color: #0f172a;
     }
 
     #view-host-live {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100dvh;
+      position: fixed; inset: 0;
       background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #090d16 100%);
-      z-index: 40;
-      display: flex;
-      flex-direction: column;
+      z-index: 40; display: flex; flex-direction: column;
       padding: max(env(safe-area-inset-top, 12px), 12px) max(env(safe-area-inset-right, 16px), 16px) max(env(safe-area-inset-bottom, 12px), 12px) max(env(safe-area-inset-left, 16px), 16px);
-      overflow: hidden;
-      gap: 10px;
+      overflow: hidden; gap: 10px;
     }
     .host-header-card {
-      background: rgba(30, 41, 59, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 12px 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
+      background: rgba(30, 41, 59, 0.75); border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px); border-radius: 20px; padding: 12px 18px;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; flex-shrink: 0;
     }
     .host-leader-bar {
       background: linear-gradient(90deg, rgba(245, 158, 11, 0.18) 0%, rgba(251, 191, 36, 0.05) 100%);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      padding: 10px 18px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      flex-shrink: 0;
+      border: 1px solid rgba(245, 158, 11, 0.35); padding: 10px 18px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
     }
     .host-table-wrapper {
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 8px 12px;
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.4);
-    }
-    .host-table-wrapper::-webkit-scrollbar { width: 6px; }
-    .host-table-wrapper::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
+      flex: 1; min-height: 0; overflow-y: auto; background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 8px 12px;
     }
 
     #game-wrapper {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100dvh;
-      background: #e0f2fe;
-      overflow: hidden;
-      z-index: 50;
+      position: fixed; inset: 0; background: #e0f2fe; overflow: hidden; z-index: 50;
     }
-    canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
+    canvas { display: block; width: 100%; height: 100%; }
 
     .game-top-bar {
-      position: absolute;
-      top: max(env(safe-area-inset-top, 8px), 8px);
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(95%, 480px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 4px;
-      z-index: 70;
-      pointer-events: none;
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 2px solid rgba(255, 117, 143, 0.45);
-      border-radius: 30px;
-      padding: 6px 10px;
-      box-shadow: 0 10px 25px rgba(255, 117, 143, 0.18), 0 4px 10px rgba(0, 0, 0, 0.05);
-      box-sizing: border-box;
-      transition: all 0.3s ease;
+      position: absolute; top: max(env(safe-area-inset-top, 8px), 8px); left: 50%; transform: translateX(-50%);
+      width: min(95%, 480px); display: flex; justify-content: space-between; align-items: center; gap: 4px;
+      z-index: 70; pointer-events: none; background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px); border: 2px solid rgba(255, 117, 143, 0.45);
+      border-radius: 30px; padding: 6px 10px; box-shadow: 0 10px 25px rgba(255, 117, 143, 0.18);
     }
     .stat-pill {
-      background: #ffffff;
-      border: 1.5px solid #ffccd5;
-      padding: 5px 8px;
-      border-radius: 16px;
-      font-weight: 800;
-      font-size: clamp(11px, 2.7vw, 13px);
-      color: #0f172a;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      flex-shrink: 0;
+      background: #ffffff; border: 1.5px solid #ffccd5; padding: 5px 8px; border-radius: 16px;
+      font-weight: 800; font-size: clamp(11px, 2.7vw, 13px); color: #0f172a; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 2px;
     }
     .btn-top-quiz {
-      background: linear-gradient(135deg, #ff758f, #ff4d6d);
-      border: 1.5px solid #ffffff;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 16px;
-      font-weight: 900;
-      font-size: clamp(11px, 2.7vw, 13px);
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(255, 77, 109, 0.35);
-      pointer-events: auto;
-      white-space: nowrap;
-      flex-shrink: 0;
+      background: linear-gradient(135deg, #ff758f, #ff4d6d); border: 1.5px solid #ffffff; color: white;
+      padding: 6px 10px; border-radius: 16px; font-weight: 900; font-size: clamp(11px, 2.7vw, 13px);
+      cursor: pointer; pointer-events: auto; white-space: nowrap;
     }
     .btn-music-toggle {
-      background: #ffffff;
-      border: 1.5px solid #bae6fd;
-      border-radius: 16px;
-      padding: 5px 8px;
-      font-size: clamp(12px, 2.8vw, 14px);
-      cursor: pointer;
-      pointer-events: auto;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    @media (min-width: 768px) {
-      .game-top-bar {
-        top: 20px;
-        width: auto;
-        min-width: 650px;
-        padding: 8px 20px;
-        border-radius: 32px;
-        gap: 16px;
-      }
-      .stat-pill {
-        font-size: 15px;
-        padding: 8px 18px;
-        border-radius: 18px;
-      }
-      .btn-top-quiz {
-        font-size: 15px;
-        padding: 8px 22px;
-        border-radius: 18px;
-      }
-      .btn-music-toggle {
-        font-size: 16px;
-        padding: 8px 16px;
-        border-radius: 18px;
-      }
+      background: #ffffff; border: 1.5px solid #bae6fd; border-radius: 16px;
+      padding: 5px 8px; font-size: clamp(12px, 2.8vw, 14px); cursor: pointer; pointer-events: auto;
     }
 
     .controls-bar {
-      position: absolute;
-      bottom: max(env(safe-area-inset-bottom, 12px), 16px);
-      left: max(env(safe-area-inset-left, 12px), 14px);
-      right: max(env(safe-area-inset-right, 12px), 14px);
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      z-index: 80;
-      pointer-events: none;
+      position: absolute; bottom: max(env(safe-area-inset-bottom, 12px), 16px);
+      left: max(env(safe-area-inset-left, 12px), 14px); right: max(env(safe-area-inset-right, 12px), 14px);
+      display: flex; justify-content: space-between; align-items: flex-end; z-index: 80; pointer-events: none;
     }
     .touch-dpad-container {
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 2.5px solid rgba(255, 255, 255, 0.95);
-      border-radius: 36px;
-      padding: 8px;
-      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.22);
-      display: flex;
-      gap: 10px;
-      pointer-events: auto;
+      background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(16px);
+      border: 2.5px solid rgba(255, 255, 255, 0.95); border-radius: 36px; padding: 8px;
+      display: flex; gap: 10px; pointer-events: auto; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.22);
     }
     .touch-btn-arrow {
-      width: clamp(64px, 15vw, 76px);
-      height: clamp(64px, 15vw, 76px);
-      border-radius: 24px;
-      background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
-      border: 2.5px solid #bae6fd;
-      color: #0284c7;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: clamp(26px, 6vw, 32px);
-      font-weight: 900;
-      box-shadow: 0 5px 0 #7dd3fc, 0 8px 16px rgba(2, 132, 199, 0.18);
-      transition: all 0.08s ease;
-      cursor: pointer;
-      touch-action: none;
+      width: clamp(64px, 15vw, 76px); height: clamp(64px, 15vw, 76px); border-radius: 24px;
+      background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%); border: 2.5px solid #bae6fd;
+      color: #0284c7; display: flex; align-items: center; justify-content: center;
+      font-size: clamp(26px, 6vw, 32px); font-weight: 900; cursor: pointer; touch-action: none;
+      box-shadow: 0 5px 0 #7dd3fc;
     }
-    .touch-btn-arrow.active {
-      transform: translateY(4px);
-      box-shadow: 0 1px 0 #7dd3fc;
-      background: #e0f2fe;
-      color: #0369a1;
-    }
-    .action-pad {
-      pointer-events: auto;
-      padding: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .touch-btn-arrow.active { transform: translateY(4px); box-shadow: 0 1px 0 #7dd3fc; background: #e0f2fe; }
+    
+    .action-pad { pointer-events: auto; padding: 4px; display: flex; align-items: center; justify-content: center; }
     .touch-btn-jump {
-      width: clamp(78px, 18vw, 92px);
-      height: clamp(78px, 18vw, 92px);
-      border-radius: 50%;
-      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-      border: 4px solid #ffffff;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 7px 0 #047857, 0 12px 24px rgba(16, 185, 129, 0.38);
-      transition: all 0.08s ease;
-      cursor: pointer;
-      touch-action: none;
-      font-size: clamp(32px, 7.5vw, 40px);
-      line-height: 1;
+      width: clamp(78px, 18vw, 92px); height: clamp(78px, 18vw, 92px); border-radius: 50%;
+      background: linear-gradient(135deg, #34d399 0%, #10b981 100%); border: 4px solid #ffffff; color: #ffffff;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: none;
+      font-size: clamp(32px, 7.5vw, 40px); box-shadow: 0 7px 0 #047857;
     }
-    .touch-btn-jump.active {
-      transform: translateY(5px);
-      box-shadow: 0 2px 0 #047857;
-      background: #059669;
-    }
+    .touch-btn-jump.active { transform: translateY(5px); box-shadow: 0 2px 0 #047857; background: #059669; }
 
     #toast-msg {
-      position: absolute;
-      top: max(env(safe-area-inset-top, 16px), 16px);
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.94);
-      color: white;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: bold;
-      z-index: 250;
-      opacity: 0;
-      transition: opacity 0.25s, transform 0.25s;
-      pointer-events: none;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      position: absolute; top: max(env(safe-area-inset-top, 16px), 16px); left: 50%; transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.94); color: white; padding: 8px 18px; border-radius: 20px;
+      font-size: 13px; font-weight: bold; z-index: 250; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none;
     }
-    #toast-msg.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(8px);
-    }
+    #toast-msg.show { opacity: 1; transform: translateX(-50%) translateY(8px); }
 
     .cheer-box {
-      background: linear-gradient(135deg, #fff1f2, #ffe4e6);
-      border: 2px dashed #ff758f;
-      border-radius: 18px;
-      padding: 12px;
-      margin: 10px 0;
-      font-size: 13px;
-      line-height: 1.4;
-      color: #9f1239;
-      font-weight: bold;
+      background: linear-gradient(135deg, #fff1f2, #ffe4e6); border: 2px dashed #ff758f;
+      border-radius: 18px; padding: 12px; margin: 10px 0; font-size: 13px; color: #9f1239; font-weight: bold;
     }
-
     .error-review-box {
-      background: #f8fafc;
-      border: 1px solid #cbd5e1;
-      border-radius: 16px;
-      padding: 10px;
-      margin: 8px 0;
-      max-height: 120px;
-      overflow-y: auto;
-      text-align: left;
-      font-size: 12px;
-      color: #334155;
+      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 16px; padding: 10px;
+      margin: 8px 0; max-height: 120px; overflow-y: auto; text-align: left; font-size: 12px; color: #334155;
     }
 
     #quiz-modal, #questionBankModal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      padding: 14px;
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(10px);
+      display: flex; align-items: center; justify-content: center; z-index: 200; padding: 14px;
     }
     .quiz-card {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 24px;
-      width: 100%;
-      max-width: 440px;
-      border: 2.5px solid #ff758f;
-      text-align: center;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-      max-height: 85dvh;
-      overflow-y: auto;
+      background: #ffffff; padding: 20px; border-radius: 24px; width: 100%; max-width: 440px;
+      border: 2.5px solid #ff758f; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      max-height: 85dvh; overflow-y: auto;
     }
     .quiz-option {
-      background: #fff5f7;
-      border: 1.5px solid #ffccd5;
-      color: #e01e37;
-      padding: 10px 14px;
-      border-radius: 14px;
-      width: 100%;
-      margin: 6px 0;
-      cursor: pointer;
-      text-align: left;
-      font-size: 13px;
-      font-weight: 600;
-      transition: all 0.15s;
+      background: #fff5f7; border: 1.5px solid #ffccd5; color: #e01e37; padding: 10px 14px;
+      border-radius: 14px; width: 100%; margin: 6px 0; cursor: pointer; text-align: left; font-size: 13px; font-weight: 600;
     }
     .quiz-option:active { background: #ff758f; color: white; border-color: #ff758f; }
 
     .leaderboard-table, .host-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0 4px;
-      margin-top: 4px;
-      text-align: left;
-      font-size: 13px;
+      width: 100%; border-collapse: separate; border-spacing: 0 4px; margin-top: 4px; text-align: left; font-size: 13px;
     }
-    .leaderboard-table th {
-      color: #64748b;
-      padding: 8px 6px;
-      border-bottom: 2px solid #e2e8f0;
-      font-size: 12px;
-    }
-    .leaderboard-table td {
-      padding: 8px 6px;
-      border-bottom: 1px solid #f1f5f9;
-    }
+    .leaderboard-table th { color: #64748b; padding: 8px 6px; border-bottom: 2px solid #e2e8f0; font-size: 12px; }
+    .leaderboard-table td { padding: 8px 6px; border-bottom: 1px solid #f1f5f9; }
 
     .host-table th {
-      color: #94a3b8;
-      padding: 8px 10px;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      background: rgba(15, 23, 42, 0.4);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8; padding: 8px 10px; font-size: 11px; font-weight: 800; text-transform: uppercase;
+      background: rgba(15, 23, 42, 0.4); border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .host-table td {
-      padding: 9px 10px;
-      font-size: 13px;
-      background: rgba(30, 41, 59, 0.45);
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    }
-    .host-table tr td:first-child {
-      border-top-left-radius: 12px;
-      border-bottom-left-radius: 12px;
-    }
-    .host-table tr td:last-child {
-      border-top-right-radius: 12px;
-      border-bottom-right-radius: 12px;
-    }
+    .host-table td { padding: 9px 10px; font-size: 13px; background: rgba(30, 41, 59, 0.45); }
 
     .qb-modal-card {
-      background: #ffffff;
-      border: 2.5px solid #ff758f;
-      border-radius: 24px;
-      padding: 20px;
-      max-width: 680px;
-      width: 95%;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
-      max-height: 86dvh;
-      display: flex;
-      flex-direction: column;
-      text-align: left;
-      color: #0f172a;
-      overflow: hidden;
+      background: #ffffff; border: 2.5px solid #ff758f; border-radius: 24px; padding: 20px;
+      max-width: 680px; width: 95%; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35); max-height: 86dvh;
+      display: flex; flex-direction: column; text-align: left; color: #0f172a; overflow: hidden;
     }
-    .qb-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 10px;
-      border-bottom: 1.5px solid #ffe4e6;
-      margin-bottom: 10px;
-      flex-shrink: 0;
-    }
-    .qb-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-shrink: 0;
-    }
+    .qb-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1.5px solid #ffe4e6; margin-bottom: 10px; }
+    .qb-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
     .qb-tab-btn {
-      flex: 1;
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: bold;
-      border: 1.5px solid #ffccd5;
-      background: #fff5f7;
-      color: #e01e37;
-      cursor: pointer;
-      transition: all 0.15s;
+      flex: 1; padding: 8px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;
+      border: 1.5px solid #ffccd5; background: #fff5f7; color: #e01e37; cursor: pointer;
     }
-    .qb-tab-btn.active {
-      background: #ff4d6d;
-      color: white;
-      border-color: #ff4d6d;
-      box-shadow: 0 3px 10px rgba(255, 77, 109, 0.3);
-    }
-    .qb-body-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
+    .qb-tab-btn.active { background: #ff4d6d; color: white; border-color: #ff4d6d; }
+    .qb-body-scroll { flex: 1; overflow-y: auto; padding-right: 4px; }
     .qb-question-card {
-      background: #ffffff;
-      border: 1.5px solid #fecdd3;
-      border-radius: 14px;
-      padding: 12px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
+      background: #ffffff; border: 1.5px solid #fecdd3; border-radius: 14px; padding: 12px;
+      margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
     }
-    .qb-btn-edit {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #2563eb;
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 11px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .qb-btn-edit:hover { background: #2563eb; color: white; }
-    .qb-btn-delete {
-      background: #fff1f2;
-      border: 1px solid #fda4af;
-      color: #e11d48;
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 11px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .qb-btn-delete:hover { background: #e11d48; color: white; }
-    .qb-form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-    @media (max-width: 520px) {
-      .qb-form-grid { grid-template-columns: 1fr; }
-    }
+    .qb-btn-edit { background: #eff6ff; border: 1px solid #bfdbfe; color: #2563eb; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; }
+    .qb-btn-delete { background: #fff1f2; border: 1px solid #fda4af; color: #e11d48; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; }
+    .qb-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    @media (max-width: 520px) { .qb-form-grid { grid-template-columns: 1fr; } }
   </style>
   <script>
     function switchScreen(id) {
@@ -676,14 +290,15 @@
 
   <div id="toast-msg">แจ้งเตือน</div>
 
+  <!-- Teacher Auth Modal -->
   <div id="teacher-auth-modal" class="hidden">
     <div class="teacher-auth-card">
-      <div style="font-size: 38px; margin-bottom: 6px;">👑</div>
+      <div style="font-size: 32px; color: var(--pink-dark); margin-bottom: 6px;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+      </div>
       <h3 style="margin: 0 0 6px 0; font-size: 18px; color: #e01e37; font-weight: 900;">ยืนยันตัวตนผู้สอน</h3>
       <p style="font-size: 12px; color: #64748b; margin: 0 0 14px 0;">กรุณากรอกรหัสผ่านสำหรับคุณครู (รหัสเริ่มต้น: 1234)</p>
-      
       <input type="password" id="input-teacher-pwd" placeholder="รหัสผ่านคุณครู..." maxlength="10" style="margin-bottom: 12px; font-size: 16px;">
-      
       <div style="display: flex; gap: 8px;">
         <button class="btn" style="background: #94a3b8; margin: 0; padding: 10px;" onclick="closeTeacherModal()">ยกเลิก</button>
         <button class="btn btn-sweet-green" style="margin: 0; padding: 10px;" onclick="verifyTeacherPassword()">เข้าสู่ระบบ</button>
@@ -691,13 +306,23 @@
     </div>
   </div>
 
+  <!-- Mode Selection Screen -->
   <div id="view-mode" class="container">
     <h1>HUNTER CYBER MISSION</h1>
     <p style="color: #64748b; font-size:14px; margin-bottom: 20px;">เกมตอบคำถามชิงความสูง (Word Master)</p>
-    <button class="btn" id="btn-mode-host" onclick="openTeacherModal()">👑 คุณครู / ผู้สอน (Host)</button>
-    <button class="btn" id="btn-mode-join" style="background:#475569;" onclick="switchScreen('view-join')">🎮 นักเรียน / ผู้เรียน (Join)</button>
+    
+    <button class="btn" id="btn-mode-host" onclick="openTeacherModal()">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      คุณครู / ผู้สอน (Host)
+    </button>
+    
+    <button class="btn" id="btn-mode-join" style="background:#475569;" onclick="switchScreen('view-join')">
+      <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      นักเรียน / ผู้เรียน (Join)
+    </button>
   </div>
 
+  <!-- Host Setup Screen -->
   <div id="view-host" class="container hidden">
     <h2>ห้องควบคุมโฮสต์</h2>
     <p style="margin-bottom:2px; font-size:13px; color:#64748b;">รหัสเข้าห้อง (Room PIN):</p>
@@ -735,6 +360,7 @@
     <button id="btn-start" class="btn btn-sweet-green" disabled>🚀 เริ่มการแข่งขัน</button>
   </div>
 
+  <!-- Host Live Dashboard -->
   <div id="view-host-live" class="hidden">
     <div class="host-header-card">
       <div style="display: flex; align-items: center; gap: 10px;">
@@ -742,7 +368,7 @@
           🔙 ออกจากห้อง
         </button>
         <div style="text-align: left;">
-          <h2 style="font-size: 16px; font-weight: 900; color: #fb7185; margin: 0; line-height: 1.2;">👑 HOST DASHBOARD</h2>
+          <h2 style="font-size: 16px; font-weight: 900; color: #fb7185; margin: 0; line-height: 1.2;">HOST DASHBOARD</h2>
           <p style="font-size: 11px; color: #94a3b8; margin: 0;">ห้อง: <span id="live-room-pin" style="font-weight: 900; color: #fda4af;">------</span> | ออนไลน์: <span id="live-player-count" style="font-weight: 900; color: #34d399;">0</span> คน</p>
         </div>
       </div>
@@ -762,7 +388,7 @@
 
     <div class="host-leader-bar">
       <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 26px;">👑</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#fcd34d"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"/></svg>
         <div style="text-align: left;">
           <div style="font-size: 10px; color: #fcd34d; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">ผู้นำอันดับ 1</div>
           <div id="leader-name" style="font-size: 16px; font-weight: 900; color: white;">รอเริ่มกระโดด...</div>
@@ -792,6 +418,7 @@
     </div>
   </div>
 
+  <!-- Question Bank Modal -->
   <div id="questionBankModal" class="hidden">
     <div class="qb-modal-card">
       <div class="qb-header">
@@ -848,14 +475,37 @@
     </div>
   </div>
 
+  <!-- Join Screen with How-to-Play -->
   <div id="view-join" class="container hidden">
-    <h2>เข้าสู่สมรภูมิขนมหวาน</h2>
+    <h2>เข้าร่วมสมรภูมิคำถาม</h2>
     <input type="text" id="input-pin" placeholder="รหัสห้อง 6 หลัก" maxlength="6" inputmode="numeric">
     <input type="text" id="input-name" placeholder="ชื่อเล่นของคุณ" maxlength="12">
+    
+    <!-- กล่องวิธีการเล่นสำหรับนักเรียน -->
+    <div class="how-to-play-card">
+      <div style="font-weight: 800; color: var(--pink-dark); margin-bottom: 6px; font-size: 13px;">📖 วิธีการเล่นและกติกา:</div>
+      
+      <div class="instruction-row">
+        <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+        <span><b>ควบคุมตัวละคร:</b> ใช้ปุ่มลูกศร <b>◀ ▶</b> ด้านซ้ายจอเพื่อเคลื่อนที่ซ้าย-ขวา และปุ่ม <b>▲</b> ด้านขวาเพื่อกระโดด</span>
+      </div>
+      
+      <div class="instruction-row">
+        <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+        <span><b>พลังงาน (⚡):</b> ทุกครั้งที่กระโดด พลังงานจะลดลง หากพลังงานหมด จะต้องตอบคำถามเพื่อชาร์จพลังงานเพิ่ม <b>+5 ⚡</b></span>
+      </div>
+
+      <div class="instruction-row">
+        <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+        <span><b>ชิงอันดับ 1:</b> กระโดดไต่ระดับความสูง (เมตร) ให้สูงที่สุดแข่งกับเพื่อนๆ ในห้องเรียน!</span>
+      </div>
+    </div>
+
     <button class="btn" id="btn-do-join">เข้าสู่ห้อง</button>
     <button class="btn" style="background:#64748b; padding:10px;" onclick="switchScreen('view-mode')">ย้อนกลับ</button>
   </div>
 
+  <!-- Waiting Room -->
   <div id="view-waiting" class="container hidden">
     <h2>ห้องเตรียมพร้อม</h2>
     <p>รหัสห้อง: <b id="wait-pin" style="color:#e01e37;"></b></p>
@@ -863,6 +513,7 @@
     <p style="color: #f59e0b; margin-top:16px; font-size:14px; font-weight:bold;">⏳ รอสัญญาณปล่อยตัวจากผู้สอน...</p>
   </div>
 
+  <!-- Game Canvas Wrapper -->
   <div id="game-wrapper" class="hidden">
     <canvas id="gameCanvas"></canvas>
 
@@ -871,7 +522,7 @@
       <button class="btn-top-quiz" id="btn-open-quiz">⚡ คำถาม (+5)</button>
       <div class="stat-pill">⏱️ <span id="ui-timer">00:00</span></div>
       <div class="stat-pill">🎯 <span id="ui-height" style="color:#0284c7;">0</span>m</div>
-      <button class="btn-music-toggle" id="btn-toggle-music">🔊</button>
+      <button class="btn-music-toggle" id="btn-music-toggle">🔊</button>
     </div>
 
     <div class="controls-bar">
@@ -886,7 +537,7 @@
 
     <div id="quiz-modal" class="hidden">
       <div class="quiz-card">
-        <h3 id="quiz-title" style="margin:0 0 10px 0; font-size:16px; color:#e01e37;">⚡ ตอบคำถาม (+5 ⚡)</h3>
+        <h3 id="quiz-title" style="margin:0 0 10px 0; font-size:16px; color:#e01e37;">⚡ ตอบคำถามชาร์จพลังงาน</h3>
         <p id="quiz-q-text" style="font-weight:bold; font-size:13px; margin:10px 0; color:#0f172a; line-height:1.4; text-align: left;"></p>
         <div id="quiz-options-list"></div>
         <button class="btn hidden" id="btn-close-quiz" style="background:#64748b; margin-top:8px; padding:8px;">ปิดหน้าต่าง</button>
@@ -894,12 +545,13 @@
     </div>
   </div>
 
+  <!-- Result Screen -->
   <div id="view-result" class="container hidden">
     <h2 style="color:#d97706; margin-bottom:4px;">🏁 หมดเวลาการแข่งขัน!</h2>
     <p style="color:#64748b; font-size:12px; margin:0 0 6px 0;">ตารางสรุปคะแนนและสถิติการเรียนรู้</p>
     
     <div id="cheer-message" class="cheer-box">
-      🌟 ยอดเยี่ยมมากทุกคน! ไม่ว่าจะอยู่อันดับไหน ความพยายามในการเรียนรู้และฝึกฝนในวันนี้คือพัฒนาการที่ดีเยี่ยม ก้าวต่อไปนะ! 💖
+      ยอดเยี่ยมมากทุกคน! ไม่ว่าจะอยู่อันดับไหน ความพยายามในการเรียนรู้และฝึกฝนในวันนี้คือพัฒนาการที่ดีเยี่ยม ก้าวต่อไปนะ!
     </div>
 
     <div style="font-weight: bold; font-size: 12px; color: #1e293b; text-align: left; margin-top: 8px;">📝 รายการข้อสอบที่ควรทบทวน:</div>
@@ -923,6 +575,7 @@
     <button class="btn" id="btn-play-again" style="margin-top:8px; background:#475569;">🔄 เริ่มเกมใหม่</button>
   </div>
 
+  <!-- Firebase & Game Engine Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import { getDatabase, ref, set, update, onValue, push, remove, get } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
@@ -959,7 +612,7 @@
         closeTeacherModal();
         window.onHostClick();
       } else {
-        alert("❌ รหัสผ่านไม่ถูกต้อง เฉพาะคุณครูเท่านั้นครับ");
+        alert("รหัสผ่านไม่ถูกต้อง เฉพาะคุณครูเท่านั้นครับ");
         document.getElementById('input-teacher-pwd').value = "";
         document.getElementById('input-teacher-pwd').focus();
       }
@@ -1074,7 +727,7 @@
         audioCtx.resume();
       }
       isMusicPlaying = true;
-      document.getElementById('btn-toggle-music').innerText = "🔊";
+      document.getElementById('btn-music-toggle').innerText = "🔊";
       if (musicInterval) clearInterval(musicInterval);
       musicInterval = setInterval(() => {
         if (!isMusicPlaying) return;
@@ -1085,11 +738,11 @@
       }, 230);
     }
 
-    document.getElementById('btn-toggle-music').onclick = () => {
+    document.getElementById('btn-music-toggle').onclick = () => {
       initMusic();
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
       isMusicPlaying = !isMusicPlaying;
-      document.getElementById('btn-toggle-music').innerText = isMusicPlaying ? "🔊" : "🔇";
+      document.getElementById('btn-music-toggle').innerText = isMusicPlaying ? "🔊" : "🔇";
     };
 
     function showToast(text) {
@@ -1192,7 +845,7 @@
           quizData[itemIdx].q = qText;
           quizData[itemIdx].c = [a1, a2, a3, a4];
           quizData[itemIdx].a = correctIdx;
-          showToast('💾 อัปเดตข้อสอบเรียบร้อย!');
+          showToast('อัปเดตข้อสอบเรียบร้อย!');
         }
       } else {
         const newId = quizData.length > 0 ? Math.max(...quizData.map(q => q.id)) + 1 : 1;
@@ -1203,7 +856,7 @@
           a: correctIdx
         });
         myQuizAnswers[newId] = { firstResult: null };
-        showToast('➕ บันทึกข้อสอบใหม่สำเร็จ!');
+        showToast('บันทึกข้อสอบใหม่สำเร็จ!');
       }
 
       renderQuestionBankList();
@@ -1249,7 +902,7 @@
       }
       quizData = quizData.filter(q => q.id !== id);
       renderQuestionBankList();
-      showToast('🗑️ ลบคำถามเรียบร้อย');
+      showToast('ลบคำถามเรียบร้อย');
     };
 
     window.kickPlayer = function(pid) {
@@ -1274,7 +927,7 @@
 
       document.getElementById('btn-copy-link').onclick = () => {
         navigator.clipboard.writeText(joinUrl);
-        showToast('📋 คัดลอกลิงก์เรียบร้อย');
+        showToast('คัดลอกลิงก์เรียบร้อย');
       };
 
       set(ref(db, `rooms/${currentPin}`), { status: 'waiting' });
@@ -1365,13 +1018,13 @@
       if (!room) return alert('ไม่พบห้องนี้');
 
       if (room.status !== 'waiting') {
-        return alert('⚠️ การแข่งขันเริ่มต้นไปแล้วหรือสิ้นสุดแล้ว ไม่สามารถเข้าร่วมได้ในขณะนี้');
+        return alert('การแข่งขันเริ่มต้นไปแล้วหรือสิ้นสุดแล้ว ไม่สามารถเข้าร่วมได้ในขณะนี้');
       }
 
       const existingPlayers = room.players || {};
       const isNameTaken = Object.values(existingPlayers).some(p => p.name && p.name.trim().toLowerCase() === name.toLowerCase());
       if (isNameTaken) {
-        return alert('⚠️ ชื่อนี้มีผู้เล่นคนอื่นใช้ในห้องแล้ว กรุณาตั้งชื่อใหม่');
+        return alert('ชื่อนี้มีผู้เล่นคนอื่นใช้ในห้องแล้ว กรุณาตั้งชื่อใหม่');
       }
 
       playerName = name;
@@ -1529,11 +1182,11 @@
 
         let rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:#334155; color:#cbd5e1; font-weight:800; font-size:11px;">${idx + 1}</span>`;
         if (idx === 0) {
-          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #facc15, #ca8a04); color:#78350f; font-weight:900; font-size:12px; box-shadow:0 0 10px rgba(250, 204, 21, 0.5);">🥇</span>`;
+          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #facc15, #ca8a04); color:#78350f; font-weight:900; font-size:12px;">1</span>`;
         } else if (idx === 1) {
-          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #f1f5f9, #94a3b8); color:#1e293b; font-weight:900; font-size:12px; box-shadow:0 0 10px rgba(203, 213, 225, 0.4);">🥈</span>`;
+          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #f1f5f9, #94a3b8); color:#1e293b; font-weight:900; font-size:12px;">2</span>`;
         } else if (idx === 2) {
-          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #fdba74, #ea580c); color:#431407; font-weight:900; font-size:12px; box-shadow:0 0 10px rgba(249, 115, 22, 0.4);">🥉</span>`;
+          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #fdba74, #ea580c); color:#431407; font-weight:900; font-size:12px;">3</span>`;
         }
 
         tbody.innerHTML += `
@@ -1588,14 +1241,14 @@
 
       sorted.forEach((p, idx) => {
         let badge = `#${idx + 1}`;
-        if (idx === 0) badge = "🥇 1";
-        else if (idx === 1) badge = "🥈 2";
-        else if (idx === 2) badge = "🥉 3";
+        if (idx === 0) badge = "อันดับ 1";
+        else if (idx === 1) badge = "อันดับ 2";
+        else if (idx === 2) badge = "อันดับ 3";
 
         const isMe = (p.name === playerName);
         tbody.innerHTML += `
           <tr style="${isMe ? 'background: #ffe4e6; font-weight:bold;' : ''}">
-            <td>${badge} 🍬 ${p.name} ${isMe ? '(คุณ)' : ''}</td>
+            <td>${badge} - ${p.name} ${isMe ? '(คุณ)' : ''}</td>
             <td style="text-align:center; color:#0284c7;">${p.height || 0} m</td>
             <td style="text-align:center; color:#10b981;">${p.correct || 0}</td>
             <td style="text-align:center; color:#ef4444;">${p.wrong || 0}</td>
@@ -1619,17 +1272,7 @@
       });
 
       if (wrongItemsCount === 0) {
-        reviewBox.innerHTML = "🎉 สุดยอดมาก! คุณตอบคำถามถูกต้องหมดทุกข้อโดยไม่มีข้อผิดพลาดเลย!";
-      }
-
-      const myRank = sorted.findIndex(p => p.name === playerName);
-      const cheerEl = document.getElementById('cheer-message');
-      if (myRank === 0) {
-        cheerEl.innerHTML = "🏆 ยอดเยี่ยมที่สุด! คุณคว้าอันดับ 1 มาครองได้อย่างสง่างาม ทั้งทักษะการกระโดดและความรู้ Word สุดยอดมากๆ! 🌟";
-      } else if (myRank >= 1 && myRank <= 2) {
-        cheerEl.innerHTML = "🎉 เก่งมากๆ! คุณติด Top 3 บนโพเดียม เก่งและมีความพยายามสูงมาก ภูมิใจในตัวเองได้เลย! 💖";
-      } else {
-        cheerEl.innerHTML = "🌟 ยอดเยี่ยมมาก! ทุกความสูงและทุกคำถามที่ตอบ คือก้าวสำคัญของการเรียนรู้ ฝึกฝนต่อไปเรื่อยๆ คุณทำได้ดียิ่งขึ้นแน่นอน สู้ๆ นะ! 💪✨";
+        reviewBox.innerHTML = "สุดยอดมาก! คุณตอบคำถามถูกต้องหมดทุกข้อโดยไม่มีข้อผิดพลาดเลย!";
       }
 
       const btnExcel = document.getElementById('btn-export-excel');
@@ -1653,13 +1296,13 @@
       const modalTitle = document.getElementById('quiz-title');
 
       if (fromTrap) {
-        modalTitle.innerText = "🚨 ติดกับดัก! ตอบให้ถูกเพื่อปลดปล่อย";
+        modalTitle.innerText = "ติดกับดัก! ตอบให้ถูกเพื่อปลดปล่อย";
         modalTitle.style.color = "#ef4444";
       } else if (energy <= 0) {
-        modalTitle.innerText = "⚠️ พลังงานหมด! ตอบให้ถูกเพื่อชาร์จ (+5 ⚡)";
+        modalTitle.innerText = "พลังงานหมด! ตอบให้ถูกเพื่อชาร์จ (+5 ⚡)";
         modalTitle.style.color = "#d97706";
       } else {
-        modalTitle.innerText = "⚡ ตอบคำถามชาร์จพลังงาน (+5 ⚡)";
+        modalTitle.innerText = "ตอบคำถามชาร์จพลังงาน (+5 ⚡)";
         modalTitle.style.color = "#e01e37";
       }
 
@@ -1670,7 +1313,6 @@
         b.onclick = () => {
           const isCorrect = (idx === q.a);
 
-          // นับและบันทึกลง Excel เฉพาะ 20 ข้อแรกเท่านั้น
           if (totalAnsweredCount < 20) {
             if (!myQuizAnswers[q.id]) {
               myQuizAnswers[q.id] = { firstResult: null };
@@ -1687,12 +1329,12 @@
               isTrapped = false;
               trapImmunity = 100;
               if (releaseFromTrapCallback) releaseFromTrapCallback();
-              showToast('🔓 ถูกต้อง! ปลดล็อกกับดักแล้ว');
+              showToast('ถูกต้อง! ปลดล็อกกับดักแล้ว');
             } else {
               energy += 5;
               correctCount += 1;
               document.getElementById('ui-energy').innerText = energy;
-              showToast('🎉 ถูกต้อง! +5 ⚡');
+              showToast('ถูกต้อง! +5 ⚡');
             }
             currentQ++;
 
@@ -1705,7 +1347,7 @@
               });
             }
           } else {
-            showToast('❌ ผิด! ลองตอบข้อนี้ดู');
+            showToast('ผิด! ลองตอบข้อนี้ดู');
             if (!fromTrap) {
               wrongCount += 1;
               if (currentPin && myPlayerId) {
@@ -1734,18 +1376,6 @@
       ctx.arc(x + 40 * scale, y, 20 * scale, 0, Math.PI * 2);
       ctx.arc(x + 20 * scale, y + 8 * scale, 18 * scale, 0, Math.PI * 2);
       ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = '#ff8fa3';
-      ctx.beginPath();
-      ctx.arc(x + 10 * scale, y + 2 * scale, 3 * scale, 0, Math.PI * 2);
-      ctx.arc(x + 30 * scale, y + 2 * scale, 3 * scale, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#64748b';
-      ctx.beginPath();
-      ctx.arc(x + 14 * scale, y - 2 * scale, 2.5 * scale, 0, Math.PI * 2);
-      ctx.arc(x + 26 * scale, y - 2 * scale, 2.5 * scale, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
@@ -1784,17 +1414,6 @@
       ctx.arc(cx + 8, cy + r + 2 - legOffset, 5, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.fillStyle = color.dark;
-      ctx.beginPath();
-      ctx.arc(cx - 14, cy - r + 4, 7, 0, Math.PI * 2);
-      ctx.arc(cx + 14, cy - r + 4, 7, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#ffb3c6';
-      ctx.beginPath();
-      ctx.arc(cx - 14, cy - r + 4, 4, 0, Math.PI * 2);
-      ctx.arc(cx + 14, cy - r + 4, 4, 0, Math.PI * 2);
-      ctx.fill();
-
       ctx.fillStyle = color.main;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -1803,55 +1422,18 @@
       ctx.strokeStyle = '#ffffff';
       ctx.stroke();
 
-      ctx.fillStyle = color.blush;
-      ctx.beginPath();
-      ctx.arc(cx - 11, cy + 5, 4.5, 0, Math.PI * 2);
-      ctx.arc(cx + 11, cy + 5, 4.5, 0, Math.PI * 2);
-      ctx.fill();
-
       const eyeLook = (charFacing === 'left') ? -4 : 4;
-
-      if (charBlink) {
-        ctx.strokeStyle = '#0f172a';
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.arc(cx - 6 + eyeLook, cy - 1, 3, 0.2, Math.PI - 0.2);
-        ctx.arc(cx + 6 + eyeLook, cy - 1, 3, 0.2, Math.PI - 0.2);
-        ctx.stroke();
-      } else {
-        ctx.fillStyle = '#0f172a';
-        ctx.beginPath();
-        ctx.arc(cx - 6 + eyeLook, cy - 2, 4, 0, Math.PI * 2);
-        ctx.arc(cx + 6 + eyeLook, cy - 2, 4, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(cx - 7 + eyeLook, cy - 3.5, 1.8, 0, Math.PI * 2);
-        ctx.arc(cx + 5 + eyeLook, cy - 3.5, 1.8, 0, Math.PI * 2);
-        ctx.arc(cx - 5 + eyeLook, cy - 0.5, 0.9, 0, Math.PI * 2);
-        ctx.arc(cx + 7 + eyeLook, cy - 0.5, 0.9, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.strokeStyle = '#0f172a';
-      ctx.lineWidth = 2;
+      ctx.fillStyle = '#0f172a';
       ctx.beginPath();
-      ctx.arc(cx + (eyeLook * 0.4), cy + 4, 3.5, 0.2, Math.PI - 0.2);
-      ctx.stroke();
+      ctx.arc(cx - 6 + eyeLook, cy - 2, 4, 0, Math.PI * 2);
+      ctx.arc(cx + 6 + eyeLook, cy - 2, 4, 0, Math.PI * 2);
+      ctx.fill();
 
       if (charName) {
         ctx.fillStyle = '#e01e37';
         ctx.font = 'bold 11px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(`🍓 ${charName}`, cx, cy - r - 8);
-      }
-
-      if (charTrapped) {
-        ctx.fillStyle = '#ef4444';
-        ctx.font = 'bold 10px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('⚠️ ติดกับดัก!', cx, cy - r - 20);
+        ctx.fillText(charName, cx, cy - r - 8);
       }
 
       ctx.restore();
@@ -1859,98 +1441,26 @@
 
     function drawCutePlatform(ctx, p, dy) {
       ctx.save();
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.06)';
-      ctx.shadowOffsetY = 4;
-
       let px = p.x;
       let py = dy;
 
-      if (p.isDisappearing && p.stepped) {
-        px += (Math.random() - 0.5) * 4;
-        ctx.globalAlpha = Math.max(0.2, 1 - (p.stepTimer / 90));
-      }
-
       if (p.type === 'waffle') {
         ctx.fillStyle = '#fed7aa';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 12);
-        ctx.fill();
-        ctx.strokeStyle = '#f97316';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-
-        ctx.fillStyle = '#fef08a';
-        ctx.beginPath();
-        ctx.roundRect(px + p.w / 2 - 10, py - 5, 20, 9, 3);
-        ctx.fill();
-        ctx.strokeStyle = '#eab308';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
+        ctx.beginPath(); ctx.roundRect(px, py, p.w, p.h, 12); ctx.fill();
+        ctx.strokeStyle = '#f97316'; ctx.lineWidth = 2.5; ctx.stroke();
       } else if (p.type === 'jelly') {
         ctx.fillStyle = '#a7f3d0';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 12);
-        ctx.fill();
-        ctx.strokeStyle = '#10b981';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(px + 15, py + 8, 3, 0, Math.PI * 2);
-        ctx.arc(px + p.w - 18, py + 9, 3.5, 0, Math.PI * 2);
-        ctx.fill();
-
+        ctx.beginPath(); ctx.roundRect(px, py, p.w, p.h, 12); ctx.fill();
+        ctx.strokeStyle = '#10b981'; ctx.lineWidth = 2.5; ctx.stroke();
       } else if (p.type === 'ice') {
         ctx.fillStyle = '#cffafe';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 12);
-        ctx.fill();
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.roundRect(px + 6, py + 3, p.w - 12, 4, 2);
-        ctx.fill();
-
-      } else if (p.type === 'disappear') {
-        ctx.fillStyle = '#fbcfe8';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 10);
-        ctx.fill();
-        ctx.strokeStyle = '#db2777';
-        ctx.setLineDash([4, 4]);
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-      } else if (p.type === 'cake') {
-        ctx.fillStyle = '#ffe4e6';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 12);
-        ctx.fill();
-        ctx.fillStyle = '#fb7185';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, 7, [12, 12, 0, 0]);
-        ctx.fill();
-        ctx.strokeStyle = '#f43f5e';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
+        ctx.beginPath(); ctx.roundRect(px, py, p.w, p.h, 12); ctx.fill();
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.5; ctx.stroke();
       } else {
-        ctx.fillStyle = '#b45309';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 10);
-        ctx.fill();
-        ctx.fillStyle = '#78350f';
-        for (let i = 8; i < p.w - 12; i += 20) {
-          ctx.fillRect(px + i, py + 4, 14, p.h - 8);
-        }
+        ctx.fillStyle = '#ffe4e6';
+        ctx.beginPath(); ctx.roundRect(px, py, p.w, p.h, 12); ctx.fill();
+        ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 2; ctx.stroke();
       }
-
       ctx.restore();
     }
 
@@ -1964,19 +1474,14 @@
       }
       resize();
       window.addEventListener('resize', resize);
-      window.addEventListener('orientationchange', () => setTimeout(resize, 200));
 
       const player = {
         x: canvas.width / 2 - 17,
         y: canvas.height - 120,
-        w: 34,
-        h: 40,
-        vx: 0,
-        vy: 0,
-        speed: 5.6,
-        jumpPower: -15.4,
-        grounded: false,
-        onIce: false
+        w: 34, h: 40,
+        vx: 0, vy: 0,
+        speed: 5.6, jumpPower: -15.4,
+        grounded: false, onIce: false
       };
 
       releaseFromTrapCallback = () => {
@@ -1987,84 +1492,19 @@
       let cameraY = 0;
       let lastNetworkSync = 0;
 
-      const platforms = [
-        { x: -100, y: canvas.height - 60, w: 2500, h: 100, type: 'cake' }
-      ];
+      const platforms = [{ x: -100, y: canvas.height - 60, w: 2500, h: 100, type: 'cake' }];
       const boosters = [];
       const traps = [];
 
       let lastY = canvas.height - 110;
       const screenW = Math.max(360, canvas.width);
-      const platTypes = ['waffle', 'jelly', 'cake', 'choco', 'ice'];
-      const TOTAL_PLATFORMS = 380;
+      const platTypes = ['waffle', 'jelly', 'cake', 'ice'];
 
-      for (let i = 0; i < TOTAL_PLATFORMS; i++) {
-        const pR1 = Math.sin(i * 77 + 2) * 10000;
-        const norm1 = pR1 - Math.floor(pR1);
-        const pR2 = Math.cos(i * 41 + 5) * 10000;
-        const norm2 = pR2 - Math.floor(pR2);
-
-        let w = 135;
-        if (i < 30) {
-          w = Math.floor(norm1 * 20) + 125;
-        } else if (i < 100) {
-          w = Math.floor(norm1 * 20) + 95;
-        } else {
-          w = Math.floor(norm1 * 20) + 75;
-        }
-
-        const distY = 48;
-        lastY -= distY;
-
-        let type = platTypes[i % platTypes.length];
-        let isDisappearing = false;
-
-        if (i > 25 && norm2 < 0.22 && type !== 'ice') {
-          type = 'disappear';
-          isDisappearing = true;
-        }
-
-        let isMoving = false;
-        let baseStartX = 0;
-        let moveAmplitude = 0;
-        let movePeriod = 2000;
-
-        const moveChance = i < 30 ? 0.2 : (i < 100 ? 0.45 : 0.65);
-        if (i > 4 && norm1 < moveChance && !isDisappearing) {
-          isMoving = true;
-          moveAmplitude = (i < 80 ? 45 : 70) + norm2 * 30;
-          movePeriod = (i < 80 ? 2400 : 1800) + norm1 * 600;
-        }
-
-        const xSpan = screenW - w - 40;
-        const x = (i % 2 === 0) 
-          ? (norm2 * (xSpan * 0.45) + 20) 
-          : (screenW - w - 20 - norm2 * (xSpan * 0.45));
-        baseStartX = x;
-
-        platforms.push({ 
-          x: x, 
-          baseX: baseStartX,
-          y: lastY, 
-          w: w, 
-          h: 22, 
-          type: type,
-          isMoving: isMoving,
-          moveAmplitude: moveAmplitude,
-          movePeriod: movePeriod,
-          isDisappearing: isDisappearing,
-          stepped: false,
-          stepTimer: 0,
-          broken: false
-        });
-
-        if (i > 2 && (norm1 > 0.85 || i % 18 === 0)) {
-          boosters.push({ x: x + w / 2 - 14, y: lastY - 8, w: 28, h: 8, parentIdx: platforms.length - 1 });
-        }
-
-        if (i > 5 && norm2 < 0.25 && !isMoving && !isDisappearing) {
-          traps.push({ x: x + w / 2 - 10, y: lastY - 5, w: 20, h: 5 });
-        }
+      for (let i = 0; i < 200; i++) {
+        lastY -= 48;
+        let w = 110;
+        let x = (i % 2 === 0) ? 30 : screenW - w - 30;
+        platforms.push({ x: x, baseX: x, y: lastY, w: w, h: 22, type: platTypes[i % platTypes.length] });
       }
 
       const keys = { left: false, right: false };
@@ -2072,84 +1512,23 @@
       const setupButton = (id, keyName, dir) => {
         const el = document.getElementById(id);
         if (!el) return;
-
-        const startAction = (e) => {
-          if (e.cancelable) e.preventDefault();
-          el.classList.add('active');
-          if (isTrapped) return;
-          if (energy <= 0) {
-            triggerQuizModal(false);
-            return;
-          }
-          keys[keyName] = true;
-          facing = dir;
-        };
-
-        const stopAction = (e) => {
-          if (e.cancelable) e.preventDefault();
-          el.classList.remove('active');
-          keys[keyName] = false;
-        };
-
-        el.addEventListener('touchstart', startAction, { passive: false });
-        el.addEventListener('touchend', stopAction, { passive: false });
+        const startAction = (e) => { if(e.cancelable)e.preventDefault(); el.classList.add('active'); keys[keyName]=true; facing=dir; };
+        const stopAction = (e) => { if(e.cancelable)e.preventDefault(); el.classList.remove('active'); keys[keyName]=false; };
+        el.addEventListener('touchstart', startAction, {passive:false});
+        el.addEventListener('touchend', stopAction, {passive:false});
         el.addEventListener('mousedown', startAction);
         el.addEventListener('mouseup', stopAction);
-        el.addEventListener('mouseleave', stopAction);
       };
-
       setupButton('btn-left', 'left', 'left');
       setupButton('btn-right', 'right', 'right');
 
       const btnJump = document.getElementById('btn-jump');
-      const jumpStart = (e) => {
-        if (e.cancelable) e.preventDefault();
-        btnJump.classList.add('active');
-        doJump();
-      };
-      const jumpEnd = (e) => {
-        if (e.cancelable) e.preventDefault();
-        btnJump.classList.remove('active');
-      };
-      btnJump.addEventListener('touchstart', jumpStart, { passive: false });
-      btnJump.addEventListener('touchend', jumpEnd, { passive: false });
+      const jumpStart = (e) => { if(e.cancelable)e.preventDefault(); btnJump.classList.add('active'); doJump(); };
+      const jumpEnd = (e) => { if(e.cancelable)e.preventDefault(); btnJump.classList.remove('active'); };
+      btnJump.addEventListener('touchstart', jumpStart, {passive:false});
+      btnJump.addEventListener('touchend', jumpEnd, {passive:false});
       btnJump.addEventListener('mousedown', jumpStart);
       btnJump.addEventListener('mouseup', jumpEnd);
-      btnJump.addEventListener('mouseleave', jumpEnd);
-
-      window.addEventListener('keydown', (e) => {
-        if (isGameOver || isTrapped) return;
-        if (energy <= 0) {
-          triggerQuizModal(false);
-          return;
-        }
-        if (e.code === 'ArrowLeft' || e.code === 'KeyA') { 
-          keys.left = true; facing = 'left'; 
-          document.getElementById('btn-left').classList.add('active');
-        }
-        if (e.code === 'ArrowRight' || e.code === 'KeyD') { 
-          keys.right = true; facing = 'right'; 
-          document.getElementById('btn-right').classList.add('active');
-        }
-        if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') {
-          btnJump.classList.add('active');
-          doJump();
-        }
-      });
-
-      window.addEventListener('keyup', (e) => {
-        if (e.code === 'ArrowLeft' || e.code === 'KeyA') { 
-          keys.left = false; 
-          document.getElementById('btn-left').classList.remove('active');
-        }
-        if (e.code === 'ArrowRight' || e.code === 'KeyD') { 
-          keys.right = false; 
-          document.getElementById('btn-right').classList.remove('active');
-        }
-        if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') {
-          btnJump.classList.remove('active');
-        }
-      });
 
       function doJump(isBoost = false) {
         if (isGameOver || isTrapped) return;
@@ -2159,10 +1538,7 @@
             player.vy = isBoost ? -20.5 : player.jumpPower;
             player.grounded = false;
             document.getElementById('ui-energy').innerText = energy;
-
-            if (energy === 0 && !isBoost) {
-              setTimeout(() => triggerQuizModal(false), 380);
-            }
+            if (energy === 0 && !isBoost) setTimeout(() => triggerQuizModal(false), 380);
           } else {
             triggerQuizModal(false);
           }
@@ -2171,65 +1547,12 @@
 
       function gameLoop() {
         if (isGameOver) return;
-
         const W = canvas.width;
         const H = canvas.height;
-        const currentTime = Date.now();
 
-        if (trapImmunity > 0) trapImmunity--;
-
-        blinkTimer++;
-        if (blinkTimer > 180) {
-          isBlinking = true;
-          if (blinkTimer > 192) {
-            isBlinking = false;
-            blinkTimer = 0;
-          }
-        }
-
-        platforms.forEach((p, idx) => {
-          if (p.isMoving) {
-            const phase = (currentTime % p.movePeriod) / p.movePeriod * Math.PI * 2;
-            p.x = p.baseX + Math.sin(phase) * p.moveAmplitude;
-
-            boosters.forEach(b => {
-              if (b.parentIdx === idx) {
-                b.x = p.x + p.w / 2 - 14;
-              }
-            });
-          }
-
-          if (p.isDisappearing && p.stepped && !p.broken) {
-            p.stepTimer++;
-            if (p.stepTimer > 70) {
-              p.broken = true;
-              setTimeout(() => {
-                p.broken = false;
-                p.stepped = false;
-                p.stepTimer = 0;
-              }, 2200);
-            }
-          }
-        });
-
-        const isMoving = (keys.left || keys.right) && energy > 0 && !isTrapped;
-        if (isMoving) {
-          walkCycle += 0.25;
-        }
-
-        if (energy <= 0 || isTrapped) {
-          player.vx = 0;
-          keys.left = false;
-          keys.right = false;
-        } else if (player.onIce) {
-          if (keys.left) player.vx = Math.max(player.vx - 0.4, -player.speed * 1.15);
-          else if (keys.right) player.vx = Math.min(player.vx + 0.4, player.speed * 1.15);
-          else player.vx *= 0.96;
-        } else {
-          if (keys.left && !keys.right) player.vx = -player.speed;
-          else if (keys.right && !keys.left) player.vx = player.speed;
-          else player.vx = 0;
-        }
+        if (keys.left && !keys.right) player.vx = -player.speed;
+        else if (keys.right && !keys.left) player.vx = player.speed;
+        else player.vx = 0;
 
         player.x += player.vx;
         if (player.x < 10) player.x = 10;
@@ -2240,11 +1563,7 @@
         player.y += player.vy;
 
         player.grounded = false;
-        player.onIce = false;
-
         platforms.forEach(p => {
-          if (p.broken) return;
-
           if (
             player.x + player.w * 0.75 > p.x &&
             player.x + player.w * 0.25 < p.x + p.w &&
@@ -2255,43 +1574,8 @@
             player.grounded = true;
             player.vy = 0;
             player.y = p.y - player.h;
-
-            if (p.type === 'ice') {
-              player.onIce = true;
-            }
-
-            if (p.isDisappearing && !p.stepped) {
-              p.stepped = true;
-            }
           }
         });
-
-        boosters.forEach(b => {
-          if (
-            player.x + player.w > b.x &&
-            player.x < b.x + b.w &&
-            player.y + player.h >= b.y &&
-            player.y + player.h <= b.y + b.h + player.vy &&
-            player.vy >= 0
-          ) {
-            doJump(true);
-          }
-        });
-
-        if (!isTrapped && trapImmunity === 0) {
-          traps.forEach(t => {
-            if (
-              player.x + player.w * 0.7 > t.x &&
-              player.x + player.w * 0.3 < t.x + t.w &&
-              player.y + player.h >= t.y &&
-              player.y + player.h <= t.y + t.h + 8
-            ) {
-              isTrapped = true;
-              player.vy = 0;
-              triggerQuizModal(true);
-            }
-          });
-        }
 
         const targetCamY = player.y - (H * 0.6);
         cameraY += (targetCamY - cameraY) * 0.12;
@@ -2304,71 +1588,36 @@
           lastNetworkSync = now;
           if (currentPin && myPlayerId) {
             update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
-              x: Math.round(player.x),
-              y: Math.round(player.y),
-              facing: facing,
-              styleIndex: myStyleIndex,
-              height: currentMeters,
-              correct: correctCount,
-              wrong: wrongCount,
-              quizStats: myQuizAnswers,
-              energy: energy
+              x: Math.round(player.x), y: Math.round(player.y),
+              facing: facing, styleIndex: myStyleIndex, height: currentMeters,
+              correct: correctCount, wrong: wrongCount, quizStats: myQuizAnswers, energy: energy
             });
           }
         }
 
         drawSkyBackground(ctx, W, H, cameraY);
-
         platforms.forEach(p => {
-          if (p.broken) return;
           const dy = p.y - cameraY;
           if (dy + p.h < -50 || dy > H + 50) return;
           drawCutePlatform(ctx, p, dy);
         });
 
-        boosters.forEach(b => {
-          const dy = b.y - cameraY;
-          if (dy < -40 || dy > H + 40) return;
-          ctx.fillStyle = '#10b981';
-          ctx.beginPath();
-          ctx.roundRect(b.x, dy, b.w, b.h, 4);
-          ctx.fill();
-          ctx.fillStyle = '#34d399';
-          ctx.fillRect(b.x + 4, dy + 2, b.w - 8, 2);
-        });
-
-        traps.forEach(t => {
-          const dy = t.y - cameraY;
-          if (dy < -40 || dy > H + 40) return;
-          ctx.fillStyle = '#ef4444';
-          ctx.beginPath();
-          ctx.roundRect(t.x, dy, t.w, t.h, 3);
-          ctx.fill();
-        });
-
         Object.entries(allPlayersData).forEach(([pid, other]) => {
           if (pid === myPlayerId || other.x === undefined || other.y === undefined) return;
-
-          if (!smoothPositions[pid]) {
-            smoothPositions[pid] = { x: other.x, y: other.y };
-          }
-
+          if (!smoothPositions[pid]) smoothPositions[pid] = { x: other.x, y: other.y };
           smoothPositions[pid].x += (other.x - smoothPositions[pid].x) * 0.22;
           smoothPositions[pid].y += (other.y - smoothPositions[pid].y) * 0.22;
 
           const ox = smoothPositions[pid].x + 17;
           const oy = smoothPositions[pid].y + 18 - cameraY;
-
-          if (oy > -60 && oy < H + 60) {
-            const otherColor = SWEET_PALETTES[other.styleIndex || 0];
-            drawCuteCharacter(ctx, ox, oy, 20, false, otherColor, other.facing || 'right', false, other.name || 'Agent', false);
-          }
+          const otherColor = SWEET_PALETTES[other.styleIndex || 0];
+          drawCuteCharacter(ctx, ox, oy, 20, false, otherColor, other.facing || 'right', false, other.name || 'Agent', false);
         });
 
         const drawX = player.x + player.w / 2;
         const drawY = player.y + 18 - cameraY;
         const myColor = SWEET_PALETTES[myStyleIndex];
-        drawCuteCharacter(ctx, drawX, drawY, 20, isMoving, myColor, facing, isBlinking, playerName, isTrapped);
+        drawCuteCharacter(ctx, drawX, drawY, 20, keys.left || keys.right, myColor, facing, false, playerName, isTrapped);
 
         requestAnimationFrame(gameLoop);
       }
