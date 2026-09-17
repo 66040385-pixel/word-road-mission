@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🚗 Word Road: Smooth Start (E1)</title>
+  <title>🚗 Word Road: Grand Checkpoint Arch (E1)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
@@ -381,7 +381,6 @@
   let totalStars = 0;
   let stageAttempts = 0;
 
-  // Road Physics
   let speed = 0;
   let maxSpeed = 160;
   let roadPosition = 0;
@@ -389,7 +388,6 @@
   let isArrivedAtGate = false;
   let steeringAngle = 0;
 
-  // 3-Lane Setup: [-1.0 = ซ้าย, 0.0 = กลาง, 1.0 = ขวา]
   const laneOffsets = [-1.0, 0.0, 1.0];
   let currentLane = 1;
   let targetX = 0.0;
@@ -397,7 +395,6 @@
 
   let obstacles = [];
 
-  // สร้างสิ่งกีดขวางแบบการันตีเลนว่างเสมอ
   function spawnObstacleWave(startZ) {
     const types = ['cone', 'barrier', 'broken_car'];
     const safeLane = Math.floor(Math.random() * 3);
@@ -439,7 +436,6 @@
   function init() {
     bindControls();
     updateHUD();
-    // ป้องกันการเกิดสิ่งกีดขวางใกล้ตัวรถตอนเริ่ม โดยให้เกิดที่ระยะไกล z <= 0.15 เท่านั้น
     obstacles = [];
     spawnObstacleWave(0.1);
     requestAnimationFrame(gameLoop);
@@ -545,7 +541,6 @@
         if (item.z >= 1) item.z -= 1;
       });
 
-      // ตรวจสอบสิ่งกีดขวางเฉพาะเมื่อรถวิ่งอยู่ (speed > 5) เพื่อป้องกันการชนตั้งแต่ตอนจอด
       for (let i = obstacles.length - 1; i >= 0; i--) {
         let obs = obstacles[i];
         obs.z += (speed * 0.00016);
@@ -562,7 +557,6 @@
         }
       }
 
-      // สุ่มเกิดสิ่งกีดขวางที่ระยะขอบฟ้า z = 0.05
       if (obstacles.length < 3 && Math.random() < 0.03 && distanceToNextGate > 350) {
         spawnObstacleWave(0.05);
       }
@@ -667,7 +661,6 @@
 
       ctx.fillStyle = '#ffffff';
 
-      // เส้นแบ่งเลนซ้าย-กลาง
       const l1_x1 = rx1 - (laneW1 * 0.5);
       const l1_x2 = rx2 - (laneW2 * 0.5);
       ctx.beginPath();
@@ -675,7 +668,6 @@
       ctx.lineTo(l1_x2 + lineW2, y2); ctx.lineTo(l1_x1 + lineW1, y1);
       ctx.fill();
 
-      // เส้นแบ่งเลนกลาง-ขวา
       const l2_x1 = rx1 + (laneW1 * 0.5);
       const l2_x2 = rx2 + (laneW2 * 0.5);
       ctx.beginPath();
@@ -717,30 +709,127 @@
       else if (obs.type === 'broken_car') drawBrokenCarBig(obsX, y, scale, laneWidth);
     });
 
-    // 7. ซุ้มประตู Checkpoint
-    if (distanceToNextGate < 400) {
-      const gateProgress = (1 - (distanceToNextGate / 400));
-      const gateScale = Math.pow(gateProgress, 2.2);
-      const gateY = horizon + gateScale * (h - horizon - 100);
-      const gateW = (w * 0.9) * gateScale;
-      const gateH = 180 * gateScale;
-      const gateX = (w / 2) - (currentX * (gateW * 0.33));
-
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(gateX - gateW / 2, gateY, 32 * gateScale, gateH);
-      ctx.fillRect(gateX + gateW / 2 - 32 * gateScale, gateY, 32 * gateScale, gateH);
-
-      ctx.fillStyle = '#0369a1';
-      ctx.fillRect(gateX - gateW / 2, gateY - 45 * gateScale, gateW, 45 * gateScale);
-
-      ctx.fillStyle = '#facc15';
-      ctx.fillRect(gateX - gateW / 2, gateY - 5 * gateScale, gateW, 5 * gateScale);
-
-      ctx.fillStyle = '#ffffff';
-      ctx.font = `bold ${Math.max(12, 20 * gateScale)}px 'Chakra Petch'`;
-      ctx.textAlign = 'center';
-      ctx.fillText(`CHECKPOINT ${currentStageIndex + 1}: ${stageData[currentStageIndex].badge}`, gateX, gateY - 16 * gateScale);
+    // 7. ซุ้มประตู Checkpoint ดีไซน์ใหม่ สวยงามโอ่อ่า
+    if (distanceToNextGate < 450) {
+      const gateProgress = (1 - (distanceToNextGate / 450));
+      const gateScale = Math.pow(gateProgress, 2.1);
+      drawGrandArchway(gateScale, gateProgress);
     }
+  }
+
+  // ฟังก์ชันวาดซุ้มประตู Checkpoint ดีไซน์ระดับพรีเมียม
+  function drawGrandArchway(gateScale, gateProgress) {
+    if (gateScale < 0.04) return;
+    const w = canvas.width;
+    const h = canvas.height;
+    const horizon = h * 0.44;
+
+    // คำนวณความกว้างถนน ณ ตำแหน่งซุ้มประตู
+    const roadW_near = w * 1.1;
+    const roadW_far = w * 0.16;
+    const currentRoadW = roadW_far + (roadW_near - roadW_far) * gateScale;
+    const roadCenter = (w / 2) - (currentX * (currentRoadW * 0.33));
+
+    // ตำแหน่งพื้นของซุ้มประตู
+    const groundY = horizon + gateScale * (h - horizon - 30);
+    
+    // ความกว้างซุ้ม: กางออกไปนอกขอบทางถนนจริงข้างละ 12%
+    const archW = currentRoadW * 1.24;
+    const archH = 220 * gateScale;
+    const topBarH = 55 * gateScale;
+    const archTopY = groundY - archH;
+
+    const leftX = roadCenter - (archW / 2);
+    const rightX = roadCenter + (archW / 2);
+    const postW = 28 * gateScale;
+
+    ctx.save();
+
+    // 1. ฐานคอนกรีตตั้งบนพื้นหญ้านอกถนน
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.roundRect(leftX - postW * 0.3, groundY - 12 * gateScale, postW * 1.6, 14 * gateScale, 3 * gateScale);
+    ctx.roundRect(rightX - postW * 1.3, groundY - 12 * gateScale, postW * 1.6, 14 * gateScale, 3 * gateScale);
+    ctx.fill();
+
+    // 2. เสาค้ำคู่ซ้าย-ขวา โครงสร้างเหล็กไฮเวย์
+    const pillarGrad = ctx.createLinearGradient(leftX, 0, leftX + postW, 0);
+    pillarGrad.addColorStop(0, '#0284c7');
+    pillarGrad.addColorStop(0.5, '#38bdf8');
+    pillarGrad.addColorStop(1, '#0369a1');
+
+    ctx.fillStyle = pillarGrad;
+    ctx.fillRect(leftX, archTopY + topBarH * 0.8, postW, archH - topBarH * 0.8);
+    ctx.fillRect(rightX - postW, archTopY + topBarH * 0.8, postW, archH - topBarH * 0.8);
+
+    // เส้นประดับนีออนบนเสา
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(leftX + postW * 0.35, archTopY + topBarH, postW * 0.3, archH - topBarH - 12 * gateScale);
+    ctx.fillRect(rightX - postW * 0.65, archTopY + topBarH, postW * 0.3, archH - topBarH - 12 * gateScale);
+
+    // 3. แผงคานป้ายด้านบน (Main Signboard) ทรงโค้งมนหรูหรา
+    const signLeft = leftX - 10 * gateScale;
+    const signW = archW + 20 * gateScale;
+
+    // เงาป้าย
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+    ctx.shadowBlur = 15 * gateScale;
+    ctx.shadowOffsetY = 6 * gateScale;
+
+    // พื้นหลังป้ายสีน้ำเงินเข้ม Microsoft Word
+    const signGrad = ctx.createLinearGradient(0, archTopY, 0, archTopY + topBarH);
+    signGrad.addColorStop(0, '#0078d4');
+    signGrad.addColorStop(0.5, '#106ebe');
+    signGrad.addColorStop(1, '#004578');
+
+    ctx.fillStyle = signGrad;
+    ctx.beginPath();
+    ctx.roundRect(signLeft, archTopY, signW, topBarH, 8 * gateScale);
+    ctx.fill();
+    ctx.shadowBlur = 0; // ปิดเงา
+
+    // ขอบทองประดับป้ายบน-ล่าง
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(signLeft, archTopY, signW, 4 * gateScale);
+    ctx.fillRect(signLeft, archTopY + topBarH - 4 * gateScale, signW, 4 * gateScale);
+
+    // 4. แถบธงตาหมากรุกเส้นชัย (Checkered Finish Banner) ใต้ป้าย
+    const checkH = 14 * gateScale;
+    const checkY = archTopY + topBarH;
+    const checkSize = 14 * gateScale;
+    const numChecks = Math.ceil(signW / checkSize);
+
+    for (let c = 0; c < numChecks; c++) {
+      ctx.fillStyle = (c % 2 === 0) ? '#0f172a' : '#ffffff';
+      ctx.fillRect(signLeft + (c * checkSize), checkY, checkSize, checkH);
+    }
+
+    // 5. ป้ายไฟกลมหมายเลขด่าน (Badge Icon บนซ้ายของป้าย)
+    const badgeR = 24 * gateScale;
+    const badgeX = signLeft + 35 * gateScale;
+    const badgeY = archTopY + topBarH / 2;
+
+    ctx.fillStyle = '#facc15';
+    ctx.beginPath();
+    ctx.arc(badgeX, badgeY, badgeR, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = `bold ${Math.max(10, 18 * gateScale)}px 'Chakra Petch'`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`${currentStageIndex + 1}`, badgeX, badgeY);
+
+    // 6. ข้อความบนป้าย Checkpoint คมชัดระดับป้ายดิจิทัล
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `bold ${Math.max(10, 19 * gateScale)}px 'Chakra Petch'`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const stageTitle = `CHECKPOINT ${currentStageIndex + 1}: ${stageData[currentStageIndex].badge.toUpperCase()}`;
+    ctx.fillText(stageTitle, roadCenter + 15 * gateScale, archTopY + (topBarH * 0.46));
+
+    ctx.restore();
   }
 
   function drawBigTree(x, y, scale) {
@@ -969,7 +1058,6 @@
     if (currentStageIndex < 12) {
       distanceToNextGate = 1000;
       isArrivedAtGate = false;
-      // ล้างสิ่งกีดขวางทั้งหมด และวางที่จุดเริ่มต้นไกลๆ เท่านั้น
       obstacles = [];
       spawnObstacleWave(0.1);
       updateHUD();
