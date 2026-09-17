@@ -3,208 +3,291 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🚗 Word Road Quest: Drive to Checkpoints (E1)</title>
+  <title>🏎️ Word Road: Cockpit Mission (E1)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0c1220;
-      --card-bg: rgba(22, 33, 56, 0.95);
       --word-blue: #185abd;
       --neon-cyan: #00e5ff;
       --neon-gold: #ffd600;
       --neon-green: #00e676;
       --neon-red: #ff3d00;
-      --text: #f8fafc;
-      --text-dim: #94a3b8;
+      --cockpit-dark: #121824;
+      --cockpit-frame: #1e293b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    
+
     body {
-      background: radial-gradient(circle at center, #1e2e4f 0%, var(--bg) 90%);
-      color: var(--text);
+      background: #060911;
+      color: #f8fafc;
       font-family: 'Sarabun', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 16px;
+      padding: 12px;
     }
 
-    .game-frame {
+    .main-wrapper {
       width: 100%;
       max-width: 960px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      position: relative;
+      gap: 10px;
     }
 
-    .top-bar {
-      background: var(--card-bg);
-      border: 1px solid rgba(0, 229, 255, 0.25);
+    /* Top HUD */
+    .hud-top {
+      background: rgba(18, 24, 36, 0.9);
+      border: 1px solid rgba(0, 229, 255, 0.3);
       border-radius: 12px;
       padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    }
-    .game-logo {
       font-family: 'Chakra Petch', sans-serif;
-      font-weight: 700;
-      font-size: 1.3rem;
-      color: var(--neon-cyan);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
     }
-    .hud-metrics { display: flex; gap: 20px; font-family: 'Chakra Petch'; font-size: 1.05rem; }
+    .hud-val { color: var(--neon-cyan); font-weight: bold; font-size: 1.1rem; }
 
-    #map-view {
+    /* Screen Viewport */
+    .cockpit-viewport {
       position: relative;
-      background: #111a2e;
-      border: 3px solid #23385e;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    }
-    canvas { display: block; width: 100%; height: 580px; }
-
-    .map-instruction {
-      position: absolute;
-      top: 14px; left: 50%;
-      transform: translateX(-50%);
-      background: rgba(12, 18, 32, 0.9);
-      border: 1px solid var(--neon-cyan);
-      padding: 6px 18px;
+      width: 100%;
+      height: 560px;
       border-radius: 20px;
-      font-size: 0.9rem;
-      color: var(--neon-cyan);
-      pointer-events: none;
-      font-family: 'Chakra Petch';
-      display: flex;
-      gap: 10px;
-      align-items: center;
+      overflow: hidden;
+      border: 4px solid var(--cockpit-frame);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.9);
+      background: #000;
     }
 
-    /* On-Screen Mobile D-Pad */
-    .dpad-controls {
+    canvas {
       position: absolute;
-      bottom: 20px;
-      right: 20px;
-      display: grid;
-      grid-template-columns: repeat(3, 48px);
-      grid-template-rows: repeat(3, 48px);
-      gap: 6px;
-      z-index: 10;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
     }
-    .dpad-btn {
-      background: rgba(18, 26, 43, 0.85);
-      border: 1px solid var(--neon-cyan);
-      color: var(--neon-cyan);
-      font-size: 1.2rem;
-      border-radius: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-    .dpad-btn:active { background: var(--neon-cyan); color: #000; }
-    .btn-up { grid-column: 2; grid-row: 1; }
-    .btn-left { grid-column: 1; grid-row: 2; }
-    .btn-down { grid-column: 2; grid-row: 2; }
-    .btn-right { grid-column: 3; grid-row: 2; }
 
-    /* Stage Mission Screen */
-    #stage-view {
-      display: none;
-      background: var(--card-bg);
+    /* Cockpit Overlay (กระจกหน้า + เสาข้าง + แผงคอนโซล) */
+    .cockpit-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* เสาโครงหลังคารถ (A-Pillar) */
+    .windshield-frame {
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 15px 30px rgba(0,0,0,0.8), 
+                  inset 25px 0 35px rgba(10,14,24,0.9), 
+                  inset -25px 0 35px rgba(10,14,24,0.9);
+      border-top: 15px solid #0f172a;
+    }
+
+    /* กระจกมองหลัง */
+    .rearview-mirror {
+      position: absolute;
+      top: 15px; left: 50%;
+      transform: translateX(-50%);
+      width: 160px;
+      height: 40px;
+      background: #0f172a;
+      border: 2px solid #475569;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-family: 'Chakra Petch';
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    }
+
+    /* แดชบอร์ดคนขับด้านล่าง */
+    .dashboard {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 175px;
+      background: linear-gradient(180deg, #111827 0%, #080c14 100%);
+      border-top: 4px solid #1e293b;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 30px 15px 30px;
+      clip-path: polygon(0 20%, 30% 0, 70% 0, 100% 20%, 100% 100%, 0 100%);
+    }
+
+    /* พวงมาลัยหมุนได้ */
+    .steering-wheel-container {
+      position: absolute;
+      left: 50%;
+      bottom: -65px;
+      transform: translateX(-50%);
+      width: 250px;
+      height: 250px;
+      transition: transform 0.1s ease-out;
+    }
+    .wheel-ring {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      border: 22px solid #1e293b;
+      border-top-color: #334155;
+      box-shadow: inset 0 0 15px #000, 0 8px 20px rgba(0,0,0,0.8);
+      position: relative;
+    }
+    .wheel-hub {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px; height: 70px;
+      background: #0f172a;
+      border-radius: 50%;
+      border: 3px solid var(--neon-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Chakra Petch';
+      font-weight: 700;
+      color: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(0,229,255,0.4);
+    }
+    .wheel-spoke {
+      position: absolute;
+      background: #1e293b;
+    }
+    .spoke-h { top: 50%; left: 0; right: 0; height: 16px; transform: translateY(-50%); }
+    .spoke-v { bottom: 0; left: 50%; width: 16px; height: 50%; transform: translateX(-50%); }
+
+    /* มาตรวัดความเร็ว & ระยะทาง */
+    .gauge {
+      font-family: 'Chakra Petch', sans-serif;
+      text-align: center;
+      z-index: 5;
+    }
+    .gauge-num { font-size: 2.2rem; font-weight: 700; color: var(--neon-cyan); text-shadow: 0 0 15px rgba(0,229,255,0.5); }
+    .gauge-label { font-size: 0.75rem; color: #94a3b8; letter-spacing: 1px; }
+
+    /* On-Screen Mobile Pedals */
+    .pedals {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      right: 15px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: auto;
+      z-index: 20;
+    }
+    .pedal-btn {
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      font-family: 'Chakra Petch';
+      font-weight: bold;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 1rem;
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+    .pedal-btn:active { background: var(--neon-cyan); color: #000; }
+
+    /* HUD Dashboard Mission Computer (เมื่อถึง Checkpoint) */
+    .mission-terminal {
+      position: absolute;
+      top: 45px; left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      width: 90%;
+      max-width: 780px;
+      background: rgba(11, 17, 32, 0.96);
+      backdrop-filter: blur(12px);
       border: 2px solid var(--neon-cyan);
       border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 0 40px rgba(0, 229, 255, 0.25);
+      padding: 22px 28px;
+      box-shadow: 0 0 50px rgba(0, 229, 255, 0.4);
+      display: none;
       flex-direction: column;
-      gap: 16px;
-      position: relative;
-      animation: fadeIn 0.3s ease;
+      gap: 14px;
+      z-index: 100;
+      pointer-events: auto;
+      animation: popIn 0.3s forwards;
     }
-    @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+    @keyframes popIn { to { transform: translateX(-50%) scale(1); opacity: 1; } }
 
-    .stage-header {
+    .terminal-title {
+      font-family: 'Chakra Petch';
+      font-size: 1.3rem;
+      color: var(--neon-cyan);
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding-bottom: 12px;
-    }
-    .stage-title { font-family: 'Chakra Petch'; font-size: 1.4rem; color: var(--neon-cyan); }
-    .badge-pill {
-      background: rgba(0, 229, 255, 0.1);
-      border: 1px solid var(--neon-cyan);
-      padding: 4px 12px;
-      border-radius: 16px;
-      font-size: 0.85rem;
-      font-family: 'Chakra Petch';
+      padding-bottom: 8px;
     }
 
-    .question-box { font-size: 1.2rem; line-height: 1.6; color: #fff; padding: 6px 0; }
+    .terminal-q { font-size: 1.15rem; line-height: 1.6; color: #fff; }
 
-    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } }
 
     .opt-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
       color: #fff;
-      padding: 14px 18px;
-      border-radius: 10px;
+      padding: 12px 16px;
+      border-radius: 8px;
       font-size: 0.95rem;
       text-align: left;
       cursor: pointer;
       display: flex;
-      align-items: center;
       gap: 10px;
       transition: all 0.2s;
     }
     .opt-btn:hover:not(:disabled) {
-      background: rgba(0, 229, 255, 0.15);
+      background: rgba(0, 229, 255, 0.2);
       border-color: var(--neon-cyan);
-      transform: translateY(-2px);
     }
-    .opt-btn.correct { background: rgba(0, 230, 118, 0.25) !important; border-color: var(--neon-green) !important; color: var(--neon-green) !important; }
-    .opt-btn.wrong { background: rgba(255, 61, 0, 0.25) !important; border-color: var(--neon-red) !important; color: var(--neon-red) !important; }
+    .opt-btn.correct { background: rgba(0, 230, 118, 0.3) !important; border-color: var(--neon-green) !important; color: var(--neon-green) !important; }
+    .opt-btn.wrong { background: rgba(255, 61, 0, 0.3) !important; border-color: var(--neon-red) !important; color: var(--neon-red) !important; }
 
-    .ai-box {
-      background: rgba(0, 120, 212, 0.15);
+    .ai-co-pilot {
+      background: rgba(0, 120, 212, 0.2);
       border-left: 4px solid var(--neon-cyan);
-      padding: 12px 16px;
+      padding: 10px 14px;
       border-radius: 0 8px 8px 0;
-      font-size: 0.95rem;
-      color: #cbd5e1;
+      font-size: 0.9rem;
+      color: #dbeafe;
       display: flex;
-      gap: 12px;
-      align-items: flex-start;
+      gap: 10px;
+      align-items: center;
     }
 
-    .btn-return-map {
+    .btn-drive-on {
       background: linear-gradient(135deg, var(--word-blue), var(--neon-cyan));
       border: none;
       color: #000;
       font-family: 'Chakra Petch';
       font-weight: 700;
       font-size: 1rem;
-      padding: 12px 24px;
+      padding: 10px 24px;
       border-radius: 8px;
       cursor: pointer;
       align-self: flex-end;
       display: none;
     }
-    .btn-return-map:hover { filter: brightness(1.2); }
+    .btn-drive-on:hover { filter: brightness(1.2); }
 
+    /* Repair Overlay */
     .repair-modal {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.85);
@@ -229,53 +312,76 @@
 </head>
 <body>
 
-<div class="game-frame">
+<div class="main-wrapper">
 
-  <div class="top-bar">
-    <div class="game-logo">🚗 WORD ROAD: MANUAL DRIVE</div>
-    <div class="hud-metrics">
-      <div>❤️ <span id="shield-ui">3/3</span></div>
-      <div>⭐ <span id="stars-ui">0</span></div>
-      <div>📊 E1: <span id="e1-ui" style="color:var(--neon-green);">0/120 (0%)</span></div>
-    </div>
+  <!-- HUD Bar -->
+  <div class="hud-top">
+    <div>🛡️ เกราะรถ: <span id="health-val" class="hud-val">❤️❤️❤️</span></div>
+    <div>🚩 ด่านปัจจุบัน: <span id="cp-track-val" class="hud-val">ด่าน 1 / 12</span></div>
+    <div>⭐ ดาวสะสม: <span id="star-val" class="hud-val">0 ⭐</span></div>
+    <div>📊 ประสิทธิภาพ E1: <span id="e1-val" class="hud-val" style="color:var(--neon-green)">0%</span></div>
   </div>
 
-  <!-- 1. MAP VIEW -->
-  <div id="map-view">
-    <div class="map-instruction">
-      <span>🕹️ ขับรถด้วยลูกศร / W-A-S-D ไปยัง Checkpoint ด่านถัดไป!</span>
-    </div>
-    <canvas id="mapCanvas" width="960" height="580"></canvas>
-    
-    <!-- Mobile D-Pad Buttons -->
-    <div class="dpad-controls">
-      <button class="dpad-btn btn-up" id="btn-up">▲</button>
-      <button class="dpad-btn btn-left" id="btn-left">◀</button>
-      <button class="dpad-btn btn-down" id="btn-down">▼</button>
-      <button class="dpad-btn btn-right" id="btn-right">▶</button>
-    </div>
-  </div>
+  <!-- Cockpit Screen -->
+  <div class="cockpit-viewport">
+    <canvas id="roadCanvas" width="960" height="560"></canvas>
 
-  <!-- 2. STAGE VIEW -->
-  <div id="stage-view">
-    <div class="stage-header">
-      <div>
-        <div class="stage-title" id="stage-title">ด่านที่ 1</div>
-        <small id="stage-topic" style="color:var(--text-dim);"></small>
+    <!-- Cockpit Overlay -->
+    <div class="cockpit-overlay">
+      <div class="windshield-frame"></div>
+      <div class="rearview-mirror">MIRROR: CLEAR</div>
+
+      <!-- แดชบอร์ดคนขับ -->
+      <div class="dashboard">
+        <div class="gauge">
+          <div class="gauge-num" id="speed-num">0</div>
+          <div class="gauge-label">SPEED (KM/H)</div>
+        </div>
+
+        <div class="gauge">
+          <div class="gauge-num" id="dist-num" style="color:var(--neon-gold)">1000</div>
+          <div class="gauge-label">DIST TO NEXT CHECKPOINT (M)</div>
+        </div>
       </div>
-      <div class="badge-pill" id="stage-badge-target">TARGET: Word Badge</div>
+
+      <!-- พวงมาลัยหมุน -->
+      <div class="steering-wheel-container" id="wheel">
+        <div class="wheel-ring">
+          <div class="wheel-spoke spoke-h"></div>
+          <div class="wheel-spoke spoke-v"></div>
+          <div class="wheel-hub">WORD</div>
+        </div>
+      </div>
+
+      <!-- ปุ่มเหยียบคันเร่ง/เบรก สำหรับจอมือถือ -->
+      <div class="pedals">
+        <div style="display:flex; gap:8px;">
+          <button class="pedal-btn" id="btn-left">◀ เลี้ยวซ้าย</button>
+          <button class="pedal-btn" id="btn-right">เลี้ยวขวา ▶</button>
+        </div>
+        <button class="pedal-btn" id="btn-gas" style="background:rgba(0, 229, 255, 0.2); border-color:var(--neon-green); color:var(--neon-green);">⚡ เหยียบคันเร่ง (W / ▲)</button>
+      </div>
     </div>
 
-    <div class="question-box" id="stage-q">...</div>
+    <!-- จอคอมพิวเตอร์ประจำรถ (Mission Terminal เมื่อถึงด่าน) -->
+    <div class="mission-terminal" id="terminal">
+      <div class="terminal-title">
+        <span id="term-title">🚧 CHECKPOINT 1: รู้จัก MICROSOFT WORD</span>
+        <span id="term-badge" style="font-size:0.85rem; color:var(--neon-gold);">🏅 TARGET: Word Beginner</span>
+      </div>
 
-    <div class="options-grid" id="stage-options"></div>
+      <div class="terminal-q" id="term-q">...</div>
 
-    <div class="ai-box">
-      <div style="font-size:1.5rem; line-height:1;">🤖</div>
-      <div id="ai-guidance"><strong>Word Co-Pilot:</strong> อ่านโจทย์ให้ละเอียดก่อนเลือกคำตอบนะ!</div>
+      <div class="options-grid" id="term-options"></div>
+
+      <div class="ai-co-pilot">
+        <div style="font-size:1.5rem;">🤖</div>
+        <div id="ai-tip"><strong>Word Co-Pilot:</strong> จอดรถเทียบท่าแล้ว! ตอบคำถามเพื่อปลดล็อกด่านต่อไป</div>
+      </div>
+
+      <button id="btn-drive" class="btn-drive-on" onclick="continueDriving()">เหยียบคันเร่ง ออกเดินทางต่อไป ➔</button>
     </div>
 
-    <button id="btn-back-map" class="btn-return-map" onclick="returnToMap()">สำเร็จภารกิจ! กลับไปขับรถต่อ 🚗 ➔</button>
   </div>
 
 </div>
@@ -283,10 +389,10 @@
 <!-- Repair Modal -->
 <div class="repair-modal" id="repair-modal">
   <div class="repair-card">
-    <h3 style="color:var(--neon-red); font-family:'Chakra Petch';">🚨 VEHICLE BREAKDOWN (สถานีซ่อมบำรุง)</h3>
+    <h3 style="color:var(--neon-red); font-family:'Chakra Petch';">🚨 VEHICLE DAMAGED (สถานีซ่อมฉุกเฉิน)</h3>
     <p id="repair-desc" style="color:#cbd5e1; font-size:0.95rem; line-height:1.5;"></p>
     <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px;">
-      <strong style="color:var(--neon-cyan);">ภารกิจตอบเพื่อซ่อมรถ:</strong>
+      <strong style="color:var(--neon-cyan);">ตอบคำถามเพื่อสตาร์ทเครื่องยนต์ใหม่:</strong>
       <div id="repair-q" style="margin:8px 0 10px 0;"></div>
       <div id="repair-opts" style="display:flex; flex-direction:column; gap:8px;"></div>
     </div>
@@ -294,340 +400,296 @@
 </div>
 
 <script>
+  // ข้อมูล 12 ด่าน Microsoft Word ม.1
   const stageData = [
-    { id: 1, title: "Checkpoint 1 — รู้จัก Microsoft Word", topic: "ส่วนประกอบหน้าต่าง Ribbon", badge: "Word Beginner", q: "หากต้องการเรียกใช้คำสั่งพื้นฐาน เช่น ปรับรูปแบบฟอนต์ จัดย่อหน้า ต้องเลือกที่แท็บใด?", opts: ["หน้าแรก (Home)", "แทรก (Insert)", "มุมมอง (View)", "รีวิว (Review)"], ans: 0, hint: "แถบปรับแต่งตัวหนังสือหลักจะอยู่ที่แท็บแรกสุดเสมอ", rq: "แท็บ 'Home' ในภาษาไทยคือเมนูใด?", ro: ["หน้าแรก", "แทรก", "ไฟล์"], ra: 0 },
-    { id: 2, title: "Checkpoint 2 — สร้างและบันทึกเอกสาร", topic: "การ Save และ Save As", badge: "Save Master", q: "หากต้องการบันทึกทับไฟล์เดิมทันที ควรใช้คีย์ลัดใด?", opts: ["Ctrl + N", "Ctrl + S", "Ctrl + O", "Ctrl + P"], ans: 1, hint: "S มาจากคำว่า Save", rq: "คีย์ลัด Ctrl + S ใช้ทำสิ่งใด?", ro: ["บันทึกเอกสาร", "เปิดหน้าต่างใหม่", "สั่งพิมพ์"], ra: 0 },
-    { id: 3, title: "Checkpoint 3 — พิมพ์และแก้ไขข้อความ", topic: "Undo & Redo", badge: "Text Editor", q: "หากพิมพ์ผิดและต้องการ 'ยกเลิกคำสั่งล่าสุด' (Undo) ต้องกดคีย์ลัดใด?", opts: ["Ctrl + Y", "Ctrl + C", "Ctrl + Z", "Ctrl + V"], ans: 2, hint: "ปุ่มย้อนเวลาเอกสารคือปุ่ม Z", rq: "ปุ่ม Undo มีคีย์ลัดคืออะไร?", ro: ["Ctrl + Z", "Ctrl + X", "Ctrl + A"], ra: 0 },
-    { id: 4, title: "Checkpoint 4 — จัดรูปแบบตัวอักษร", topic: "Font Styling", badge: "Format Master", q: "สัญลักษณ์ใดบนแถบ Ribbon ใช้สำหรับทำข้อความให้เป็น 'ตัวหนา' (Bold)?", opts: ["ไอคอนตัว I", "ไอคอนตัว U", "ไอคอนตัว B", "ไอคอนตัว X²"], ans: 2, hint: "Bold เริ่มต้นด้วยอักษร B", rq: "ตัว B หมายถึงสไตล์ข้อความแบบใด?", ro: ["ตัวหนา", "ตัวเอียง", "ขีดเส้นใต้"], ra: 0 },
-    { id: 5, title: "Checkpoint 5 — การจัดตำแหน่งย่อหน้า", topic: "Alignment & Spacing", badge: "Paragraph Pro", q: "การจัดชื่อหัวข้อรายงานให้อยู่ 'กึ่งกลางหน้ากระดาษ' ต้องใช้คำสั่งใด?", opts: ["Align Left", "Center (Ctrl + E)", "Align Right", "Justify"], ans: 1, hint: "Center หมายถึงกึ่งกลาง มีคีย์ลัดคือ Ctrl + E", rq: "Center หมายถึงการจัดตำแหน่งแบบใด?", ro: ["ตรงกลาง", "ชิดซ้าย", "ชิดขวา"], ra: 0 },
-    { id: 6, title: "Checkpoint 6 — หัวข้อย่อยและลำดับเลข", topic: "Bullets & Numbering", badge: "List Architect", q: "รายการขั้นตอนที่ต้องทำตามลำดับก่อน-หลัง ควรเลือกใช้เครื่องมือใด?", opts: ["Bullets (สัญลักษณ์จุด)", "Numbering (ลำดับ 1, 2, 3)", "Multilevel List", "Line Spacing"], ans: 1, hint: "ขั้นตอนที่ตายตัว ต้องอาศัยลำดับหมายเลข", rq: "เมื่อต้องการระบุ 1, 2, 3 ควรใช้เครื่องมือใด?", ro: ["Numbering", "Bullets", "Table"], ra: 0 },
-    { id: 7, title: "Checkpoint 7 — การแทรกรูปภาพ", topic: "Insert Picture & Wrap Text", badge: "Media Specialist", q: "แทรกรูปภาพแล้วขยับตำแหน่งไม่ได้อย่างอิสระ ต้องไปตั้งค่าเครื่องมือใด?", opts: ["Picture Border", "Crop", "Wrap Text (ตัดข้อความ)", "Corrections"], ans: 2, hint: "Wrap Text เช่น Square จะช่วยให้รูปขยับอิสระรอบตัวหนังสือ", rq: "คำสั่งตัดข้อความล้อมรูปภาพเรียกว่าอะไร?", ro: ["Wrap Text", "Shapes", "Icons"], ra: 0 },
-    { id: 8, title: "Checkpoint 8 — การจัดการตาราง", topic: "Tables & Cell Merging", badge: "Table Builder", q: "หากต้องการรวมช่องตาราง 2 ช่องเข้าด้วยกันเป็นช่องเดียว ต้องใช้คำสั่งใด?", opts: ["Split Cells", "Merge Cells", "Insert Row", "Delete Column"], ans: 1, hint: "Merge หมายถึงการผสานรวมกัน", rq: "Merge Cells มีหน้าที่อะไร?", ro: ["รวมช่องตาราง", "แบ่งช่องตาราง", "ลบแถว"], ra: 0 },
-    { id: 9, title: "Checkpoint 9 — ตั้งค่าหน้ากระดาษ", topic: "Margins & Orientation", badge: "Layout Pilot", q: "เปลี่ยนหน้ากระดาษจากแนวตั้งให้เป็น 'แนวนอน' ต้องเลือกคำสั่งใด?", opts: ["Margins (ระยะขอบ)", "Orientation (การวางแนว)", "Size (ขนาด)", "Columns (คอลัมน์)"], ans: 1, hint: "Orientation มีให้เลือกระหว่าง Portrait และ Landscape", rq: "Landscape ใน Word หมายถึงแนวกระดาษแบบใด?", ro: ["แนวนอน", "แนวตั้ง", "แนวตัด"], ra: 0 },
-    { id: 10, title: "Checkpoint 10 — การตรวจสอบเอกสาร", topic: "Proofing & Spell Check", badge: "Doc Inspector", q: "เส้นหยักสีแดงใต้ข้อความในเอกสาร Word บ่งบอกถึงสิ่งใด?", opts: ["สะกดคำที่อาจผิดพลาด", "ไวยากรณ์ผิดพลาด", "ข้อความเกินขอบ", "คำที่ติดรหัสผ่าน"], ans: 0, hint: "เส้นหยักแดง = สะกดคำ, เส้นหยักฟ้า = ไวยากรณ์หรือเว้นวรรค", rq: "เส้นหยักสีแดงแจ้งเตือนเรื่องใด?", ro: ["สะกดคำผิด", "ใส่รูปผิด", "ลบข้อความ"], ra: 0 },
-    { id: 11, title: "Checkpoint 11 — การใช้สไตล์อัตโนมัติ", topic: "Styles & TOC", badge: "Style Maestro", q: "การกำหนด 'Heading Styles' ให้หัวข้อ มีประโยชน์สูงสุดด้านใด?", opts: ["ลดขนาดไฟล์", "สร้างสารบัญอัตโนมัติได้ทันที", "ป้องกันการก็อปปี้", "แปลงภาษา"], ans: 1, hint: "Heading คือหัวใจของการดึงสารบัญ (Table of Contents)", rq: "Heading นิยมนำมาใช้ทำอะไร?", ro: ["สร้างสารบัญอัตโนมัติ", "ตกแต่งขอบ", "ใส่ลายน้ำ"], ra: 0 },
-    { id: 12, title: "Checkpoint 12 — การส่งออกเอกสาร", topic: "Export PDF & Finish", badge: "Grand Explorer", q: "หากต้องการส่งงานไปพิมพ์โดยไม่ให้ฟอนต์เพี้ยนหรือหน้าเคลื่อน ควรส่งออกเป็นไฟล์ใด?", opts: [".txt", ".docx", ".pdf", ".html"], ans: 2, hint: "PDF ล็อคโครงสร้างหน้ากระดาษได้คงที่ที่สุด", rq: "ไฟล์สกุลใดคงสภาพหน้ากระดาษได้ดีที่สุด?", ro: [".pdf", ".txt", ".rtf"], ra: 0 }
+    { id: 1, title: "Checkpoint 1: รู้จัก Microsoft Word", topic: "แถบ Ribbon และหน้าต่าง", badge: "Word Beginner", q: "หากต้องการเรียกใช้คำสั่งพื้นฐาน เช่น การเปลี่ยนฟอนต์ จัดย่อหน้า ต้องเลือกดูที่แถบเมนู (Ribbon Tab) ใด?", opts: ["หน้าแรก (Home)", "แทรก (Insert)", "มุมมอง (View)", "รีวิว (Review)"], ans: 0, hint: "แถบปรับแต่งฟอนต์และย่อหน้าจะถูกรวมอยู่ที่แท็บแรกสุดเสมอ", rq: "แท็บ 'Home' ในภาษาไทยคือเมนูใด?", ro: ["หน้าแรก", "แทรก", "ไฟล์"], ra: 0 },
+    { id: 2, title: "Checkpoint 2: สร้างและบันทึกเอกสาร", topic: "การ Save และ Save As", badge: "Save Master", q: "หากต้องการบันทึกทับเอกสารเดิมที่เคยตั้งชื่อไว้แล้วทันที ควรใช้คีย์ลัดใด?", opts: ["Ctrl + N", "Ctrl + S", "Ctrl + O", "Ctrl + P"], ans: 1, hint: "S ย่อมาจากคำว่า Save", rq: "คีย์ลัด Ctrl + S ใช้ทำสิ่งใด?", ro: ["บันทึกเอกสาร", "เปิดหน้าต่างใหม่", "สั่งพิมพ์"], ra: 0 },
+    { id: 3, title: "Checkpoint 3: พิมพ์และแก้ไขข้อความ", topic: "Undo & Redo", badge: "Text Editor", q: "หากพิมพ์ผิดและต้องการ 'ยกเลิกคำสั่งล่าสุด' (Undo) ต้องกดคีย์ลัดใด?", opts: ["Ctrl + Y", "Ctrl + C", "Ctrl + Z", "Ctrl + V"], ans: 2, hint: "ปุ่มย้อนเวลาเอกสารคือปุ่ม Z", rq: "ปุ่ม Undo มีคีย์ลัดคืออะไร?", ro: ["Ctrl + Z", "Ctrl + X", "Ctrl + A"], ra: 0 },
+    { id: 4, title: "Checkpoint 4: จัดรูปแบบตัวอักษร", topic: "Font Styling", badge: "Format Master", q: "สัญลักษณ์ใดบนแถบ Ribbon ใช้สำหรับทำข้อความให้เป็น 'ตัวหนา' (Bold)?", opts: ["ไอคอนตัว I", "ไอคอนตัว U", "ไอคอนตัว B", "ไอคอนตัว X²"], ans: 2, hint: "Bold เริ่มต้นด้วยตัวอักษร B", rq: "ตัว B หมายถึงสไตล์ตัวอักษรแบบใด?", ro: ["ตัวหนา", "ตัวเอียง", "ขีดเส้นใต้"], ra: 0 },
+    { id: 5, title: "Checkpoint 5: การจัดตำแหน่งย่อหน้า", topic: "Alignment", badge: "Paragraph Pro", q: "การจัดชื่อหัวข้อรายงานให้อยู่ 'กึ่งกลางหน้ากระดาษ' พอดี ต้องใช้คำสั่งใด?", opts: ["Align Left", "Center (Ctrl + E)", "Align Right", "Justify"], ans: 1, hint: "Center หมายถึงกึ่งกลาง มีคีย์ลัดคือ Ctrl + E", rq: "Center หมายถึงการจัดตำแหน่งแบบใด?", ro: ["ตรงกลาง", "ชิดซ้าย", "ชิดขวา"], ra: 0 },
+    { id: 6, title: "Checkpoint 6: สัญลักษณ์และลำดับเลข", topic: "Bullets & Numbering", badge: "List Architect", q: "รายการขั้นตอนทดลองวิทยาศาสตร์ที่ 'ต้องทำตามลำดับก่อนหลัง' ควรใช้เครื่องมือใด?", opts: ["Bullets (จุดกลม)", "Numbering (ลำดับเลข 1, 2, 3)", "Multilevel List", "Line Spacing"], ans: 1, hint: "ขั้นตอนที่ตายตัว ต้องอาศัยลำดับหมายเลข", rq: "เมื่อต้องการระบุ 1, 2, 3 ควรใช้เครื่องมือใด?", ro: ["Numbering", "Bullets", "Table"], ra: 0 },
+    { id: 7, title: "Checkpoint 7: การแทรกรูปภาพ", topic: "Insert Picture & Wrap Text", badge: "Media Specialist", q: "เมื่อแทรกรูปภาพแล้วขยับตำแหน่งไม่ได้อย่างอิสระ ต้องไปตั้งค่าเครื่องมือใด?", opts: ["Picture Border", "Crop", "Wrap Text (การตัดข้อความ)", "Corrections"], ans: 2, hint: "Wrap Text เช่น Square จะช่วยให้รูปขยับอิสระรอบข้อความ", rq: "คำสั่งตัดข้อความล้อมรูปภาพเรียกว่าอะไร?", ro: ["Wrap Text", "Shapes", "Icons"], ra: 0 },
+    { id: 8, title: "Checkpoint 8: การจัดการตาราง", topic: "Tables & Merging", badge: "Table Builder", q: "หากต้องการรวมช่องตาราง 2 ช่องเข้าด้วยกันเป็นช่องเดียว ต้องใช้คำสั่งใด?", opts: ["Split Cells", "Merge Cells", "Insert Row", "Delete Column"], ans: 1, hint: "Merge หมายถึงการผสานรวมกัน", rq: "Merge Cells มีหน้าที่อะไร?", ro: ["รวมช่องตาราง", "แบ่งช่องตาราง", "ลบแถว"], ra: 0 },
+    { id: 9, title: "Checkpoint 9: ตั้งค่าหน้ากระดาษ", topic: "Margins & Orientation", badge: "Layout Pilot", q: "หากต้องการเปลี่ยนกระดาษจากแนวตั้งให้เป็น 'แนวนอน' ต้องเลือกคำสั่งใด?", opts: ["Margins (ระยะขอบ)", "Orientation (การวางแนว)", "Size (ขนาด)", "Columns (คอลัมน์)"], ans: 1, hint: "Orientation มีให้เลือกระหว่าง Portrait และ Landscape", rq: "Landscape หมายถึงแนวกระดาษแบบใด?", ro: ["แนวนอน", "แนวตั้ง", "แนวตัด"], ra: 0 },
+    { id: 10, title: "Checkpoint 10: การตรวจสอบเอกสาร", topic: "Proofing & Spell Check", badge: "Doc Inspector", q: "เส้นหยักสีแดงใต้ข้อความในเอกสาร Word บ่งบอกถึงสิ่งใด?", opts: ["สะกดคำที่อาจผิดพลาด", "ไวยากรณ์ผิดพลาด", "ข้อความเกินขอบ", "คำที่ถูกล็อค"], ans: 0, hint: "เส้นหยักแดง = สะกดคำ, เส้นหยักฟ้า = ไวยากรณ์หรือเว้นวรรค", rq: "เส้นหยักสีแดงแจ้งเตือนเรื่องใด?", ro: ["สะกดคำผิด", "ใส่รูปผิด", "ลบข้อความ"], ra: 0 },
+    { id: 11, title: "Checkpoint 11: การใช้สไตล์อัตโนมัติ", topic: "Heading Styles", badge: "Style Maestro", q: "การกำหนด 'Heading Styles' ให้หัวข้อ มีประโยชน์สูงสุดด้านใด?", opts: ["ลดขนาดไฟล์", "สร้างสารบัญอัตโนมัติได้ทันที", "ป้องกันการก็อปปี้", "แปลงภาษา"], ans: 1, hint: "Heading คือหัวใจของการดึงสารบัญ (Table of Contents)", rq: "Heading นิยมนำมาใช้ทำอะไร?", ro: ["สร้างสารบัญอัตโนมัติ", "ตกแต่งขอบ", "ใส่ลายน้ำ"], ra: 0 },
+    { id: 12, title: "Checkpoint 12: การส่งออกเอกสารสมบูรณ์", topic: "Export PDF & Finish", badge: "Word Grand Master", q: "หากต้องการส่งงานไปพิมพ์โดยไม่ให้ฟอนต์เพี้ยนหรือหน้าเคลื่อน ควรส่งออกเป็นไฟล์ใด?", opts: [".txt", ".docx", ".pdf", ".html"], ans: 2, hint: "PDF ล็อคโครงสร้างหน้ากระดาษได้คงที่ที่สุด", rq: "ไฟล์สกุลใดคงสภาพหน้ากระดาษได้ดีที่สุด?", ro: [".pdf", ".txt", ".rtf"], ra: 0 }
   ];
 
-  const nodeCoords = [
-    { x: 120, y: 500 },
-    { x: 260, y: 490 },
-    { x: 400, y: 450 },
-    { x: 540, y: 420 },
-    { x: 700, y: 440 },
-    { x: 830, y: 380 },
-    { x: 800, y: 250 },
-    { x: 650, y: 220 },
-    { x: 480, y: 240 },
-    { x: 300, y: 210 },
-    { x: 160, y: 150 },
-    { x: 380, y: 90 }
-  ];
-
-  let unlockedLevel = 1;
-  let activeStage = 1;
+  // Game States
+  let currentStageIndex = 0;
+  let shields = 3;
   let totalScoreE1 = 0;
   let totalStars = 0;
-  let stageResults = {};
-  let shields = 3;
-  let currentAttempts = 0;
-  let isInsideStage = false;
+  let stageAttempts = 0;
 
-  // Manual Car Physics State
-  let car = {
-    x: nodeCoords[0].x - 40,
-    y: nodeCoords[0].y,
-    angle: 0,
-    speed: 0,
-    maxSpeed: 3.5,
-    accel: 0.18,
-    friction: 0.94,
-    steer: 0.06
-  };
+  // Pseudo-3D Road Engine States
+  let speed = 0;
+  let maxSpeed = 160;
+  let playerX = 0; // ตำแหน่งซ้าย-ขวาบนถนน (-1 ถึง 1)
+  let roadPosition = 0;
+  let distanceToNextGate = 1000; // ระยะทางถึงซุ้มประตูถัดไป (เมตร)
+  let isArrivedAtGate = false;
+  let steeringAngle = 0;
 
-  const keys = { up: false, down: false, left: false, right: false };
+  const keys = { up: false, left: false, right: false };
 
-  const canvas = document.getElementById('mapCanvas');
+  const canvas = document.getElementById('roadCanvas');
   const ctx = canvas.getContext('2d');
+  const wheelEl = document.getElementById('wheel');
 
   function init() {
-    updateHUD();
     bindControls();
+    updateHUD();
     requestAnimationFrame(gameLoop);
   }
 
   function bindControls() {
     window.addEventListener('keydown', (e) => {
-      if (isInsideStage) return;
+      if (isArrivedAtGate) return;
       if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') keys.up = true;
-      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = true;
       if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
       if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
     });
 
     window.addEventListener('keyup', (e) => {
       if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') keys.up = false;
-      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = false;
       if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
       if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
     });
 
-    // Mobile D-Pad Touch/Mouse Events
-    const setupDpad = (id, key) => {
+    // Touch & Mouse Support
+    const setupBtn = (id, key) => {
       const el = document.getElementById(id);
-      const start = (e) => { e.preventDefault(); if (!isInsideStage) keys[key] = true; };
-      const end = (e) => { e.preventDefault(); keys[key] = false; };
-      el.addEventListener('mousedown', start);
-      el.addEventListener('mouseup', end);
-      el.addEventListener('touchstart', start);
-      el.addEventListener('touchend', end);
+      const press = (e) => { e.preventDefault(); if (!isArrivedAtGate) keys[key] = true; };
+      const release = (e) => { e.preventDefault(); keys[key] = false; };
+      el.addEventListener('mousedown', press);
+      el.addEventListener('mouseup', release);
+      el.addEventListener('touchstart', press);
+      el.addEventListener('touchend', release);
     };
-    setupDpad('btn-up', 'up');
-    setupDpad('btn-down', 'down');
-    setupDpad('btn-left', 'left');
-    setupDpad('btn-right', 'right');
+    setupBtn('btn-gas', 'up');
+    setupBtn('btn-left', 'left');
+    setupBtn('btn-right', 'right');
   }
 
   function updateHUD() {
     let hearts = "";
     for(let i=0; i<3; i++) hearts += (i < shields) ? "❤️" : "🖤";
-    document.getElementById('shield-ui').innerText = hearts;
-    document.getElementById('stars-ui').innerText = totalStars;
+    document.getElementById('health-val').innerText = hearts;
+    document.getElementById('cp-track-val').innerText = `ด่าน ${currentStageIndex + 1} / 12`;
+    document.getElementById('star-val').innerText = `${totalStars} ⭐`;
+
     const pct = Math.round((totalScoreE1 / 120) * 100);
-    document.getElementById('e1-ui').innerText = `${totalScoreE1}/120 (${pct}%)`;
+    document.getElementById('e1-val').innerText = `${totalScoreE1}/120 (${pct}%)`;
   }
 
   function gameLoop() {
-    if (!isInsideStage) {
-      updateCarPhysics();
-      checkNodeCollision();
+    if (!isArrivedAtGate) {
+      // 1. ความเร็วและแรงหน่วง
+      if (keys.up) speed = Math.min(speed + 1.8, maxSpeed);
+      else speed = Math.max(speed - 1.2, 0);
+
+      // 2. การเลี้ยวและหมุนพวงมาลัย
+      if (keys.left) {
+        playerX -= 0.025;
+        steeringAngle = Math.max(steeringAngle - 3, -35);
+      } else if (keys.right) {
+        playerX += 0.025;
+        steeringAngle = Math.min(steeringAngle + 3, 35);
+      } else {
+        steeringAngle *= 0.85;
+      }
+
+      // ขีดจำกัดขอบถนน
+      playerX = Math.max(-1.2, Math.min(1.2, playerX));
+      wheelEl.style.transform = `translateX(-50%) rotate(${steeringAngle}deg)`;
+
+      // 3. ลดระยะทางไปยัง Checkpoint ถัดไป
+      roadPosition += speed;
+      distanceToNextGate -= (speed * 0.04);
+
+      if (distanceToNextGate <= 0) {
+        distanceToNextGate = 0;
+        speed = 0;
+        isArrivedAtGate = true;
+        arriveAtCheckpoint();
+      }
+
+      document.getElementById('speed-num').innerText = Math.round(speed);
+      document.getElementById('dist-num').innerText = Math.round(distanceToNextGate);
     }
-    renderMap();
+
+    render3DRoad();
     requestAnimationFrame(gameLoop);
   }
 
-  function updateCarPhysics() {
-    if (keys.up) car.speed = Math.min(car.speed + car.accel, car.maxSpeed);
-    else if (keys.down) car.speed = Math.max(car.speed - car.accel, -car.maxSpeed * 0.6);
-    else car.speed *= car.friction;
+  // วาดถนน Pseudo-3D Perspective มุมมองคนขับ
+  function render3DRoad() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const horizon = h * 0.45;
 
-    if (Math.abs(car.speed) > 0.1) {
-      const dir = car.speed > 0 ? 1 : -1;
-      if (keys.left) car.angle -= car.steer * dir;
-      if (keys.right) car.angle += car.steer * dir;
-    }
+    ctx.clearRect(0, 0, w, h);
 
-    car.x += Math.cos(car.angle) * car.speed;
-    car.y += Math.sin(car.angle) * car.speed;
+    // 1. ท้องฟ้ากลางคืน Cyber Neon
+    const skyGrad = ctx.createLinearGradient(0, 0, 0, horizon);
+    skyGrad.addColorStop(0, '#060a14');
+    skyGrad.addColorStop(1, '#1e2d4d');
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, w, horizon);
 
-    // Bounds check
-    car.x = Math.max(30, Math.min(canvas.width - 30, car.x));
-    car.y = Math.max(30, Math.min(canvas.height - 30, car.y));
-  }
-
-  // เช็กว่ารถขับไปชนโหนดด่านไหน
-  function checkNodeCollision() {
-    nodeCoords.forEach((pt, idx) => {
-      const lvl = idx + 1;
-      const dist = Math.hypot(car.x - pt.x, car.y - pt.y);
-      if (dist < 26) {
-        if (lvl <= unlockedLevel) {
-          // ถ้าเป็นด่านที่ปลดล็อคแล้ว ให้ตัดเข้าเล่น
-          openStageView(lvl);
-        } else {
-          // ด่านล็อคอยู่ ดีดรถถอยหลังเล็กน้อย
-          car.speed = -1.8;
-        }
-      }
-    });
-  }
-
-  function renderMap() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // 1. ฉากพื้นหลังหญ้า/แม่น้ำ
-    ctx.fillStyle = '#16233b';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = '#0f3959';
+    // วาดดวงดาว/ภูเขาไฟนีออนไกลๆ
+    ctx.fillStyle = '#0f172a';
     ctx.beginPath();
-    ctx.ellipse(820, 120, 100, 60, Math.PI / 4, 0, Math.PI * 2);
+    ctx.moveTo(100, horizon);
+    ctx.lineTo(250, horizon - 50);
+    ctx.lineTo(400, horizon);
+    ctx.lineTo(650, horizon - 70);
+    ctx.lineTo(850, horizon);
     ctx.fill();
 
-    // 2. ถนนเส้นทางคดเคี้ยว
-    ctx.strokeStyle = '#475569';
-    ctx.lineWidth = 42;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(nodeCoords[0].x, nodeCoords[0].y);
-    for (let i = 1; i < nodeCoords.length; i++) {
-      ctx.lineTo(nodeCoords[i].x, nodeCoords[i].y);
-    }
-    ctx.stroke();
+    // 2. พื้นหญ้าสองข้างทาง
+    ctx.fillStyle = '#09131e';
+    ctx.fillRect(0, horizon, w, h - horizon);
 
-    ctx.strokeStyle = '#00e5ff';
-    ctx.lineWidth = 4;
-    ctx.stroke();
+    // 3. วาดถนนพุ่งลงมาจากขอบฟ้า
+    const segments = 50;
+    for (let i = segments; i > 0; i--) {
+      const z = i / segments;
+      const nextZ = (i - 1) / segments;
 
-    ctx.strokeStyle = '#ffd600';
-    ctx.lineWidth = 3;
-    ctx.setLineDash([12, 12]);
-    ctx.stroke();
-    ctx.setLineDash([]);
+      const y1 = horizon + Math.pow(z, 2.5) * (h - horizon);
+      const y2 = horizon + Math.pow(nextZ, 2.5) * (h - horizon);
 
-    // 3. โหนดด่านทั้ง 12
-    nodeCoords.forEach((pt, idx) => {
-      const lvl = idx + 1;
-      const isUnlocked = lvl <= unlockedLevel;
-      const isPassed = stageResults[lvl] !== undefined;
-      const isNextTarget = lvl === unlockedLevel && !isPassed;
+      const roadW1 = (w * 0.12) + (w * 0.85) * Math.pow(z, 2.5);
+      const roadW2 = (w * 0.12) + (w * 0.85) * Math.pow(nextZ, 2.5);
 
-      // เอฟเฟกต์วงแหวนกระพริบชี้เป้าหมายด่านถัดไป
-      if (isNextTarget) {
-        ctx.strokeStyle = 'rgba(0, 229, 255, 0.8)';
-        ctx.lineWidth = 3;
+      const x1 = (w / 2) - (playerX * 150 * (1 - z));
+      const x2 = (w / 2) - (playerX * 150 * (1 - nextZ));
+
+      // สีสลับแถบถนน (Checkerboard effect ให้รู้ว่ารถกำลังวิ่ง)
+      const isStripe = Math.floor((roadPosition * 0.08 + i)) % 2 === 0;
+
+      // ไหล่ทาง
+      ctx.fillStyle = isStripe ? '#ff0055' : '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(x1 - roadW1 * 0.55, y1);
+      ctx.lineTo(x2 - roadW2 * 0.55, y2);
+      ctx.lineTo(x2 + roadW2 * 0.55, y2);
+      ctx.lineTo(x1 + roadW1 * 0.55, y1);
+      ctx.fill();
+
+      // ผิวถนนลาดยาง
+      ctx.fillStyle = isStripe ? '#1b2333' : '#171e2c';
+      ctx.beginPath();
+      ctx.moveTo(x1 - roadW1 * 0.5, y1);
+      ctx.lineTo(x2 - roadW2 * 0.5, y2);
+      ctx.lineTo(x2 + roadW2 * 0.5, y2);
+      ctx.lineTo(x1 + roadW1 * 0.5, y1);
+      ctx.fill();
+
+      // เส้นประกลางถนน
+      if (isStripe) {
+        ctx.fillStyle = '#ffd600';
+        const lineW1 = roadW1 * 0.03;
+        const lineW2 = roadW2 * 0.03;
         ctx.beginPath();
-        const pulse = 26 + Math.sin(Date.now() * 0.008) * 5;
-        ctx.arc(pt.x, pt.y, pulse, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.moveTo(x1 - lineW1, y1);
+        ctx.lineTo(x2 - lineW2, y2);
+        ctx.lineTo(x2 + lineW2, y2);
+        ctx.lineTo(x1 + lineW1, y1);
+        ctx.fill();
       }
+    }
 
-      ctx.fillStyle = 'rgba(0,0,0,0.4)';
-      ctx.beginPath();
-      ctx.arc(pt.x + 3, pt.y + 4, 22, 0, Math.PI * 2);
-      ctx.fill();
+    // 4. วาดซุ้มประตู Checkpoint ขวางถนนเมื่อขับใกล้ถึง (< 400 เมตร)
+    if (distanceToNextGate < 400) {
+      const gateScale = (1 - (distanceToNextGate / 400));
+      const gateY = horizon + Math.pow(gateScale, 2) * (h - horizon - 120);
+      const gateW = (w * 0.8) * gateScale;
+      const gateH = 140 * gateScale;
+      const gateX = (w / 2) - (playerX * 150 * gateScale);
 
-      ctx.beginPath();
-      ctx.arc(pt.x, pt.y, 20, 0, Math.PI * 2);
-      if (isPassed) ctx.fillStyle = '#00e676';
-      else if (isUnlocked) ctx.fillStyle = '#ffd600';
-      else ctx.fillStyle = '#334155';
-      ctx.fill();
+      // เสาซุ้มประตูซ้าย-ขวา
+      ctx.fillStyle = '#00e5ff';
+      ctx.shadowColor = 'rgba(0, 229, 255, 0.8)';
+      ctx.shadowBlur = 20 * gateScale;
+      ctx.fillRect(gateX - gateW / 2, gateY, 24 * gateScale, gateH);
+      ctx.fillRect(gateX + gateW / 2 - 24 * gateScale, gateY, 24 * gateScale, gateH);
 
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
+      // คานป้ายด้านบน
+      ctx.fillStyle = '#185abd';
+      ctx.fillRect(gateX - gateW / 2, gateY - 35 * gateScale, gateW, 35 * gateScale);
 
-      ctx.fillStyle = isUnlocked ? '#000' : '#94a3b8';
-      ctx.font = 'bold 14px Chakra Petch';
+      // ข้อความบนป้ายซุ้ม
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `bold ${Math.max(10, 16 * gateScale)}px 'Chakra Petch'`;
       ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      if (isUnlocked) ctx.fillText(lvl, pt.x, pt.y);
-      else ctx.fillText('🔒', pt.x, pt.y);
-
-      if (isPassed) {
-        const starsStr = '⭐'.repeat(stageResults[lvl].stars);
-        ctx.font = '10px sans-serif';
-        ctx.fillText(starsStr, pt.x, pt.y + 28);
-      }
-    });
-
-    // 4. วาดรถยนต์ (หมุนตามทิศทางมุม car.angle)
-    drawCarManual(car.x, car.y, car.angle);
+      ctx.fillText(`CHECKPOINT ${currentStageIndex + 1}: ${stageData[currentStageIndex].badge}`, gateX, gateY - 12 * gateScale);
+      ctx.shadowBlur = 0;
+    }
   }
 
-  function drawCarManual(x, y, angle) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(angle);
+  // ถึงจุดหมาย -> เปิดหน้าจอคอมพิวเตอร์ในรถ
+  function arriveAtCheckpoint() {
+    const stage = stageData[currentStageIndex];
+    stageAttempts = 0;
 
-    // ล้อรถ
-    ctx.fillStyle = '#000';
-    ctx.fillRect(-15, -12, 7, 4);
-    ctx.fillRect(8, -12, 7, 4);
-    ctx.fillRect(-15, 8, 7, 4);
-    ctx.fillRect(8, 8, 7, 4);
+    const term = document.getElementById('terminal');
+    term.style.display = 'flex';
 
-    // ตัวถังรถสปอร์ต
-    ctx.fillStyle = '#ff3d00';
-    ctx.beginPath();
-    ctx.roundRect(-16, -9, 32, 18, 4);
-    ctx.fill();
+    document.getElementById('term-title').innerText = `🚧 ${stage.title.toUpperCase()}`;
+    document.getElementById('term-badge').innerText = `🏅 ปลดล็อก: ${stage.badge}`;
+    document.getElementById('term-q').innerText = stage.q;
+    document.getElementById('ai-tip').innerHTML = `<strong>Word Co-Pilot:</strong> ลอดซุ้มด่านที่ ${stage.id} แล้ว! ${stage.hint}`;
 
-    // กระจก Cockpit
-    ctx.fillStyle = '#00e5ff';
-    ctx.beginPath();
-    ctx.roundRect(-6, -6, 14, 12, 3);
-    ctx.fill();
-
-    // ไฟหน้าหน้ารถ
-    ctx.fillStyle = '#ffd600';
-    ctx.fillRect(14, -8, 3, 4);
-    ctx.fillRect(14, 4, 3, 4);
-
-    ctx.restore();
-  }
-
-  // เข้าสู่หน้าจอเล่นด่าน
-  function openStageView(lvl) {
-    isInsideStage = true;
-    activeStage = lvl;
-    currentAttempts = 0;
-    car.speed = 0;
-    keys.up = keys.down = keys.left = keys.right = false;
-
-    const stage = stageData[lvl - 1];
-
-    document.getElementById('map-view').style.display = 'none';
-    const stageView = document.getElementById('stage-view');
-    stageView.style.display = 'flex';
-
-    document.getElementById('stage-title').innerText = stage.title;
-    document.getElementById('stage-topic').innerText = `หัวข้อ: ${stage.topic}`;
-    document.getElementById('stage-badge-target').innerText = `🏅 ปลดล็อก: ${stage.badge}`;
-    document.getElementById('stage-q').innerText = stage.q;
-    document.getElementById('ai-guidance').innerHTML = `<strong>Word Co-Pilot:</strong> ขับมาถึงด่านที่ ${lvl} แล้ว! ${stage.hint}`;
-
-    const optsGrid = document.getElementById('stage-options');
-    optsGrid.innerHTML = '';
+    const optsBox = document.getElementById('term-options');
+    optsBox.innerHTML = '';
     stage.opts.forEach((txt, i) => {
       const btn = document.createElement('button');
       btn.className = 'opt-btn';
       btn.innerHTML = `<span><strong>${String.fromCharCode(65 + i)}.</strong></span> <span>${txt}</span>`;
-      btn.onclick = () => checkAnswer(i);
-      optsGrid.appendChild(btn);
+      btn.onclick = () => checkStageAnswer(i);
+      optsBox.appendChild(btn);
     });
 
-    document.getElementById('btn-back-map').style.display = 'none';
+    document.getElementById('btn-drive').style.display = 'none';
   }
 
-  function checkAnswer(selectedIndex) {
-    const stage = stageData[activeStage - 1];
-    const btns = document.querySelectorAll('.opt-btn');
+  function checkStageAnswer(selectedIdx) {
+    const stage = stageData[currentStageIndex];
+    const btns = document.querySelectorAll('#term-options .opt-btn');
     btns.forEach(b => b.disabled = true);
 
-    if (selectedIndex === stage.ans) {
-      btns[selectedIndex].classList.add('correct');
+    if (selectedIdx === stage.ans) {
+      btns[selectedIdx].classList.add('correct');
 
       let addScore = 10, addStars = 3;
-      if (currentAttempts === 1) { addScore = 7; addStars = 2; }
-      else if (currentAttempts >= 2) { addScore = 5; addStars = 1; }
+      if (stageAttempts === 1) { addScore = 7; addStars = 2; }
+      else if (stageAttempts >= 2) { addScore = 5; addStars = 1; }
 
-      if (!stageResults[activeStage]) {
-        totalScoreE1 += addScore;
-        totalStars += addStars;
-        stageResults[activeStage] = { score: addScore, stars: addStars };
-      }
+      totalScoreE1 += addScore;
+      totalStars += addStars;
 
-      document.getElementById('ai-guidance').innerHTML = `
-        <strong style="color:var(--neon-green)">Word Co-Pilot:</strong> ถูกต้องยอดเยี่ยม! (+${addScore} คะแนน E1 | ได้รับ ${addStars} ดาว ⭐)
+      document.getElementById('ai-tip').innerHTML = `
+        <strong style="color:var(--neon-green)">Word Co-Pilot:</strong> คำตอบถูกต้อง! (+${addScore} คะแนน E1 | ${addStars} ⭐) กดปุ่มเพื่อขับรถไปต่อ!
       `;
 
       updateHUD();
-      document.getElementById('btn-back-map').style.display = 'inline-block';
+      document.getElementById('btn-drive').style.display = 'inline-block';
 
     } else {
-      btns[selectedIndex].classList.add('wrong');
-      currentAttempts++;
+      btns[selectedIdx].classList.add('wrong');
+      stageAttempts++;
       shields--;
       updateHUD();
 
       if (shields <= 0) {
         setTimeout(showRepairModal, 600);
       } else {
-        document.getElementById('ai-guidance').innerHTML = `
-          <strong style="color:var(--neon-red)">Word Co-Pilot:</strong> ยังไม่ถูกต้อง เกราะลด 1 หน่วย! คำใบ้: ${stage.hint}
+        document.getElementById('ai-tip').innerHTML = `
+          <strong style="color:var(--neon-red)">Word Co-Pilot:</strong> ยังไม่ถูกนะ เกราะลดลง 1 หน่วย! คำใบ้: ${stage.hint}
         `;
         setTimeout(() => {
           btns.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
@@ -637,51 +699,47 @@
   }
 
   function showRepairModal() {
-    const stage = stageData[activeStage - 1];
+    const stage = stageData[currentStageIndex];
     const modal = document.getElementById('repair-modal');
-    document.getElementById('repair-desc').innerText = `ระบบตรวจจับว่าผู้เรียนยังติดขัดในเรื่อง "${stage.topic}" จำง่าย ๆ คือ: ${stage.hint}`;
+    document.getElementById('repair-desc').innerText = `ระบบขัดข้องเรื่อง "${stage.topic}" จำสั้น ๆ ว่า: ${stage.hint}`;
     document.getElementById('repair-q').innerText = stage.rq;
 
-    const optsBox = document.getElementById('repair-opts');
-    optsBox.innerHTML = '';
+    const box = document.getElementById('repair-opts');
+    box.innerHTML = '';
     stage.ro.forEach((txt, idx) => {
       const btn = document.createElement('button');
       btn.className = 'opt-btn';
       btn.innerText = txt;
       btn.onclick = () => {
         if (idx === stage.ra) {
-          alert('🔧 ซ่อมรถสำเร็จ! เติมพลังเกราะกลับคืนมา 2 หน่วย');
+          alert('🔧 สตาร์ทเครื่องยนต์สำเร็จ! เติมพลังเกราะ 2 หน่วย');
           shields = 2;
           modal.style.display = 'none';
           updateHUD();
-          const btns = document.querySelectorAll('.opt-btn');
+          const btns = document.querySelectorAll('#term-options .opt-btn');
           btns.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
         } else {
-          alert('ยังไม่ถูก ลองอ่านทบทวนใหม่อีกครั้ง');
+          alert('ยังไม่ถูกต้อง ลองอ่านทบทวนใหม่อีกครั้ง');
         }
       };
-      optsBox.appendChild(btn);
+      box.appendChild(btn);
     });
 
     modal.style.display = 'flex';
   }
 
-  // ออกจากด่าน กลับมาขับรถต่อบนแผนที่
-  function returnToMap() {
-    document.getElementById('stage-view').style.display = 'none';
-    document.getElementById('map-view').style.display = 'block';
-    isInsideStage = false;
+  // ปิดจอคอมพิวเตอร์ แล้วเริ่มขับรถไปยังด่านถัดไป
+  function continueDriving() {
+    document.getElementById('terminal').style.display = 'none';
+    currentStageIndex++;
 
-    // ถ้าผ่านด่านปัจจุบันที่สูงสุด ให้ปลดล็อคด่านถัดไป
-    if (activeStage === unlockedLevel && unlockedLevel < 12) {
-      unlockedLevel++;
-    } else if (unlockedLevel === 12 && stageResults[12]) {
-      alert(`🎉 ยินดีด้วย! คุณพิชิตครบทั้ง 12 Checkpoints แล้ว!\nคะแนนรวม E1: ${totalScoreE1}/120 (${Math.round((totalScoreE1/120)*100)}%)\nพร้อมเข้าสู่เกม E2 (Word Jump) ต่อไป`);
+    if (currentStageIndex < 12) {
+      distanceToNextGate = 1000;
+      isArrivedAtGate = false;
+      updateHUD();
+    } else {
+      alert(`🏆 ยินดีด้วย! คุณขับรถพิชิตครบทั้ง 12 Checkpoints สำเร็จแล้ว!\nคะแนนรวม E1: ${totalScoreE1}/120 (${Math.round((totalScoreE1/120)*100)}%)\nพร้อมก้าวสู่เกม E2 (Word Jump) ต่อไป!`);
     }
-
-    // ถอยรถออกจากจุดศูนย์กลางโหนดเล็กน้อยเพื่อไม่ให้เด้งเข้าด่านซ้ำทันที
-    car.x += Math.cos(car.angle) * 15;
-    car.y += Math.sin(car.angle) * 15;
   }
 
   window.onload = init;
