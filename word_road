@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Word Road 3D: Roblox Arcade Edition (E1)</title>
+  <title>Word Road 3D: Roblox Arcade Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800;900&family=Chakra+Petch:wght@700;800&display=swap" rel="stylesheet">
@@ -117,7 +117,6 @@
 
     .overlay-screen {
       position: fixed; inset: 0;
-      background: radial-gradient(circle at center, rgba(15, 23, 42, 0.94) 0%, rgba(2, 6, 23, 0.98) 100%);
       display: flex; justify-content: center; align-items: center; padding: 18px;
       z-index: 100;
     }
@@ -135,13 +134,6 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       margin-bottom: 8px; letter-spacing: 1px;
     }
-    .input-box {
-      width: 100%; padding: 15px 20px; border-radius: 16px;
-      border: 2px solid #00a2ff; background: #030712;
-      color: #fff; font-size: 1.1rem; outline: none;
-      text-align: center; margin: 16px 0; font-weight: 700;
-    }
-    .input-box:focus { border-color: #facc15; box-shadow: 0 0 15px rgba(250, 204, 21, 0.4); }
 
     .rbx-green-btn {
       width: 100%; padding: 16px; border-radius: 16px; border: none;
@@ -151,6 +143,173 @@
       display: flex; justify-content: center; align-items: center; gap: 8px;
     }
     .rbx-green-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #00603d; }
+
+    /* START SCREEN: โทนสว่างสดใส สไตล์ Arcade ไม่ใช้อิโมจิ */
+    #start-screen {
+      background: radial-gradient(circle at 50% 40%, rgba(14, 165, 233, 0.45) 0%, rgba(15, 23, 42, 0.92) 80%);
+      backdrop-filter: blur(12px);
+      z-index: 200;
+    }
+
+    .start-modal {
+      background: rgba(255, 255, 255, 0.96);
+      border: 4px solid #38bdf8;
+      border-radius: 32px;
+      padding: 30px 24px;
+      max-width: 530px;
+      width: 92%;
+      text-align: center;
+      color: #0f172a;
+      box-shadow: 0 25px 60px rgba(2, 132, 199, 0.4), 0 0 0 8px rgba(255, 255, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+      animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      margin: -30px -24px 20px -24px;
+      padding: 24px 16px 18px;
+      border-bottom: 4px solid #facc15;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .game-logo-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 3px 3px 0px #0369a1, 0 0 18px rgba(250, 204, 21, 0.6);
+      line-height: 1.1;
+      font-family: 'Chakra Petch', 'Kanit', sans-serif;
+    }
+
+    .game-sub-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      background: #facc15;
+      color: #713f12;
+      font-size: 0.85rem;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 999px;
+      box-shadow: 0 3px 0 #ca8a04;
+    }
+    .game-sub-badge svg { width: 16px; height: 16px; fill: #713f12; }
+
+    .rule-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+
+    .rule-card {
+      background: #f0f9ff;
+      border: 2px solid #bae6fd;
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .rule-card.points {
+      background: #fefce8;
+      border-color: #fde047;
+    }
+
+    .rule-header {
+      font-size: 0.9rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rule-card .rule-header { color: #0284c7; }
+    .rule-card .rule-header svg { width: 18px; height: 18px; fill: #0284c7; flex-shrink: 0; }
+
+    .rule-card.points .rule-header { color: #ca8a04; }
+    .rule-card.points .rule-header svg { width: 18px; height: 18px; fill: #ca8a04; flex-shrink: 0; }
+
+    .rule-card p {
+      font-size: 0.8rem;
+      color: #475569;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    .rule-banner-single {
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 14px;
+      padding: 11px 14px;
+      font-size: 0.84rem;
+      color: #334155;
+      margin-bottom: 16px;
+      text-align: left;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.45;
+    }
+    .rule-banner-single svg { width: 19px; height: 19px; fill: #0284c7; flex-shrink: 0; margin-top: 2px; }
+
+    .start-input {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 3px solid #cbd5e1;
+      background: #f8fafc;
+      color: #0f172a;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: all 0.2s;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    .start-input:focus {
+      border-color: #0284c7;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25);
+    }
+
+    .start-btn {
+      width: 100%;
+      margin-top: 14px;
+      padding: 15px;
+      border-radius: 18px;
+      border: none;
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #047857, 0 10px 18px rgba(16, 185, 129, 0.35);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .start-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #047857;
+    }
+    .start-btn svg { width: 22px; height: 22px; fill: #ffffff; }
 
     #checkpoint-modal {
       position: fixed; inset: 0;
@@ -308,25 +467,48 @@
     </div>
   </div>
 
+  <!-- START SCREEN: ไร้อิโมจิ 100% ใช้ SVG Vector Icons ทั้งหมด -->
   <div id="start-screen" class="overlay-screen">
-    <div class="modal-card">
-      <div class="game-h1">WORD ROAD 3D</div>
-      <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6;">
-        เกมจำลองการขับรถเก็บคะแนนภารกิจ Microsoft Word ม.1 (E1)<br>
-        คะแนนเต็ม 20 คะแนน (น้ำหนักคะแนนต่างกันตามระดับความยาก)
-      </p>
+    <div class="start-modal">
       
-      <div style="background: rgba(31, 41, 55, 0.8); border-radius: 14px; padding: 14px; font-size: 0.85rem; color: #38bdf8; margin: 18px 0; text-align: left; line-height: 1.6;">
-        <b>ข้อกำหนดการเก็บคะแนน:</b><br>
-        • ตอบถูกตั้งแต่ครั้งแรก: ได้รับคะแนนเต็มประจำด่านนั้นทันที<br>
-        • ตอบผิด: จะเปิด <b>ใบความรู้</b> เพื่อศึกษา และให้ทำภารกิจแก้ตัวผ่านด่านได้ แต่จะไม่ได้คะแนนเพิ่ม (เพื่อป้องกันคะแนนเฟ้อ)
+      <div class="hero-banner">
+        <div class="game-logo-title">WORD ROAD 3D</div>
+        <div class="game-sub-badge">
+          <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+          <span>ภารกิจขับรถซิ่ง พิชิต Microsoft Word ม.1</span>
+        </div>
       </div>
 
-      <input type="text" id="player-input" class="input-box" placeholder="กรอกชื่อ-นามสกุล หรือเลขที่..." />
-      <button class="rbx-green-btn" onclick="startGame()">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
-        เข้าสู่เกม (START DRIVING)
+      <div class="rule-grid">
+        <div class="rule-card">
+          <div class="rule-header">
+            <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            <span>วิธีการขับรถ</span>
+          </div>
+          <p>• ใช้ปุ่มลูกศร / W-A-S-D บังคับรถ<br>• หลบกรวยยางและหิน เพื่อรักษาความเร็ว</p>
+        </div>
+        
+        <div class="rule-card points">
+          <div class="rule-header">
+            <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+            <span>ระบบคิดคะแนน</span>
+          </div>
+          <p>• ตอบถูกครั้งแรก รับคะแนนทันที (เต็ม 20)<br>• ตอบผิด จะต้องเปิด <b>ใบความรู้</b> เพื่อทำข้อแก้ตัว</p>
+        </div>
+      </div>
+
+      <div class="rule-banner-single">
+        <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
+        <div><b>วิธีปลดม่านเลเซอร์:</b> ขับรถชนม่านพลังงานแต่ละด่าน จากนั้นคลิกเลือกเมนูหรือกดคีย์ลัดจริงบนแป้นพิมพ์เพื่อเปิดทางไปต่อ!</div>
+      </div>
+
+      <input type="text" id="player-input" class="start-input" placeholder="พิมพ์ชื่อ - นามสกุล หรือ เลขที่..." autocomplete="off" />
+      
+      <button class="start-btn" onclick="startGame()">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        เข้าสู่สนามแข่ง (START MISSION)
       </button>
+
     </div>
   </div>
 
@@ -346,7 +528,7 @@
 
       <div style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; color: #475569; display: flex; gap: 8px; align-items: center;">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="#64748b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-        <span>พิจารณาและเลือกคำสั่งที่ถูกต้องที่สุด เพื่อเปิดม่านเลเซอร์</span>
+        <span>แตะปุ่มบนหน้าจอ หรือกดแป้นพิมพ์คีย์ลัดจริงเพื่อปลดล็อกม่านเลเซอร์</span>
       </div>
     </div>
   </div>
@@ -389,7 +571,7 @@
       <p style="color: #cbd5e1; font-size: 0.95rem;">คุณพิชิตเส้นทาง Word Road ครบถ้วนทั้ง 12 สถานี</p>
 
       <div style="background: #030712; border: 2px dashed #facc15; border-radius: 18px; padding: 20px; margin: 18px 0;">
-        <div style="font-size: 0.85rem; color: #94a3b8;">คะแนนรวมทั้งสิ้น (E1)</div>
+        <div style="font-size: 0.85rem; color: #94a3b8;">คะแนนรวมทั้งสิ้น</div>
         <div id="final-score" style="font-size: 2.8rem; font-weight: 900; color: #facc15; font-family:'Chakra Petch';">0 / 20</div>
         <div id="final-rank" style="font-size: 1.05rem; font-weight: 800; color: #38bdf8;">ระดับ: ยอดนักขับระดับ Master</div>
       </div>
@@ -407,16 +589,9 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9lvwZfjnpAlVl9QUSRV5zdR2rfQyJPCVXUWMjyAuZE6yoD-uCvrSHhRNFzNX4fBdZaw/exec";
-
-    // 12 Checkpoint Tasks: น้ำหนักคะแนนรวม 20 คะแนนเต็มพอดี (ไม่มีจุดทศนิยม)
-    // ด่าน 1-6 ละ 1 คะแนน (= 6 คะแนน)
-    // ด่าน 7-10 ละ 2 คะแนน (= 8 คะแนน)
-    // ด่าน 11-12 ละ 3 คะแนน (= 6 คะแนน)
-    // รวมสุทธิ = 6 + 8 + 6 = 20 คะแนนเต็ม
     const missions = [
       {
-        id: 1, title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", pts: 1,
+        id: 1, title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", pts: 1.0,
         mode: "ribbon",
         q: "ภารกิจ: เลือกแท็บเมนู Ribbon ที่ใช้เปลี่ยนแบบฟอนต์และขนาดตัวอักษร:",
         target: "Home",
@@ -424,7 +599,7 @@
         knText: "แถบ <b>หน้าแรก (Home)</b> เป็นศูนย์รวมคำสั่งพื้นฐานที่ใช้บ่อยที่สุด ได้แก่ การเปลี่ยนฟอนต์, ปรับขนาดอักษร, ทำตัวหนา/เอียง/ขีดเส้นใต้, และการจัดตำแหน่งย่อหน้า"
       },
       {
-        id: 2, title: "Checkpoint 2: บันทึกเอกสาร", badge: "Save Master", pts: 1,
+        id: 2, title: "Checkpoint 2: บันทึกเอกสาร", badge: "Save Master", pts: 1.0,
         mode: "shortcut",
         q: "ภารกิจ: แตะที่ปุ่มด้านล่าง หรือกดบนคีย์บอร์ดจริงเพื่อ 'บันทึกเอกสาร (Save)':",
         keyReq: "s", codeReq: "KeyS", displayKey: "Ctrl + S",
@@ -432,7 +607,7 @@
         knText: "การบันทึกเอกสารใช้คีย์ลัด <b>Ctrl + S</b> (ย่อมาจาก Save) เป็นปุ่มที่ควรหมั่นกดเป็นประจำเพื่อป้องกันข้อมูลสูญหาย"
       },
       {
-        id: 3, title: "Checkpoint 3: ยกเลิกคำสั่งล่าสุด", badge: "Text Editor", pts: 1,
+        id: 3, title: "Checkpoint 3: ยกเลิกคำสั่งล่าสุด", badge: "Text Editor", pts: 1.0,
         mode: "shortcut",
         q: "ภารกิจ: แตะที่ปุ่มด้านล่าง หรือกดบนคีย์บอร์ดจริงเพื่อ 'ยกเลิกคำสั่งล่าสุด (Undo)':",
         keyReq: "z", codeReq: "KeyZ", displayKey: "Ctrl + Z",
@@ -440,7 +615,7 @@
         knText: "เมื่อทำงานพลาดหรือเผลอลบข้อความ ให้ใช้คีย์ลัด <b>Ctrl + Z</b> เพื่อยกเลิกคำสั่งล่าสุด (Undo) ดึงข้อมูลเดิมกลับคืนมาทันที"
       },
       {
-        id: 4, title: "Checkpoint 4: สไตล์ตัวอักษร", badge: "Format Master", pts: 1,
+        id: 4, title: "Checkpoint 4: สไตล์ตัวอักษร", badge: "Format Master", pts: 1.0,
         mode: "shortcut",
         q: "ภารกิจ: แตะที่ปุ่มลัดด้านล่าง หรือกดบนแป้นพิมพ์เพื่อทำข้อความ 'ตัวหนา (Bold)':",
         keyReq: "b", codeReq: "KeyB", displayKey: "Ctrl + B",
@@ -448,7 +623,7 @@
         knText: "การปรับแต่งสไตล์ข้อความให้เป็นตัวหนาใช้ไอคอนตัว <b>B</b> (Bold) หรือกดคีย์ลัด <b>Ctrl + B</b> นิยมใช้สำหรับเน้นหัวข้อหรือคำสำคัญ"
       },
       {
-        id: 5, title: "Checkpoint 5: จัดตำแหน่งย่อหน้า", badge: "Paragraph Pro", pts: 1,
+        id: 5, title: "Checkpoint 5: จัดตำแหน่งย่อหน้า", badge: "Paragraph Pro", pts: 1.5,
         mode: "align",
         q: "ภารกิจ: ทดลองกดปุ่มจัดตำแหน่งเอกสาร เพื่อวางข้อความให้อยู่ 'กึ่งกลางหน้ากระดาษ':",
         target: "center",
@@ -456,7 +631,7 @@
         knText: "การจัดข้อความให้อยู่ตรงกลางหน้ากระดาษพอดีให้ใช้คำสั่ง <b>Center</b> (หรือกด Ctrl + E) ซึ่งเหมาะสำหรับการจัดชื่อเรื่องหรือหัวข้อรายงาน"
       },
       {
-        id: 6, title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", pts: 1,
+        id: 6, title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", pts: 1.5,
         mode: "choice",
         q: "ภารกิจ: เครื่องมือใดใช้สำหรับสร้างรายการข้อความที่มีลำดับ 1, 2, 3 ก่อนหลัง:",
         target: "Numbering",
@@ -465,7 +640,7 @@
         knText: "เมื่อข้อความมีขั้นตอนที่ต้องทำตามลำดับก่อนหลัง ให้ใช้คำสั่ง <b>Numbering (ลำดับเลข)</b> แต่หากเป็นรายการทั่วไปที่สลับลำดับได้ ให้ใช้ <b>Bullets (สัญลักษณ์จุด)</b>"
       },
       {
-        id: 7, title: "Checkpoint 7: การตัดข้อความรูปภาพ", badge: "Media Specialist", pts: 2,
+        id: 7, title: "Checkpoint 7: การตัดข้อความรูปภาพ", badge: "Media Specialist", pts: 1.5,
         mode: "choice",
         q: "ภารกิจ: คำสั่ง Wrap Text รูปแบบใดทำให้ข้อความไหลล้อมรอบกรอบรูปภาพอย่างอิสระ:",
         target: "Square",
@@ -474,7 +649,7 @@
         knText: "การตั้งค่า <b>Wrap Text</b> เป็น <b>Square</b> จะช่วยให้ข้อความไหลล้อมรอบกรอบสี่เหลี่ยมของภาพ และทำให้สามารถเลื่อนตำแหน่งภาพได้อย่างอิสระ"
       },
       {
-        id: 8, title: "Checkpoint 8: โครงสร้างตาราง", badge: "Table Builder", pts: 2,
+        id: 8, title: "Checkpoint 8: โครงสร้างตาราง", badge: "Table Builder", pts: 1.5,
         mode: "table_grid",
         q: "ภารกิจ: กำหนดขนาดสร้างตารางข้อมูลจำนวน '3 คอลัมน์ x 2 แถว' ให้ถูกต้อง:",
         targetCols: 3, targetRows: 2,
@@ -482,7 +657,7 @@
         knText: "การสร้างตารางใน Word จะนับตาม <b>คอลัมน์ (แนวตั้ง)</b> x <b>แถว (แนวนอน)</b> ตารางขนาด 3 x 2 จึงหมายถึง มี 3 ช่องแนวตั้ง และ 2 แถวแนวนอน"
       },
       {
-        id: 9, title: "Checkpoint 9: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 2,
+        id: 9, title: "Checkpoint 9: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 2.5,
         mode: "choice",
         q: "ภารกิจ: หากต้องการพิมพ์เอกสารที่มีตารางกว้าง ต้องตั้งค่าหน้ากระดาษแบบใดในเมนู Orientation:",
         target: "แนวนอน (Landscape)",
@@ -491,7 +666,7 @@
         knText: "ในแท็บ <b>Layout (เค้าโครง)</b> คำสั่ง <b>Orientation</b> มี 2 แบบ: <b>Portrait (แนวตั้ง)</b> สำหรับเอกสารทั่วไป และ <b>Landscape (แนวนอน)</b> สำหรับตารางหรือรูปภาพขนาดกว้าง"
       },
       {
-        id: 10, title: "Checkpoint 10: สัญลักษณ์ตรวจคำผิด", badge: "Doc Inspector", pts: 2,
+        id: 10, title: "Checkpoint 10: สัญลักษณ์ตรวจคำผิด", badge: "Doc Inspector", pts: 2.5,
         mode: "choice",
         q: "ภารกิจ: ในโปรแกรม Word การตรวจพบคำที่อาจสะกดผิดจะแจ้งเตือนด้วยสัญลักษณ์ใดใต้คำ:",
         target: "เส้นใต้หยักสีแดง",
@@ -500,7 +675,7 @@
         knText: "ใน Microsoft Word เส้นหยักใต้ข้อความมีความหมายเฉพาะ: <b>เส้นหยักสีแดง</b> หมายถึงสะกดคำผิด ส่วน <b>เส้นหยักสีฟ้า</b> หมายถึงไวยากรณ์หรือการเว้นวรรคผิดพลาด"
       },
       {
-        id: 11, title: "Checkpoint 11: การทำสารบัญ", badge: "Style Maestro", pts: 3,
+        id: 11, title: "Checkpoint 11: การทำสารบัญ", badge: "Style Maestro", pts: 2.5,
         mode: "choice",
         q: "ภารกิจ: การเตรียมข้อความเพื่อดึงทำสารบัญอัตโนมัติ (Table of Contents) ต้องกำหนดสไตล์ใดให้กับหัวข้อหลัก:",
         target: "Heading 1",
@@ -509,7 +684,7 @@
         knText: "การจะให้โปรแกรม Word ดึงสารบัญอัตโนมัติได้ ผู้พิมพ์จะต้องกำหนดรูปแบบหัวข้อรายงานด้วยสไตล์ <b>Heading 1 (หัวเรื่อง 1)</b> หรือ Heading 2 ก่อนเสมอ"
       },
       {
-        id: 12, title: "Checkpoint 12: การบันทึกส่งออกไฟล์", badge: "Word Grand Master", pts: 3,
+        id: 12, title: "Checkpoint 12: การบันทึกส่งออกไฟล์", badge: "Word Grand Master", pts: 2.5,
         mode: "choice",
         q: "ภารกิจ: การส่งออกไฟล์เอกสารชนิดใดที่คงสภาพหน้ากระดาษและฟอนต์ได้แน่นอนที่สุดสำหรับนำไปพิมพ์งาน:",
         target: ".pdf",
@@ -632,7 +807,6 @@
     let isGameOver = false;
 
     let checkpointFailedAttempts = {};
-
     let keys = { up: false, down: false, left: false, right: false };
 
     let carPhysics = {
@@ -903,6 +1077,7 @@
           const rockMat = new THREE.MeshLambertMaterial({ color: 0x64748b, flatShading: true });
           const rock = new THREE.Mesh(rockGeo, rockMat);
           rock.position.set(laneX, 1.2, z);
+          rock.rotation.set(Math.random(), Math.random(), Math.random());
           scene.add(rock);
           obstacles.push({ mesh: rock, x: laneX, z: z, radius: 2.2, type: 'rock', hit: false });
         } else if (typeRand < 0.75) {
@@ -1188,7 +1363,7 @@
 
       currentStage = stageIdx + 1;
       document.getElementById("hud-stage").innerText = `ด่าน ${Math.min(currentStage + 1, 12)} / 12`;
-      document.getElementById("hud-score").innerText = `${score} / 20`;
+      document.getElementById("hud-score").innerText = `${Number(score.toFixed(1))} / 20`;
       document.getElementById("checkpoint-modal").style.display = "none";
       isModalOpen = false;
 
@@ -1285,7 +1460,8 @@
     function finishGame() {
       isGameOver = true;
       document.getElementById("finish-screen").style.display = "flex";
-      document.getElementById("final-score").innerText = `${score} / 20`;
+      const displayScore = Number(score.toFixed(1));
+      document.getElementById("final-score").innerText = `${displayScore} / 20`;
 
       let rank = "ผู้ขับขี่ฝึกหัด (ควรทบทวนเนื้อหาเพิ่มเติม)";
       if (score >= 17) rank = "ยอดนักขับระดับ Master (ยอดเยี่ยมมาก)";
@@ -1293,23 +1469,21 @@
       else if (score >= 10) rank = "ผ่านเกณฑ์การทดสอบ";
       document.getElementById("final-rank").innerText = `ระดับ: ${rank}`;
 
-      const code = `WR3D-${btoa(playerName).slice(0, 5).toUpperCase()}-${score}PTS-${Date.now().toString().slice(-4)}`;
+      const code = `WR3D-${btoa(encodeURIComponent(playerName)).slice(0, 5).toUpperCase()}-${displayScore}PTS-${Date.now().toString().slice(-4)}`;
       document.getElementById("cert-code").innerText = `รหัสยืนยันผลการขับขี่: ${code}`;
 
-      if (SCRIPT_URL && !SCRIPT_URL.includes("YOUR_GOOGLE_SCRIPT")) {
-        fetch(SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: playerName,
-            score: score,
-            total: 20,
-            code: code,
-            time: new Date().toLocaleString("th-TH")
-          })
-        });
-      }
+      // บันทึกคะแนน
+      const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScDqf_3sbr3G8XbgR4atsdlcKscqiL_snt7iXLfACcwBjGj1g/formResponse";
+      const formData = new FormData();
+      formData.append("entry.1063080801", playerName);
+      formData.append("entry.557379494", displayScore);
+      formData.append("entry.851103684", code);
+
+      fetch(FORM_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData
+      }).catch(err => console.error("Error saving score:", err));
     }
 
     function animate() {
