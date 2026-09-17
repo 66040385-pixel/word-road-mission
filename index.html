@@ -184,7 +184,6 @@
       justify-content: center; min-height: 140px; gap: 12px; margin-bottom: 14px;
     }
 
-    /* ป้ายปุ่มคีย์ลัดเดี่ยวขนาดใหญ่สไตล์เดิม */
     .key-badge-btn {
       display: inline-flex; align-items: center; justify-content: center;
       background: #ffffff; border: 3px solid #0284c7; border-radius: 14px;
@@ -314,12 +313,12 @@
       <div class="game-h1">WORD ROAD 3D</div>
       <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6;">
         เกมจำลองการขับรถเก็บคะแนนภารกิจ Microsoft Word ม.1 (E1)<br>
-        คะแนนเต็ม 20 คะแนน (แตะปุ่มคำสั่งหรือคีย์ลัดเพื่อผ่านด่าน)
+        คะแนนเต็ม 20 คะแนน (น้ำหนักคะแนนต่างกันตามระดับความยาก)
       </p>
       
       <div style="background: rgba(31, 41, 55, 0.8); border-radius: 14px; padding: 14px; font-size: 0.85rem; color: #38bdf8; margin: 18px 0; text-align: left; line-height: 1.6;">
         <b>ข้อกำหนดการเก็บคะแนน:</b><br>
-        • ตอบถูกตั้งแต่ครั้งแรก: ได้คะแนนประจำด่านทันที<br>
+        • ตอบถูกตั้งแต่ครั้งแรก: ได้รับคะแนนเต็มประจำด่านนั้นทันที<br>
         • ตอบผิด: จะเปิด <b>ใบความรู้</b> เพื่อศึกษา และให้ทำภารกิจแก้ตัวผ่านด่านได้ แต่จะไม่ได้คะแนนเพิ่ม (เพื่อป้องกันคะแนนเฟ้อ)
       </div>
 
@@ -339,16 +338,15 @@
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
           CHECKPOINT 1
         </span>
-        <span style="font-weight:900; color:#0284c7;" id="cp-pts">+1.5 คะแนน</span>
+        <span style="font-weight:900; color:#0284c7;" id="cp-pts">+1 คะแนน</span>
       </div>
       <div class="q-statement" id="cp-q">ภารกิจปฏิบัติการ...</div>
 
-      <!-- พื้นที่จำลองมินิเกม -->
       <div class="minigame-stage" id="cp-minigame-area"></div>
 
       <div style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; color: #475569; display: flex; gap: 8px; align-items: center;">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="#64748b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-        <span>แตะปุ่มบนหน้าจอ หรือกดแป้นพิมพ์คีย์ลัดจริงเพื่อปลดล็อกม่านเลเซอร์</span>
+        <span>พิจารณาและเลือกคำสั่งที่ถูกต้องที่สุด เพื่อเปิดม่านเลเซอร์</span>
       </div>
     </div>
   </div>
@@ -411,11 +409,14 @@
   <script>
     const SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_WEB_APP_URL";
 
-    // 12 Checkpoint Tasks: รวมคะแนนเต็ม 20 คะแนนพอดี (ด่าน 1-8 ละ 1.5, ด่าน 9-12 ละ 2.0)
-    // โหมด shortcut กลับมาใช้ปุ่มแสดงตรงกลางแบบเดิม แตะหรือกดคีย์ลัดได้
+    // 12 Checkpoint Tasks: น้ำหนักคะแนนรวม 20 คะแนนเต็มพอดี (ไม่มีจุดทศนิยม)
+    // ด่าน 1-6 ละ 1 คะแนน (= 6 คะแนน)
+    // ด่าน 7-10 ละ 2 คะแนน (= 8 คะแนน)
+    // ด่าน 11-12 ละ 3 คะแนน (= 6 คะแนน)
+    // รวมสุทธิ = 6 + 8 + 6 = 20 คะแนนเต็ม
     const missions = [
       {
-        id: 1, title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", pts: 1.5,
+        id: 1, title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", pts: 1,
         mode: "ribbon",
         q: "ภารกิจ: เลือกแท็บเมนู Ribbon ที่ใช้เปลี่ยนแบบฟอนต์และขนาดตัวอักษร:",
         target: "Home",
@@ -423,7 +424,7 @@
         knText: "แถบ <b>หน้าแรก (Home)</b> เป็นศูนย์รวมคำสั่งพื้นฐานที่ใช้บ่อยที่สุด ได้แก่ การเปลี่ยนฟอนต์, ปรับขนาดอักษร, ทำตัวหนา/เอียง/ขีดเส้นใต้, และการจัดตำแหน่งย่อหน้า"
       },
       {
-        id: 2, title: "Checkpoint 2: บันทึกเอกสาร", badge: "Save Master", pts: 1.5,
+        id: 2, title: "Checkpoint 2: บันทึกเอกสาร", badge: "Save Master", pts: 1,
         mode: "shortcut",
         q: "ภารกิจ: แตะที่ปุ่มด้านล่าง หรือกดบนคีย์บอร์ดจริงเพื่อ 'บันทึกเอกสาร (Save)':",
         keyReq: "s", codeReq: "KeyS", displayKey: "Ctrl + S",
@@ -431,7 +432,7 @@
         knText: "การบันทึกเอกสารใช้คีย์ลัด <b>Ctrl + S</b> (ย่อมาจาก Save) เป็นปุ่มที่ควรหมั่นกดเป็นประจำเพื่อป้องกันข้อมูลสูญหาย"
       },
       {
-        id: 3, title: "Checkpoint 3: ยกเลิกคำสั่งล่าสุด", badge: "Text Editor", pts: 1.5,
+        id: 3, title: "Checkpoint 3: ยกเลิกคำสั่งล่าสุด", badge: "Text Editor", pts: 1,
         mode: "shortcut",
         q: "ภารกิจ: แตะที่ปุ่มด้านล่าง หรือกดบนคีย์บอร์ดจริงเพื่อ 'ยกเลิกคำสั่งล่าสุด (Undo)':",
         keyReq: "z", codeReq: "KeyZ", displayKey: "Ctrl + Z",
@@ -439,7 +440,7 @@
         knText: "เมื่อทำงานพลาดหรือเผลอลบข้อความ ให้ใช้คีย์ลัด <b>Ctrl + Z</b> เพื่อยกเลิกคำสั่งล่าสุด (Undo) ดึงข้อมูลเดิมกลับคืนมาทันที"
       },
       {
-        id: 4, title: "Checkpoint 4: สไตล์ตัวอักษร", badge: "Format Master", pts: 1.5,
+        id: 4, title: "Checkpoint 4: สไตล์ตัวอักษร", badge: "Format Master", pts: 1,
         mode: "shortcut",
         q: "ภารกิจ: แตะที่ปุ่มลัดด้านล่าง หรือกดบนแป้นพิมพ์เพื่อทำข้อความ 'ตัวหนา (Bold)':",
         keyReq: "b", codeReq: "KeyB", displayKey: "Ctrl + B",
@@ -447,7 +448,7 @@
         knText: "การปรับแต่งสไตล์ข้อความให้เป็นตัวหนาใช้ไอคอนตัว <b>B</b> (Bold) หรือกดคีย์ลัด <b>Ctrl + B</b> นิยมใช้สำหรับเน้นหัวข้อหรือคำสำคัญ"
       },
       {
-        id: 5, title: "Checkpoint 5: จัดตำแหน่งย่อหน้า", badge: "Paragraph Pro", pts: 1.5,
+        id: 5, title: "Checkpoint 5: จัดตำแหน่งย่อหน้า", badge: "Paragraph Pro", pts: 1,
         mode: "align",
         q: "ภารกิจ: ทดลองกดปุ่มจัดตำแหน่งเอกสาร เพื่อวางข้อความให้อยู่ 'กึ่งกลางหน้ากระดาษ':",
         target: "center",
@@ -455,7 +456,7 @@
         knText: "การจัดข้อความให้อยู่ตรงกลางหน้ากระดาษพอดีให้ใช้คำสั่ง <b>Center</b> (หรือกด Ctrl + E) ซึ่งเหมาะสำหรับการจัดชื่อเรื่องหรือหัวข้อรายงาน"
       },
       {
-        id: 6, title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", pts: 1.5,
+        id: 6, title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", pts: 1,
         mode: "choice",
         q: "ภารกิจ: เครื่องมือใดใช้สำหรับสร้างรายการข้อความที่มีลำดับ 1, 2, 3 ก่อนหลัง:",
         target: "Numbering",
@@ -464,7 +465,7 @@
         knText: "เมื่อข้อความมีขั้นตอนที่ต้องทำตามลำดับก่อนหลัง ให้ใช้คำสั่ง <b>Numbering (ลำดับเลข)</b> แต่หากเป็นรายการทั่วไปที่สลับลำดับได้ ให้ใช้ <b>Bullets (สัญลักษณ์จุด)</b>"
       },
       {
-        id: 7, title: "Checkpoint 7: การตัดข้อความรูปภาพ", badge: "Media Specialist", pts: 1.5,
+        id: 7, title: "Checkpoint 7: การตัดข้อความรูปภาพ", badge: "Media Specialist", pts: 2,
         mode: "choice",
         q: "ภารกิจ: คำสั่ง Wrap Text รูปแบบใดทำให้ข้อความไหลล้อมรอบกรอบรูปภาพอย่างอิสระ:",
         target: "Square",
@@ -473,7 +474,7 @@
         knText: "การตั้งค่า <b>Wrap Text</b> เป็น <b>Square</b> จะช่วยให้ข้อความไหลล้อมรอบกรอบสี่เหลี่ยมของภาพ และทำให้สามารถเลื่อนตำแหน่งภาพได้อย่างอิสระ"
       },
       {
-        id: 8, title: "Checkpoint 8: โครงสร้างตาราง", badge: "Table Builder", pts: 1.5,
+        id: 8, title: "Checkpoint 8: โครงสร้างตาราง", badge: "Table Builder", pts: 2,
         mode: "table_grid",
         q: "ภารกิจ: กำหนดขนาดสร้างตารางข้อมูลจำนวน '3 คอลัมน์ x 2 แถว' ให้ถูกต้อง:",
         targetCols: 3, targetRows: 2,
@@ -481,7 +482,7 @@
         knText: "การสร้างตารางใน Word จะนับตาม <b>คอลัมน์ (แนวตั้ง)</b> x <b>แถว (แนวนอน)</b> ตารางขนาด 3 x 2 จึงหมายถึง มี 3 ช่องแนวตั้ง และ 2 แถวแนวนอน"
       },
       {
-        id: 9, title: "Checkpoint 9: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 2.0,
+        id: 9, title: "Checkpoint 9: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 2,
         mode: "choice",
         q: "ภารกิจ: หากต้องการพิมพ์เอกสารที่มีตารางกว้าง ต้องตั้งค่าหน้ากระดาษแบบใดในเมนู Orientation:",
         target: "แนวนอน (Landscape)",
@@ -490,7 +491,7 @@
         knText: "ในแท็บ <b>Layout (เค้าโครง)</b> คำสั่ง <b>Orientation</b> มี 2 แบบ: <b>Portrait (แนวตั้ง)</b> สำหรับเอกสารทั่วไป และ <b>Landscape (แนวนอน)</b> สำหรับตารางหรือรูปภาพขนาดกว้าง"
       },
       {
-        id: 10, title: "Checkpoint 10: สัญลักษณ์ตรวจคำผิด", badge: "Doc Inspector", pts: 2.0,
+        id: 10, title: "Checkpoint 10: สัญลักษณ์ตรวจคำผิด", badge: "Doc Inspector", pts: 2,
         mode: "choice",
         q: "ภารกิจ: ในโปรแกรม Word การตรวจพบคำที่อาจสะกดผิดจะแจ้งเตือนด้วยสัญลักษณ์ใดใต้คำ:",
         target: "เส้นใต้หยักสีแดง",
@@ -499,7 +500,7 @@
         knText: "ใน Microsoft Word เส้นหยักใต้ข้อความมีความหมายเฉพาะ: <b>เส้นหยักสีแดง</b> หมายถึงสะกดคำผิด ส่วน <b>เส้นหยักสีฟ้า</b> หมายถึงไวยากรณ์หรือการเว้นวรรคผิดพลาด"
       },
       {
-        id: 11, title: "Checkpoint 11: การทำสารบัญ", badge: "Style Maestro", pts: 2.0,
+        id: 11, title: "Checkpoint 11: การทำสารบัญ", badge: "Style Maestro", pts: 3,
         mode: "choice",
         q: "ภารกิจ: การเตรียมข้อความเพื่อดึงทำสารบัญอัตโนมัติ (Table of Contents) ต้องกำหนดสไตล์ใดให้กับหัวข้อหลัก:",
         target: "Heading 1",
@@ -508,7 +509,7 @@
         knText: "การจะให้โปรแกรม Word ดึงสารบัญอัตโนมัติได้ ผู้พิมพ์จะต้องกำหนดรูปแบบหัวข้อรายงานด้วยสไตล์ <b>Heading 1 (หัวเรื่อง 1)</b> หรือ Heading 2 ก่อนเสมอ"
       },
       {
-        id: 12, title: "Checkpoint 12: การบันทึกส่งออกไฟล์", badge: "Word Grand Master", pts: 2.0,
+        id: 12, title: "Checkpoint 12: การบันทึกส่งออกไฟล์", badge: "Word Grand Master", pts: 3,
         mode: "choice",
         q: "ภารกิจ: การส่งออกไฟล์เอกสารชนิดใดที่คงสภาพหน้ากระดาษและฟอนต์ได้แน่นอนที่สุดสำหรับนำไปพิมพ์งาน:",
         target: ".pdf",
@@ -902,7 +903,6 @@
           const rockMat = new THREE.MeshLambertMaterial({ color: 0x64748b, flatShading: true });
           const rock = new THREE.Mesh(rockGeo, rockMat);
           rock.position.set(laneX, 1.2, z);
-          rock.rotation.set(Math.random(), Math.random(), Math.random());
           scene.add(rock);
           obstacles.push({ mesh: rock, x: laneX, z: z, radius: 2.2, type: 'rock', hit: false });
         } else if (typeRand < 0.75) {
@@ -1058,7 +1058,6 @@
       const stageBox = document.getElementById("cp-minigame-area");
       stageBox.innerHTML = "";
 
-      // โหมด 1: ป้ายปุ่มคีย์ลัดเดี่ยว (กดแตะที่ปุ่มหรือกดคีย์บอร์ดจริงได้เลย)
       if (m.mode === "shortcut") {
         stageBox.innerHTML = `
           <div style="text-align:center;">
@@ -1068,7 +1067,6 @@
           </div>
         `;
       }
-      // โหมด 2: แถบ Ribbon
       else if (m.mode === "ribbon") {
         const tabs = ["ไฟล์ (File)", "หน้าแรก (Home)", "แทรก (Insert)", "เค้าโครง (Layout)"];
         const ribbonDiv = document.createElement("div");
@@ -1085,7 +1083,6 @@
         });
         stageBox.appendChild(ribbonDiv);
       }
-      // โหมด 3: จัดกึ่งกลาง (Alignment)
       else if (m.mode === "align") {
         stageBox.innerHTML = `
           <div class="doc-preview-box">
@@ -1099,7 +1096,6 @@
           </div>
         `;
       }
-      // โหมด 4: ตารางข้อมูล (Table Grid Builder)
       else if (m.mode === "table_grid") {
         const grid = document.createElement("div");
         grid.className = "table-picker";
@@ -1123,7 +1119,6 @@
         stageBox.innerHTML = `<div style="font-size:0.9rem; color:#64748b; margin-bottom:4px;">แตะช่องเพื่อระบุขนาดตารางที่โจทย์ต้องการ:</div>`;
         stageBox.appendChild(grid);
       }
-      // โหมด 5: ตัวเลือกคำตอบทั่วไป (Choice Mode)
       else if (m.mode === "choice") {
         const choiceDiv = document.createElement("div");
         choiceDiv.style.display = "flex";
@@ -1193,7 +1188,7 @@
 
       currentStage = stageIdx + 1;
       document.getElementById("hud-stage").innerText = `ด่าน ${Math.min(currentStage + 1, 12)} / 12`;
-      document.getElementById("hud-score").innerText = `${Number(score.toFixed(1))} / 20`;
+      document.getElementById("hud-score").innerText = `${score} / 20`;
       document.getElementById("checkpoint-modal").style.display = "none";
       isModalOpen = false;
 
@@ -1290,8 +1285,7 @@
     function finishGame() {
       isGameOver = true;
       document.getElementById("finish-screen").style.display = "flex";
-      const displayScore = Number(score.toFixed(1));
-      document.getElementById("final-score").innerText = `${displayScore} / 20`;
+      document.getElementById("final-score").innerText = `${score} / 20`;
 
       let rank = "ผู้ขับขี่ฝึกหัด (ควรทบทวนเนื้อหาเพิ่มเติม)";
       if (score >= 17) rank = "ยอดนักขับระดับ Master (ยอดเยี่ยมมาก)";
@@ -1299,7 +1293,7 @@
       else if (score >= 10) rank = "ผ่านเกณฑ์การทดสอบ";
       document.getElementById("final-rank").innerText = `ระดับ: ${rank}`;
 
-      const code = `WR3D-${btoa(playerName).slice(0, 5).toUpperCase()}-${displayScore}PTS-${Date.now().toString().slice(-4)}`;
+      const code = `WR3D-${btoa(playerName).slice(0, 5).toUpperCase()}-${score}PTS-${Date.now().toString().slice(-4)}`;
       document.getElementById("cert-code").innerText = `รหัสยืนยันผลการขับขี่: ${code}`;
 
       if (SCRIPT_URL && !SCRIPT_URL.includes("YOUR_GOOGLE_SCRIPT")) {
@@ -1309,7 +1303,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: playerName,
-            score: displayScore,
+            score: score,
             total: 20,
             code: code,
             time: new Date().toLocaleString("th-TH")
