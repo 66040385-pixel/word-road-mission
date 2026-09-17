@@ -3,740 +3,612 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🚗 E1: Word Road Mission (Microsoft Word ม.1)</title>
+  <title>🚗 Word Road Quest: Level Map (E1)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #185abd; /* Word Blue */
-      --primary-dark: #103f84;
-      --accent: #2b88d8;
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --surface-card: #334155;
+      --bg: #0c1220;
+      --card-bg: rgba(22, 33, 56, 0.95);
+      --word-blue: #185abd;
+      --neon-cyan: #00e5ff;
+      --neon-gold: #ffd600;
+      --neon-green: #00e676;
+      --neon-red: #ff3d00;
       --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
+      --text-dim: #94a3b8;
     }
 
-    * { box-sizing: border-box; font-family: 'Sarabun', 'Segoe UI', sans-serif; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 16px; display: flex; justify-content: center; }
-
-    .game-wrapper { width: 100%; max-width: 960px; display: flex; flex-direction: column; gap: 16px; }
-
-    /* HUD Bar */
-    .hud {
-      background: var(--surface);
-      border: 2px solid var(--primary);
-      border-radius: 12px;
-      padding: 12px 20px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    }
-    .hud-stat { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
-    .hud-stat span.value { font-weight: bold; color: var(--accent); }
-
-    /* Map & Road Canvas */
-    .road-container {
-      background: #242b35;
-      border-radius: 12px;
-      border: 3px solid #475569;
-      position: relative;
-      overflow: hidden;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-    }
-    canvas { display: block; width: 100%; height: 220px; }
-
-    /* Mission Modal / Card */
-    .mission-card {
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 24px;
-      border: 1px solid var(--surface-card);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    
+    body {
+      background: radial-gradient(circle at center, #1e2e4f 0%, var(--bg) 90%);
+      color: var(--text);
+      font-family: 'Sarabun', sans-serif;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      align-items: center;
+      padding: 16px;
     }
 
-    .cp-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--surface-card); padding-bottom: 12px; }
-    .cp-title { font-size: 1.25rem; font-weight: bold; color: #38bdf8; }
-    .badge-preview { background: var(--surface-card); padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; }
+    .game-frame {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
 
-    .question-box { font-size: 1.15rem; line-height: 1.6; padding: 12px 0; }
+    /* Top Stats Bar */
+    .top-bar {
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 12px;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .game-logo {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--neon-cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hud-metrics { display: flex; gap: 20px; font-family: 'Chakra Petch'; font-size: 1.05rem; }
+
+    /* Map Screen Container */
+    #map-view {
+      position: relative;
+      background: #111a2e;
+      border: 3px solid #23385e;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    canvas { display: block; width: 100%; height: 580px; }
+
+    /* Floating Dialog inside Map */
+    .map-instruction {
+      position: absolute;
+      top: 14px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(12, 18, 32, 0.85);
+      border: 1px solid var(--neon-cyan);
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: var(--neon-cyan);
+      pointer-events: none;
+      font-family: 'Chakra Petch';
+    }
+
+    /* Stage Mission Screen (Modal Overlay Style) */
+    #stage-view {
+      display: none;
+      background: var(--card-bg);
+      border: 2px solid var(--neon-cyan);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 0 40px rgba(0, 229, 255, 0.25);
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 12px;
+    }
+    .stage-title { font-family: 'Chakra Petch'; font-size: 1.4rem; color: var(--neon-cyan); }
+    .badge-pill {
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid var(--neon-cyan);
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      font-family: 'Chakra Petch';
+    }
+
+    .question-box { font-size: 1.2rem; line-height: 1.6; color: #fff; padding: 6px 0; }
 
     .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } }
 
     .opt-btn {
-      background: var(--surface-card);
-      color: var(--text);
-      border: 2px solid transparent;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
       padding: 14px 18px;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
+      border-radius: 10px;
+      font-size: 0.95rem;
       text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       transition: all 0.2s;
     }
-    .opt-btn:hover { background: #475569; border-color: var(--accent); }
-    .opt-btn.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--success); color: #34d399; }
-    .opt-btn.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); color: #f87171; }
+    .opt-btn:hover:not(:disabled) {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: var(--neon-cyan);
+      transform: translateY(-2px);
+    }
+    .opt-btn.correct { background: rgba(0, 230, 118, 0.25) !important; border-color: var(--neon-green) !important; color: var(--neon-green) !important; }
+    .opt-btn.wrong { background: rgba(255, 61, 0, 0.25) !important; border-color: var(--neon-red) !important; color: var(--neon-red) !important; }
 
-    /* AI Co-Pilot Widget */
-    .ai-assistant {
-      background: rgba(30, 58, 138, 0.25);
-      border-left: 4px solid #60a5fa;
+    /* AI Assistant Card */
+    .ai-box {
+      background: rgba(0, 120, 212, 0.15);
+      border-left: 4px solid var(--neon-cyan);
       padding: 12px 16px;
       border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      color: #cbd5e1;
       display: flex;
       gap: 12px;
       align-items: flex-start;
-      font-size: 0.92rem;
-      color: #cbd5e1;
     }
-    .ai-avatar { font-size: 1.6rem; line-height: 1; }
-
-    /* Badge Collection Drawer */
-    .badge-shelf {
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 16px 20px;
-      border: 1px solid var(--surface-card);
-    }
-    .badge-shelf h4 { font-size: 0.95rem; margin-bottom: 12px; color: var(--text-muted); }
-    .badges-list { display: flex; flex-wrap: wrap; gap: 8px; }
-    .badge-item {
-      background: var(--surface-card);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      opacity: 0.35;
-      filter: grayscale(1);
-      transition: all 0.3s;
-    }
-    .badge-item.unlocked { opacity: 1; filter: grayscale(0); border: 1px solid var(--accent); background: #1e3a8a; }
 
     /* Buttons */
-    .btn-action {
-      background: var(--primary);
-      color: white;
+    .btn-return-map {
+      background: linear-gradient(135deg, var(--word-blue), var(--neon-cyan));
       border: none;
+      color: #000;
+      font-family: 'Chakra Petch';
+      font-weight: 700;
+      font-size: 1rem;
       padding: 12px 24px;
       border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
       cursor: pointer;
       align-self: flex-end;
       display: none;
     }
-    .btn-action:hover { background: var(--primary-dark); }
+    .btn-return-map:hover { filter: brightness(1.2); }
 
-    /* Modal Repair */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
+    /* Repair Overlay */
+    .repair-modal {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
       display: none;
       justify-content: center;
       align-items: center;
+      z-index: 1000;
       padding: 20px;
-      z-index: 100;
     }
     .repair-card {
-      background: var(--surface);
+      background: #141c2d;
+      border: 2px solid var(--neon-red);
+      border-radius: 16px;
       max-width: 500px;
       width: 100%;
-      border-radius: 12px;
       padding: 24px;
-      border: 2px solid var(--warning);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
   </style>
 </head>
 <body>
 
-<div class="game-wrapper">
+<div class="game-frame">
 
-  <!-- HUD -->
-  <div class="hud">
-    <div class="hud-stat">❤️ พลังรถ: <span id="health-ui" class="value">❤️❤️❤️</span></div>
-    <div class="hud-stat">🚩 ด่าน: <span id="cp-progress-ui" class="value">1 / 12</span></div>
-    <div class="hud-stat">⭐ ดาวรวม: <span id="stars-ui" class="value">0 ⭐</span></div>
-    <div class="hud-stat">📊 คะแนน E1 รวม: <span id="e1-score-ui" class="value">0 / 120 (0%)</span></div>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="game-logo">🚗 WORD ROAD QUEST</div>
+    <div class="hud-metrics">
+      <div>❤️ <span id="shield-ui">3/3</span></div>
+      <div>⭐ <span id="stars-ui">0</span></div>
+      <div>📊 E1: <span id="e1-ui" style="color:var(--neon-green);">0/120 (0%)</span></div>
+    </div>
   </div>
 
-  <!-- Road Animation Screen -->
-  <div class="road-container">
-    <canvas id="roadCanvas" width="920" height="220"></canvas>
+  <!-- 1. MAP VIEW (แผนที่ถนนคดเคี้ยวแบบเลือกด่าน) -->
+  <div id="map-view">
+    <div class="map-instruction">🎯 คลิกที่ Checkpoint ที่ปลดล็อคเพื่อเข้าสู่ด่าน</div>
+    <canvas id="mapCanvas" width="960" height="580"></canvas>
   </div>
 
-  <!-- Mission Interaction Area -->
-  <div class="mission-card" id="mission-card">
-    <div class="cp-header">
+  <!-- 2. STAGE VIEW (หน้าต่างเล่นภารกิจในด่าน) -->
+  <div id="stage-view">
+    <div class="stage-header">
       <div>
-        <div class="cp-title" id="cp-title-text">Checkpoint 1 — รู้จัก Microsoft Word</div>
-        <small id="cp-topic-text" style="color: var(--text-muted)">หัวข้อ: แถบคำสั่งและส่วนประกอบหน้าต่าง</small>
+        <div class="stage-title" id="stage-title">ด่านที่ 1</div>
+        <small id="stage-topic" style="color:var(--text-dim);"></small>
       </div>
-      <div class="badge-preview" id="cp-badge-target">🏅 ปลดล็อก: Word Beginner</div>
+      <div class="badge-pill" id="stage-badge-target">TARGET: Word Badge</div>
     </div>
 
-    <div class="question-box" id="question-text">
-      คำถามจะแสดงที่นี่...
+    <div class="question-box" id="stage-q">...</div>
+
+    <div class="options-grid" id="stage-options"></div>
+
+    <div class="ai-box">
+      <div style="font-size:1.5rem; line-height:1;">🤖</div>
+      <div id="ai-guidance"><strong>Word Co-Pilot:</strong> อ่านโจทย์ให้ละเอียดก่อนเลือกคำตอบนะ!</div>
     </div>
 
-    <div class="options-grid" id="options-container"></div>
-
-    <!-- AI Co-Pilot Feedback -->
-    <div class="ai-assistant">
-      <div class="ai-avatar">🤖</div>
-      <div id="ai-feedback-text">
-        <strong>Word AI Assistant:</strong> สวัสดีนักขับ ม.1! สังเกตโจทย์ให้ดี หากเป็นปุ่มคำสั่งสำคัญ มักจะมีตัวย่อหรือไอคอนเฉพาะตัวนะ
-      </div>
-    </div>
-
-    <button id="next-btn" class="btn-action" onclick="goToNextCheckpoint()">ขับรถไปด่านถัดไป 🚗 ➔</button>
-  </div>
-
-  <!-- Badges Drawer -->
-  <div class="badge-shelf">
-    <h4>🏅 สมุดสะสมเข็มกลัดภารกิจ (Word Badges 12 ชิ้น)</h4>
-    <div class="badges-list" id="badges-container"></div>
+    <button id="btn-back-map" class="btn-return-map" onclick="returnToMap()">สำเร็จภารกิจ! กลับสู่แผนที่ ➔</button>
   </div>
 
 </div>
 
-<!-- Repair Mission Modal -->
-<div class="modal-overlay" id="repair-modal">
+<!-- Repair Modal -->
+<div class="repair-modal" id="repair-modal">
   <div class="repair-card">
-    <h3 style="color: var(--warning)">⚠️ รถเสียกลางทาง! (เข้าสู่สถานีซ่อมบำรุง)</h3>
-    <p id="repair-hint" style="line-height: 1.6; color: #cbd5e1;"></p>
-    <div style="background: var(--surface-card); padding: 12px; border-radius: 8px;">
-      <strong style="color: #38bdf8;">คำถามปลดล็อกการซ่อม:</strong>
-      <div id="repair-question" style="margin-top: 8px;"></div>
-      <div id="repair-options" style="display:flex; flex-direction:column; gap:8px; margin-top:10px;"></div>
+    <h3 style="color:var(--neon-red); font-family:'Chakra Petch';">🚨 VEHICLE BREAKDOWN (สถานีซ่อมบำรุง)</h3>
+    <p id="repair-desc" style="color:#cbd5e1; font-size:0.95rem; line-height:1.5;"></p>
+    <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px;">
+      <strong style="color:var(--neon-cyan);">ภารกิจตอบเพื่อซ่อมรถ:</strong>
+      <div id="repair-q" style="margin:8px 0 10px 0;"></div>
+      <div id="repair-opts" style="display:flex; flex-direction:column; gap:8px;"></div>
     </div>
   </div>
 </div>
 
 <script>
-  // 12 Checkpoints ตามหลักสูตร Microsoft Word ม.1
-  const checkpoints = [
-    {
-      id: 1,
-      title: "Checkpoint 1 — รู้จัก Microsoft Word",
-      topic: "ส่วนประกอบหน้าต่างโปรแกรมและแถบ Ribbon",
-      badge: "Word Beginner",
-      badgeIcon: "🖥️",
-      question: "หากต้องการเรียกใช้คำสั่งพื้นฐาน เช่น การเปลี่ยนฟอนต์ จัดย่อหน้า ต้องเลือกดูที่แถบเมนู (Ribbon Tab) ใดเป็นหลัก?",
-      options: ["หน้าแรก (Home)", "แทรก (Insert)", "มุมมอง (View)", "รีวิว (Review)"],
-      correct: 0,
-      hint: "กลุ่มคำสั่งปรับแต่งตัวหนังสือและย่อหน้าจะถูกรวมอยู่ที่แท็บหลักแรกสุดเสมอ",
-      repairQ: "แท็บ 'Home' ในภาษาไทยเรียกว่าอะไร?",
-      repairOpts: ["หน้าแรก", "แทรก", "เค้าโครง"],
-      repairAns: 0
-    },
-    {
-      id: 2,
-      title: "Checkpoint 2 — สร้างและบันทึกเอกสาร",
-      topic: "การ Save และ Save As",
-      badge: "Save Master",
-      badgeIcon: "💾",
-      question: "หากบันทึกเอกสารเดิมที่เคยตั้งชื่อไว้แล้วทับลงไปทันที ควรใช้คีย์ลัดใด?",
-      options: ["Ctrl + N", "Ctrl + S", "Ctrl + O", "Ctrl + P"],
-      correct: 1,
-      hint: "S ย่อมาจาก Save ใช้เซฟทับไฟล์เดิมอย่างรวดเร็ว",
-      repairQ: "คีย์ลัด Ctrl + S ใช้ทำสิ่งใด?",
-      repairOpts: ["บันทึกเอกสาร", "เปิดเอกสารใหม่", "สั่งพิมพ์"],
-      repairAns: 0
-    },
-    {
-      id: 3,
-      title: "Checkpoint 3 — พิมพ์และแก้ไขข้อความ",
-      topic: "การเลือกข้อความและการค้นหาคำ",
-      badge: "Text Editor",
-      badgeIcon: "✏️",
-      question: "หากพิมพ์ตกหรือทำผิดพลาด และต้องการ 'ยกเลิกคำสั่งล่าสุด' (Undo) ต้องกดปุ่มใด?",
-      options: ["Ctrl + Y", "Ctrl + C", "Ctrl + Z", "Ctrl + V"],
-      correct: 2,
-      hint: "ปุ่มย้อนเวลาคู่บุญในการพิมพ์เอกสารคือ Ctrl + Z",
-      repairQ: "ปุ่มลัดใดใช้ทำหน้าที่ Undo?",
-      repairOpts: ["Ctrl + Z", "Ctrl + X", "Ctrl + A"],
-      repairAns: 0
-    },
-    {
-      id: 4,
-      title: "Checkpoint 4 — จัดรูปแบบตัวอักษร",
-      topic: "Font, Size, Color และการทำตัวหนา",
-      badge: "Format Master",
-      badgeIcon: "🎨",
-      question: "สัญลักษณ์ใดบนแถบ Ribbon ใช้สำหรับทำข้อความให้เป็น 'ตัวหนา' (Bold)?",
-      options: ["สัญลักษณ์ตัว I", "สัญลักษณ์ตัว U", "สัญลักษณ์ตัว B", "สัญลักษณ์ตัว X²"],
-      correct: 2,
-      hint: "Bold ขึ้นต้นด้วยตัวอักษร B",
-      repairQ: "ตัว B หมายถึงสไตล์ตัวอักษรแบบใด?",
-      repairOpts: ["ตัวหนา", "ตัวเอียง", "ขีดเส้นใต้"],
-      repairAns: 0
-    },
-    {
-      id: 5,
-      title: "Checkpoint 5 — การจัดตำแหน่งย่อหน้า",
-      topic: "Left, Center, Right, Justify",
-      badge: "Paragraph Pro",
-      badgeIcon: "📐",
-      question: "การจัดหัวข้อรายงานให้อยู่ 'กึ่งกลางหน้ากระดาษ' พอดี ต้องใช้คำสั่งใด?",
-      options: ["Align Left", "Center (Ctrl + E)", "Align Right", "Justify"],
-      correct: 1,
-      hint: "Center คือการจัดกึ่งกลาง ซึ่งมีคีย์ลัดพิเศษคือ Ctrl + E",
-      repairQ: "Center มีความหมายตรงกับการจัดตำแหน่งแบบใด?",
-      repairOpts: ["กึ่งกลาง", "ชิดซ้าย", "ชิดขวา"],
-      repairAns: 0
-    },
-    {
-      id: 6,
-      title: "Checkpoint 6 — สัญลักษณ์แสดงหัวข้อย่อยและลำดับเลข",
-      topic: "Bullets & Numbering",
-      badge: "List Expert",
-      badgeIcon: "📋",
-      question: "หากต้องการทำรายการขั้นตอนทำอาหารที่ 'ต้องทำตามลำดับก่อนหลัง' ควรเลือกใช้เครื่องมือใด?",
-      options: ["Bullets (สัญลักษณ์จุด)", "Numbering (ลำดับหมายเลข 1, 2, 3)", "Multilevel List", "Line Spacing"],
-      correct: 1,
-      hint: "สิ่งที่มีขั้นตอนชัดเจน การใส่ตัวเลขลำดับจะสื่อความหมายได้ถูกต้องที่สุด",
-      repairQ: "เมื่อต้องเรียงขั้นตอน 1 2 3 ควรใช้เครื่องมือใด?",
-      repairOpts: ["Numbering", "Bullets", "Tables"],
-      repairAns: 0
-    },
-    {
-      id: 7,
-      title: "Checkpoint 7 — การแทรกรูปภาพ",
-      topic: "Insert Picture & Wrap Text",
-      badge: "Image Park Guide",
-      badgeIcon: "🖼️",
-      question: "เมื่อแทรกรูปภาพเข้ามาแล้วขยับย้ายตำแหน่งไม่ได้อย่างอิสระ ต้องไปตั้งค่าเครื่องมือใด?",
-      options: ["Picture Border", "Crop", "Wrap Text (การตัดข้อความ)", "Corrections"],
-      correct: 2,
-      hint: "Wrap Text (เช่น Square หรือ In Front of Text) จะปลดล็อกให้รูปเคลื่อนที่อิสระรอบตัวหนังสือ",
-      repairQ: "คำสั่งใดใช้จัดการการวางรูปร่วมกับข้อความ?",
-      repairOpts: ["Wrap Text", "Picture Style", "Rotate"],
-      repairAns: 0
-    },
-    {
-      id: 8,
-      title: "Checkpoint 8 — ตาราง (Tables)",
-      topic: "การแทรกตารางและการรวมเซลล์",
-      badge: "Table Builder",
-      badgeIcon: "📊",
-      question: "หากต้องการรวมช่องตาราง 2 ช่องเข้าด้วยกันเป็นช่องเดียว จะต้องใช้คำสั่งใด?",
-      options: ["Split Cells", "Merge Cells", "Insert Row", "Delete Column"],
-      correct: 1,
-      hint: "Merge แปลว่า การผสานหรือรวมเข้าด้วยกัน",
-      repairQ: "คำสั่งผสานช่องตารางเรียกว่าอะไร?",
-      repairOpts: ["Merge Cells", "Split Cells", "Table Design"],
-      repairAns: 0
-    },
-    {
-      id: 9,
-      title: "Checkpoint 9 — ตั้งค่าหน้ากระดาษ",
-      topic: "Page Setup (Margins & Orientation)",
-      badge: "Layout Pilot",
-      badgeIcon: "📄",
-      question: "หากต้องการเปลี่ยนกระดาษจาก 'แนวตั้ง' ให้เป็น 'แนวนอน' ต้องเข้าไปที่คำสั่งใด?",
-      options: ["Margins (ระยะขอบ)", "Orientation (การวางแนว)", "Size (ขนาด)", "Columns (คอลัมน์)"],
-      correct: 1,
-      hint: "Orientation จะให้เลือกระหว่าง Portrait (แนวตั้ง) และ Landscape (แนวนอน)",
-      repairQ: "Landscape หมายถึงการวางแนวกระดาษแบบใด?",
-      repairOpts: ["แนวนอน", "แนวตั้ง", "แนวทแยง"],
-      repairAns: 0
-    },
-    {
-      id: 10,
-      title: "Checkpoint 10 — การตรวจสอบเอกสาร",
-      topic: "Spelling & Grammar, Word Count",
-      badge: "Inspector Badge",
-      badgeIcon: "🔍",
-      question: "เส้นหยักสีแดงใต้ข้อความในเอกสาร Microsoft Word บ่งบอกถึงสิ่งใด?",
-      options: ["การสะกดคำที่อาจไม่ถูกต้อง", "ไวยากรณ์ผิด", "การจัดหน้าเกินขอบ", "คำที่ถูกล็อค"],
-      correct: 0,
-      hint: "เส้นหยักแดง = ข้อสงสัยคำสะกดผิด, เส้นหยักฟ้า = ไวยากรณ์/เว้นวรรค",
-      repairQ: "เส้นใต้หยักสีแดงเตือนเรื่องใด?",
-      repairOpts: ["สะกดคำผิด", "สีตัวอักษรผิด", "บันทึกไม่สำเร็จ"],
-      repairAns: 0
-    },
-    {
-      id: 11,
-      title: "Checkpoint 11 — จัดรูปแบบเอกสารอัตโนมัติ",
-      topic: "Styles และการจัดชุดรูปแบบ",
-      badge: "Style Architect",
-      badgeIcon: "✨",
-      question: "การเลือกใช้ 'Heading Styles' (เช่น Heading 1, Heading 2) มีประโยชน์หลักอย่างไร?",
-      options: ["ทำให้ไฟล์มีขนาดเล็กลง", "สร้างสารบัญอัตโนมัติได้ง่าย", "ป้องกันการก็อปปี้ไฟล์", "เปลี่ยนภาษาพิมพ์อัตโนมัติ"],
-      correct: 1,
-      hint: "การกำหนดโครงสร้าง Heading จะทำให้ Word สร้างสารบัญ (Table of Contents) ให้ทันที",
-      repairQ: "Heading 1 เหมาะสำหรับทำส่วนใดของรายงาน?",
-      repairOpts: ["หัวข้อหลัก", "เนื้อเรื่องธรรมดา", "เชิงอรรถ"],
-      repairAns: 0
-    },
-    {
-      id: 12,
-      title: "Checkpoint 12 — ภารกิจประยุกต์และส่งออกงาน",
-      topic: "Export PDF และการเตรียมพิมพ์",
-      badge: "Word Explorer Grand Master",
-      badgeIcon: "🏆",
-      question: "หากต้องการส่งไฟล์รายงานไปพิมพ์ที่ร้านโดย 'ไม่ให้ฟอนต์เพี้ยนหรือหน้ากระดาษเคลื่อน' ควรส่งออกเป็นไฟล์ชนิดใด?",
-      options: [".txt", ".docx", ".pdf", ".html"],
-      correct: 2,
-      hint: "PDF คือรูปแบบไฟล์เอกสารคงที่ ล็อคหน้าตาเหมือนต้นฉบับ 100%",
-      repairQ: "ไฟล์สกุลใดคงสภาพการจัดหน้าได้ดีที่สุดเมื่อนำไปเปิดเครื่องอื่น?",
-      repairOpts: [".pdf", ".txt", ".rtf"],
-      repairAns: 0
-    }
+  // ข้อมูล 12 ด่าน Microsoft Word ม.1
+  const stageData = [
+    { id: 1, title: "Checkpoint 1 — รู้จัก Microsoft Word", topic: "ส่วนประกอบหน้าต่าง Ribbon", badge: "Word Beginner", q: "หากต้องการเรียกใช้คำสั่งพื้นฐาน เช่น ปรับรูปแบบฟอนต์ จัดย่อหน้า ต้องเลือกที่แท็บใด?", opts: ["หน้าแรก (Home)", "แทรก (Insert)", "มุมมอง (View)", "รีวิว (Review)"], ans: 0, hint: "แถบปรับแต่งตัวหนังสือหลักจะอยู่ที่แท็บแรกสุดเสมอ", rq: "แท็บ 'Home' ในภาษาไทยคือเมนูใด?", ro: ["หน้าแรก", "แทรก", "ไฟล์"], ra: 0 },
+    { id: 2, title: "Checkpoint 2 — สร้างและบันทึกเอกสาร", topic: "การ Save และ Save As", badge: "Save Master", q: "หากต้องการบันทึกทับไฟล์เดิมทันที ควรใช้คีย์ลัดใด?", opts: ["Ctrl + N", "Ctrl + S", "Ctrl + O", "Ctrl + P"], ans: 1, hint: "S มาจากคำว่า Save", rq: "คีย์ลัด Ctrl + S ใช้ทำสิ่งใด?", ro: ["บันทึกเอกสาร", "เปิดหน้าต่างใหม่", "สั่งพิมพ์"], ra: 0 },
+    { id: 3, title: "Checkpoint 3 — พิมพ์และแก้ไขข้อความ", topic: "Undo & Redo", badge: "Text Editor", q: "หากพิมพ์ผิดและต้องการ 'ยกเลิกคำสั่งล่าสุด' (Undo) ต้องกดคีย์ลัดใด?", opts: ["Ctrl + Y", "Ctrl + C", "Ctrl + Z", "Ctrl + V"], ans: 2, hint: "ปุ่มย้อนเวลาเอกสารคือปุ่ม Z", rq: "ปุ่ม Undo มีคีย์ลัดคืออะไร?", ro: ["Ctrl + Z", "Ctrl + X", "Ctrl + A"], ra: 0 },
+    { id: 4, title: "Checkpoint 4 — จัดรูปแบบตัวอักษร", topic: "Font Styling", badge: "Format Master", q: "สัญลักษณ์ใดบนแถบ Ribbon ใช้สำหรับทำข้อความให้เป็น 'ตัวหนา' (Bold)?", opts: ["ไอคอนตัว I", "ไอคอนตัว U", "ไอคอนตัว B", "ไอคอนตัว X²"], ans: 2, hint: "Bold เริ่มต้นด้วยอักษร B", rq: "ตัว B หมายถึงสไตล์ข้อความแบบใด?", ro: ["ตัวหนา", "ตัวเอียง", "ขีดเส้นใต้"], ra: 0 },
+    { id: 5, title: "Checkpoint 5 — การจัดตำแหน่งย่อหน้า", topic: "Alignment & Spacing", badge: "Paragraph Pro", q: "การจัดชื่อหัวข้อรายงานให้อยู่ 'กึ่งกลางหน้ากระดาษ' ต้องใช้คำสั่งใด?", opts: ["Align Left", "Center (Ctrl + E)", "Align Right", "Justify"], ans: 1, hint: "Center หมายถึงกึ่งกลาง มีคีย์ลัดคือ Ctrl + E", rq: "Center หมายถึงการจัดตำแหน่งแบบใด?", ro: ["ตรงกลาง", "ชิดซ้าย", "ชิดขวา"], ra: 0 },
+    { id: 6, title: "Checkpoint 6 — หัวข้อย่อยและลำดับเลข", topic: "Bullets & Numbering", badge: "List Architect", q: "รายการขั้นตอนที่ต้องทำตามลำดับก่อน-หลัง ควรเลือกใช้เครื่องมือใด?", opts: ["Bullets (สัญลักษณ์จุด)", "Numbering (ลำดับ 1, 2, 3)", "Multilevel List", "Line Spacing"], ans: 1, hint: "ขั้นตอนที่ตายตัว ต้องอาศัยลำดับหมายเลข", rq: "เมื่อต้องการระบุ 1, 2, 3 ควรใช้เครื่องมือใด?", ro: ["Numbering", "Bullets", "Table"], ra: 0 },
+    { id: 7, title: "Checkpoint 7 — การแทรกรูปภาพ", topic: "Insert Picture & Wrap Text", badge: "Media Specialist", q: "แทรกรูปภาพแล้วขยับตำแหน่งไม่ได้อย่างอิสระ ต้องไปตั้งค่าเครื่องมือใด?", opts: ["Picture Border", "Crop", "Wrap Text (ตัดข้อความ)", "Corrections"], ans: 2, hint: "Wrap Text เช่น Square จะช่วยให้รูปขยับอิสระรอบตัวหนังสือ", rq: "คำสั่งตัดข้อความล้อมรูปภาพเรียกว่าอะไร?", ro: ["Wrap Text", "Shapes", "Icons"], ra: 0 },
+    { id: 8, title: "Checkpoint 8 — การจัดการตาราง", topic: "Tables & Cell Merging", badge: "Table Builder", q: "หากต้องการรวมช่องตาราง 2 ช่องเข้าด้วยกันเป็นช่องเดียว ต้องใช้คำสั่งใด?", opts: ["Split Cells", "Merge Cells", "Insert Row", "Delete Column"], ans: 1, hint: "Merge หมายถึงการผสานรวมกัน", rq: "Merge Cells มีหน้าที่อะไร?", ro: ["รวมช่องตาราง", "แบ่งช่องตาราง", "ลบแถว"], ra: 0 },
+    { id: 9, title: "Checkpoint 9 — ตั้งค่าหน้ากระดาษ", topic: "Margins & Orientation", badge: "Layout Pilot", q: "เปลี่ยนหน้ากระดาษจากแนวตั้งให้เป็น 'แนวนอน' ต้องเลือกคำสั่งใด?", opts: ["Margins (ระยะขอบ)", "Orientation (การวางแนว)", "Size (ขนาด)", "Columns (คอลัมน์)"], ans: 1, hint: "Orientation มีให้เลือกระหว่าง Portrait และ Landscape", rq: "Landscape ใน Word หมายถึงแนวกระดาษแบบใด?", ro: ["แนวนอน", "แนวตั้ง", "แนวตัด"], ra: 0 },
+    { id: 10, title: "Checkpoint 10 — การตรวจสอบเอกสาร", topic: "Proofing & Spell Check", badge: "Doc Inspector", q: "เส้นหยักสีแดงใต้ข้อความในเอกสาร Word บ่งบอกถึงสิ่งใด?", opts: ["สะกดคำที่อาจผิดพลาด", "ไวยากรณ์ผิดพลาด", "ข้อความเกินขอบ", "คำที่ติดรหัสผ่าน"], ans: 0, hint: "เส้นหยักแดง = สะกดคำ, เส้นหยักฟ้า = ไวยากรณ์หรือเว้นวรรค", rq: "เส้นหยักสีแดงแจ้งเตือนเรื่องใด?", ro: ["สะกดคำผิด", "ใส่รูปผิด", "ลบข้อความ"], ra: 0 },
+    { id: 11, title: "Checkpoint 11 — การใช้สไตล์อัตโนมัติ", topic: "Styles & TOC", badge: "Style Maestro", q: "การกำหนด 'Heading Styles' ให้หัวข้อ มีประโยชน์สูงสุดด้านใด?", opts: ["ลดขนาดไฟล์", "สร้างสารบัญอัตโนมัติได้ทันที", "ป้องกันการก็อปปี้", "แปลงภาษา"], ans: 1, hint: "Heading คือหัวใจของการดึงสารบัญ (Table of Contents)", rq: "Heading นิยมนำมาใช้ทำอะไร?", ro: ["สร้างสารบัญอัตโนมัติ", "ตกแต่งขอบ", "ใส่ลายน้ำ"], ra: 0 },
+    { id: 12, title: "Checkpoint 12 — การส่งออกเอกสาร", topic: "Export PDF & Finish", badge: "Grand Explorer", q: "หากต้องการส่งงานไปพิมพ์โดยไม่ให้ฟอนต์เพี้ยนหรือหน้าเคลื่อน ควรส่งออกเป็นไฟล์ใด?", opts: [".txt", ".docx", ".pdf", ".html"], ans: 2, hint: "PDF ล็อคโครงสร้างหน้ากระดาษได้คงที่ที่สุด", rq: "ไฟล์สกุลใดคงสภาพหน้ากระดาษได้ดีที่สุด?", ro: [".pdf", ".txt", ".rtf"], ra: 0 }
+  ];
+
+  // พิกัด 12 จุดโหนดบนแผนที่แบบคดเคี้ยว (S-Curve Road)
+  const nodeCoords = [
+    { x: 120, y: 500 }, // ด่าน 1
+    { x: 260, y: 490 }, // ด่าน 2
+    { x: 400, y: 450 }, // ด่าน 3
+    { x: 540, y: 420 }, // ด่าน 4
+    { x: 700, y: 440 }, // ด่าน 5
+    { x: 830, y: 380 }, // ด่าน 6
+    { x: 800, y: 250 }, // ด่าน 7
+    { x: 650, y: 220 }, // ด่าน 8
+    { x: 480, y: 240 }, // ด่าน 9
+    { x: 300, y: 210 }, // ด่าน 10
+    { x: 160, y: 150 }, // ด่าน 11
+    { x: 380, y: 90 }   // ด่าน 12 เส้นชัย
   ];
 
   // Game States
-  let currentCP = 0;
-  let health = 3;
-  let cpAttempts = 0; // นับจำนวนครั้งที่ตอบผิดในด่านปัจจุบัน
-  let totalScoreE1 = 0; // เต็ม 120 คะแนน (ด่านละ 10)
+  let unlockedLevel = 1; // ด่านสูงสุดที่ปลดล็อคแล้ว
+  let activeStage = 1;
+  let totalScoreE1 = 0;
   let totalStars = 0;
-  let unlockedBadges = [];
-  let detailedLogs = []; // บันทึกผลส่งออกงานวิจัย
+  let stageResults = {}; // เก็บดาวและคะแนนแต่ละด่าน
+  let shields = 3;
+  let currentAttempts = 0;
 
-  // Canvas Setup
-  const canvas = document.getElementById('roadCanvas');
+  // Car Animation on Map
+  let carPos = { x: nodeCoords[0].x, y: nodeCoords[0].y };
+  let carTarget = { x: nodeCoords[0].x, y: nodeCoords[0].y };
+  let isCarDriving = false;
+
+  const canvas = document.getElementById('mapCanvas');
   const ctx = canvas.getContext('2d');
-  let carX = 40;
-  let targetCarX = 40;
-  let isMoving = false;
 
-  function initGame() {
-    renderBadgeShelf();
-    loadCheckpoint(0);
-    renderHUD();
-    requestAnimationFrame(gameLoop);
+  function init() {
+    updateHUD();
+    renderMap();
+    canvas.addEventListener('click', handleMapClick);
   }
 
-  function renderBadgeShelf() {
-    const container = document.getElementById('badges-container');
-    container.innerHTML = checkpoints.map((cp, idx) => `
-      <div class="badge-item" id="badge-elem-${idx}">
-        <span>${cp.badgeIcon}</span>
-        <span>${cp.badge}</span>
-      </div>
-    `).join('');
-  }
-
-  function renderHUD() {
-    // Health UI
+  function updateHUD() {
     let hearts = "";
-    for(let i=0; i<3; i++) hearts += (i < health) ? "❤️" : "🖤";
-    document.getElementById('health-ui').innerText = hearts;
-
-    document.getElementById('cp-progress-ui').innerText = `${currentCP + 1} / 12`;
-    document.getElementById('stars-ui').innerText = `${totalStars} ⭐`;
-
-    const percent = Math.round((totalScoreE1 / 120) * 100);
-    document.getElementById('e1-score-ui').innerText = `${totalScoreE1} / 120 (${percent}%)`;
+    for(let i=0; i<3; i++) hearts += (i < shields) ? "❤️" : "🖤";
+    document.getElementById('shield-ui').innerText = hearts;
+    document.getElementById('stars-ui').innerText = totalStars;
+    const pct = Math.round((totalScoreE1 / 120) * 100);
+    document.getElementById('e1-ui').innerText = `${totalScoreE1}/120 (${pct}%)`;
   }
 
-  function loadCheckpoint(index) {
-    const cp = checkpoints[index];
-    cpAttempts = 0;
-    
-    document.getElementById('cp-title-text').innerText = cp.title;
-    document.getElementById('cp-topic-text').innerText = `หัวข้อ: ${cp.topic}`;
-    document.getElementById('cp-badge-target').innerText = `🏅 ปลดล็อก: ${cp.badge}`;
-    document.getElementById('question-text').innerText = cp.question;
-    
-    // AI Co-Pilot Tip
-    document.getElementById('ai-feedback-text').innerHTML = `
-      <strong>Word AI Assistant:</strong> เดินทางถึงด่านที่ ${cp.id} แล้ว! ${cp.hint}
-    `;
+  // วาดแผนที่ Overworld Map
+  function renderMap() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Render Options
-    const optContainer = document.getElementById('options-container');
-    optContainer.innerHTML = '';
-    cp.options.forEach((opt, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'opt-btn';
-      btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
-      btn.onclick = () => selectOption(idx);
-      optContainer.appendChild(btn);
+    // 1. วาดพื้นหญ้าและธรรมชาติ
+    ctx.fillStyle = '#16233b';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // วาดสระน้ำ/แม่น้ำประดับฉาก
+    ctx.fillStyle = '#0f3959';
+    ctx.beginPath();
+    ctx.ellipse(820, 120, 100, 60, Math.PI / 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. วาดถนนคดเคี้ยว (S-Road Path)
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 42;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(nodeCoords[0].x, nodeCoords[0].y);
+    for (let i = 1; i < nodeCoords.length; i++) {
+      ctx.lineTo(nodeCoords[i].x, nodeCoords[i].y);
+    }
+    ctx.stroke();
+
+    // ขอบถนนนีออน
+    ctx.strokeStyle = '#00e5ff';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    // เส้นประกลางถนน
+    ctx.strokeStyle = '#ffd600';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([12, 12]);
+    ctx.stroke();
+    ctx.setLineDash([]); // รีเซ็ตเส้นประ
+
+    // 3. วาดโหนดด่านทั้ง 12 จุด
+    nodeCoords.forEach((pt, idx) => {
+      const lvl = idx + 1;
+      const isUnlocked = lvl <= unlockedLevel;
+      const isPassed = stageResults[lvl] !== undefined;
+
+      // เงาโหนด
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.beginPath();
+      ctx.arc(pt.x + 3, pt.y + 4, 24, 0, Math.PI * 2);
+      ctx.fill();
+
+      // วงกลมหลัก
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, 22, 0, Math.PI * 2);
+      if (isPassed) {
+        ctx.fillStyle = '#00e676'; // ผ่านแล้ว
+      } else if (isUnlocked) {
+        ctx.fillStyle = '#ffd600'; // ปลดล็อค กำลังรอเล่น
+      } else {
+        ctx.fillStyle = '#334155'; // ล็อค
+      }
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // ตัวเลขด่าน หรือ ไอคอนกุญแจ
+      ctx.fillStyle = isUnlocked ? '#000' : '#94a3b8';
+      ctx.font = 'bold 15px Chakra Petch';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      if (isUnlocked) {
+        ctx.fillText(lvl, pt.x, pt.y);
+      } else {
+        ctx.fillText('🔒', pt.x, pt.y);
+      }
+
+      // วาดดาวใต้โหนดถ้าเคยเล่นผ่านแล้ว
+      if (isPassed) {
+        const starCount = stageResults[lvl].stars;
+        let starStr = '⭐'.repeat(starCount);
+        ctx.font = '11px sans-serif';
+        ctx.fillText(starStr, pt.x, pt.y + 32);
+      }
     });
 
-    document.getElementById('next-btn').style.display = 'none';
+    // 4. วาดรถยนต์ (Car) บนแผนที่
+    drawCar(carPos.x, carPos.y);
 
-    // คำนวณตำแหน่งรถบนแผนที่
-    targetCarX = 40 + (index * ((canvas.width - 100) / 11));
-    isMoving = true;
+    // Car Movement Animation Lerp
+    if (isCarDriving) {
+      carPos.x += (carTarget.x - carPos.x) * 0.08;
+      carPos.y += (carTarget.y - carPos.y) * 0.08;
+      if (Math.hypot(carTarget.x - carPos.x, carTarget.y - carPos.y) < 1) {
+        carPos.x = carTarget.x;
+        carPos.y = carTarget.y;
+        isCarDriving = false;
+        // เมื่อขับถึงด่านใหม่ ให้เปิดด่านเข้าเล่นทันที
+        openStageView(unlockedLevel);
+      }
+    }
+
+    requestAnimationFrame(renderMap);
   }
 
-  function selectOption(selectedIndex) {
-    const cp = checkpoints[currentCP];
-    const buttons = document.querySelectorAll('.opt-btn');
-    
-    // Disable all options
-    buttons.forEach(btn => btn.disabled = true);
+  function drawCar(x, y) {
+    ctx.save();
+    ctx.translate(x, y);
 
-    if (selectedIndex === cp.correct) {
+    // ล้อรถ
+    ctx.fillStyle = '#000';
+    ctx.fillRect(-16, -14, 8, 6);
+    ctx.fillRect(8, -14, 8, 6);
+    ctx.fillRect(-16, 8, 8, 6);
+    ctx.fillRect(8, 8, 8, 6);
+
+    // ตัวถังรถสปอร์ตสีแดง
+    ctx.fillStyle = '#ff3d00';
+    ctx.beginPath();
+    ctx.roundRect(-18, -10, 36, 20, 5);
+    ctx.fill();
+
+    // หลังคากระจก
+    ctx.fillStyle = '#00e5ff';
+    ctx.beginPath();
+    ctx.roundRect(-8, -7, 16, 14, 3);
+    ctx.fill();
+
+    // สัญลักษณ์ W บนหน้ารถ
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 9px Chakra Petch';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('W', 10, 0);
+
+    ctx.restore();
+  }
+
+  // จัดการการคลิกที่โหนดบนแผนที่
+  function handleMapClick(e) {
+    if (isCarDriving) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clickX = (e.clientX - rect.left) * scaleX;
+    const clickY = (e.clientY - rect.top) * scaleY;
+
+    nodeCoords.forEach((pt, idx) => {
+      const lvl = idx + 1;
+      const dist = Math.hypot(clickX - pt.x, clickY - pt.y);
+      if (dist <= 26) {
+        if (lvl <= unlockedLevel) {
+          // ขยับรถไปจุดนั้นและเข้าด่าน
+          carPos.x = pt.x;
+          carPos.y = pt.y;
+          openStageView(lvl);
+        } else {
+          alert(`🔒 ด่านที่ ${lvl} ยังล็อคอยู่! ต้องผ่านด่านที่ ${lvl - 1} ก่อน`);
+        }
+      }
+    });
+  }
+
+  // สลับหน้า: เปิดหน้าจอทำภารกิจในด่าน
+  function openStageView(lvl) {
+    activeStage = lvl;
+    currentAttempts = 0;
+    const stage = stageData[lvl - 1];
+
+    document.getElementById('map-view').style.display = 'none';
+    const stageView = document.getElementById('stage-view');
+    stageView.style.display = 'flex';
+
+    document.getElementById('stage-title').innerText = stage.title;
+    document.getElementById('stage-topic').innerText = `หัวข้อ: ${stage.topic}`;
+    document.getElementById('stage-badge-target').innerText = `🏅 ปลดล็อก: ${stage.badge}`;
+    document.getElementById('stage-q').innerText = stage.q;
+    document.getElementById('ai-guidance').innerHTML = `<strong>Word Co-Pilot:</strong> ยินดีต้อนรับสู่ด่าน ${lvl}! ${stage.hint}`;
+
+    const optsGrid = document.getElementById('stage-options');
+    optsGrid.innerHTML = '';
+    stage.opts.forEach((txt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.innerHTML = `<span><strong>${String.fromCharCode(65 + i)}.</strong></span> <span>${txt}</span>`;
+      btn.onclick = () => checkAnswer(i);
+      optsGrid.appendChild(btn);
+    });
+
+    document.getElementById('btn-back-map').style.display = 'none';
+  }
+
+  function checkAnswer(selectedIndex) {
+    const stage = stageData[activeStage - 1];
+    const btns = document.querySelectorAll('.opt-btn');
+    btns.forEach(b => b.disabled = true);
+
+    if (selectedIndex === stage.ans) {
       // ตอบถูก
-      buttons[selectedIndex].classList.add('correct');
-      
-      // การให้คะแนน E1: ตอบถูกรอบแรก = 10 แต้ม, ผิด 1 ครั้ง = 7 แต้ม, ผิด 2 ครั้งขึ้นไป/ซ่อมรถ = 5 แต้ม
-      let earnedScore = 10;
-      let starsEarned = 3;
-      if (cpAttempts === 1) { earnedScore = 7; starsEarned = 2; }
-      else if (cpAttempts >= 2) { earnedScore = 5; starsEarned = 1; }
+      btns[selectedIndex].classList.add('correct');
 
-      totalScoreE1 += earnedScore;
-      totalStars += starsEarned;
+      let addScore = 10, addStars = 3;
+      if (currentAttempts === 1) { addScore = 7; addStars = 2; }
+      else if (currentAttempts >= 2) { addScore = 5; addStars = 1; }
 
-      // ปลดล็อกเข็มกลัด
-      unlockBadge(currentCP);
+      // บันทึกเฉพาะรอบที่ดีที่สุด
+      if (!stageResults[activeStage]) {
+        totalScoreE1 += addScore;
+        totalStars += addStars;
+        stageResults[activeStage] = { score: addScore, stars: addStars };
+      }
 
-      // AI Feedback
-      document.getElementById('ai-feedback-text').innerHTML = `
-        <strong style="color:#34d399">Word AI Assistant:</strong> ยอดเยี่ยมมาก! ตอบถูกอย่างแม่นยำ (+${earnedScore} คะแนน E1 | ได้รับ ${starsEarned} ดาว ⭐)
+      document.getElementById('ai-guidance').innerHTML = `
+        <strong style="color:var(--neon-green)">Word Co-Pilot:</strong> ถูกต้องสมบูรณ์แบบ! (+${addScore} คะแนน E1 | ได้รับ ${addStars} ดาว ⭐)
       `;
 
-      // Log ข้อมูลวิจัย
-      detailedLogs.push({
-        checkpoint: cp.id,
-        topic: cp.topic,
-        attempts: cpAttempts + 1,
-        score: earnedScore,
-        stars: starsEarned
-      });
-
-      renderHUD();
-      document.getElementById('next-btn').style.display = 'block';
+      updateHUD();
+      document.getElementById('btn-back-map').style.display = 'inline-block';
 
     } else {
       // ตอบผิด
-      buttons[selectedIndex].classList.add('wrong');
-      cpAttempts++;
-      health--;
-      renderHUD();
+      btns[selectedIndex].classList.add('wrong');
+      currentAttempts++;
+      shields--;
+      updateHUD();
 
-      if (health <= 0) {
-        // รถพัง -> เข้า Repair Mission
-        setTimeout(() => { triggerRepairMission(); }, 800);
+      if (shields <= 0) {
+        setTimeout(showRepairModal, 600);
       } else {
-        document.getElementById('ai-feedback-text').innerHTML = `
-          <strong style="color:#f87171">Word AI Assistant:</strong> ยังไม่ถูกนะ เสียพลังรถไป 1 หน่วย! คำใบ้: ${cp.hint}
+        document.getElementById('ai-guidance').innerHTML = `
+          <strong style="color:var(--neon-red)">Word Co-Pilot:</strong> ยังไม่ถูกต้อง เกราะรถลดลง 1 หน่วย! คำใบ้: ${stage.hint}
         `;
-        // ให้โอกาสเลือกใหม่
         setTimeout(() => {
-          buttons.forEach(btn => {
-            btn.disabled = false;
-            btn.classList.remove('wrong');
-          });
+          btns.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
         }, 1200);
       }
     }
   }
 
-  function unlockBadge(cpIndex) {
-    const badgeElem = document.getElementById(`badge-elem-${cpIndex}`);
-    if (badgeElem) badgeElem.classList.add('unlocked');
-  }
-
-  function triggerRepairMission() {
-    const cp = checkpoints[currentCP];
+  function showRepairModal() {
+    const stage = stageData[activeStage - 1];
     const modal = document.getElementById('repair-modal');
-    document.getElementById('repair-hint').innerText = `ระบบตรวจพบว่าผู้เรียนยังสับสนในเรื่อง "${cp.topic}" สรุปง่าย ๆ คือ: ${cp.hint}`;
-    document.getElementById('repair-question').innerText = cp.repairQ;
+    document.getElementById('repair-desc').innerText = `ระบบตรวจจับว่าผู้เรียนยังติดขัดในเรื่อง "${stage.topic}" จำง่าย ๆ คือ: ${stage.hint}`;
+    document.getElementById('repair-q').innerText = stage.rq;
 
-    const optBox = document.getElementById('repair-options');
-    optBox.innerHTML = '';
-    cp.repairOpts.forEach((opt, idx) => {
+    const optsBox = document.getElementById('repair-opts');
+    optsBox.innerHTML = '';
+    stage.ro.forEach((txt, idx) => {
       const btn = document.createElement('button');
       btn.className = 'opt-btn';
-      btn.innerText = opt;
+      btn.innerText = txt;
       btn.onclick = () => {
-        if (idx === cp.repairAns) {
-          alert('🔧 ซ่อมรถสำเร็จ! เติมพลังชีวิตกลับมา 2 หน่วย');
-          health = 2;
+        if (idx === stage.ra) {
+          alert('🔧 ซ่อมรถสำเร็จ! เติมพลังเกราะกลับคืนมา 2 หน่วย');
+          shields = 2;
           modal.style.display = 'none';
-          renderHUD();
-          // ให้ทำข้อสอบหลักต่อ
-          const buttons = document.querySelectorAll('.opt-btn');
-          buttons.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
+          updateHUD();
+          const btns = document.querySelectorAll('.opt-btn');
+          btns.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
         } else {
           alert('ยังไม่ถูก ลองอ่านทบทวนใหม่อีกครั้ง');
         }
       };
-      optBox.appendChild(btn);
+      optsBox.appendChild(btn);
     });
 
     modal.style.display = 'flex';
   }
 
-  function goToNextCheckpoint() {
-    currentCP++;
-    if (currentCP < checkpoints.length) {
-      loadCheckpoint(currentCP);
-      renderHUD();
-    } else {
-      finishE1Game();
+  // สลับหน้า: ปิดด่าน กลับสู่แผนที่ และขับรถไปด่านถัดไป
+  function returnToMap() {
+    document.getElementById('stage-view').style.display = 'none';
+    document.getElementById('map-view').style.display = 'block';
+
+    // ถ้าผ่านด่านปัจจุบันที่สูงสุด ให้ปลดล็อคด่านถัดไป และสั่งรถขับไปข้างหน้า
+    if (activeStage === unlockedLevel && unlockedLevel < 12) {
+      unlockedLevel++;
+      carTarget = { x: nodeCoords[unlockedLevel - 1].x, y: nodeCoords[unlockedLevel - 1].y };
+      isCarDriving = true; // รถจะแล่นตามถนนไปยังด่านถัดไปอัตโนมัติ
+    } else if (unlockedLevel === 12 && stageResults[12]) {
+      alert(`🎉 ยินดีด้วย! คุณพิชิตครบทั้ง 12 Checkpoints แล้ว!\nคะแนนรวม E1: ${totalScoreE1}/120 (${Math.round((totalScoreE1/120)*100)}%)\nพร้อมเข้าสู่เกม E2 (Word Jump) ต่อไป`);
     }
   }
 
-  function finishE1Game() {
-    const finalPercent = Math.round((totalScoreE1 / 120) * 100);
-    const summaryCard = document.getElementById('mission-card');
-    summaryCard.innerHTML = `
-      <div style="text-align: center; padding: 20px;">
-        <h2 style="color: #38bdf8; font-size: 2rem;">🏆 ภารกิจขับรถ E1 สำเร็จสมบูรณ์!</h2>
-        <p style="margin: 12px 0; color: #cbd5e1; font-size: 1.1rem;">
-          ยินดีด้วย! คุณได้รับ <strong>"ใบขับขี่ Microsoft Word ม.1"</strong> พร้อมสะสมครบ 12 เข็มกลัด
-        </p>
-
-        <div style="display:flex; justify-content:center; gap:20px; margin:24px 0;">
-          <div style="background:var(--surface-card); padding:16px 24px; border-radius:10px;">
-            <div>คะแนนสะสมระหว่างเรียน (E1)</div>
-            <h1 style="color:var(--accent); font-size:2.4rem;">${totalScoreE1} / 120</h1>
-            <strong>(${finalPercent}%)</strong>
-          </div>
-          <div style="background:var(--surface-card); padding:16px 24px; border-radius:10px;">
-            <div>ดาวสะสมทั้งหมด</div>
-            <h1 style="color:var(--warning); font-size:2.4rem;">${totalStars} ⭐</h1>
-            <strong>(เต็ม 36 ⭐)</strong>
-          </div>
-        </div>
-
-        <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid var(--success); padding: 14px; border-radius: 8px; margin-bottom: 20px;">
-          🏁 <strong>สถานะปัจจุบัน:</strong> มีความพร้อม 100% สำหรับการเข้าสู่บททดสอบรวบยอด <strong>E2: Word Jump Game (20 ข้อ)</strong>
-        </div>
-
-        <div style="display: flex; justify-content: center; gap: 12px;">
-          <button class="btn-action" style="display:inline-block;" onclick="downloadE1ResearchCSV()">📥 บันทึกไฟล์ผลการวิจัย (E1 Logs CSV)</button>
-        </div>
-      </div>
-    `;
-  }
-
-  function downloadE1ResearchCSV() {
-    let csv = "data:text/csv;charset=utf-8,Checkpoint,Topic,Attempts,Score_Earned,Stars\n";
-    detailedLogs.forEach(r => {
-      csv += `${r.checkpoint},"${r.topic}",${r.attempts},${r.score},${r.stars}\n`;
-    });
-    csv += `Total,-,-,${totalScoreE1},${totalStars}\n`;
-    csv += `Percentage,-,-,${Math.round((totalScoreE1/120)*100)}%,-\n`;
-
-    const encodedUri = encodeURI(csv);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `E1_WordRoad_StudentResult.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  // Animation Engine (ถนนและรถ)
-  function gameLoop() {
-    // อัปเดตตำแหน่งรถอย่างนุ่มนวล
-    if (isMoving) {
-      carX += (targetCarX - carX) * 0.08;
-      if (Math.abs(targetCarX - carX) < 0.5) {
-        carX = targetCarX;
-        isMoving = false;
-      }
-    }
-
-    // วาดพื้นหลังถนน
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // ท้องฟ้า/ภูเขาหลังถนน
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(0, 0, canvas.width, 100);
-
-    // พื้นถนน
-    ctx.fillStyle = '#334155';
-    ctx.fillRect(0, 100, canvas.width, 120);
-
-    // เส้นขอบทาง
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fillRect(0, 100, canvas.width, 4);
-    ctx.fillRect(0, 216, canvas.width, 4);
-
-    // เส้นประกลางถนน
-    ctx.fillStyle = '#facc15';
-    for (let x = 0; x < canvas.width; x += 40) {
-      ctx.fillRect(x, 155, 20, 4);
-    }
-
-    // วาด 12 Checkpoints บนถนน
-    for (let i = 0; i < 12; i++) {
-      let cpPos = 40 + (i * ((canvas.width - 100) / 11));
-      
-      // เสาธง/ซุ้มตรวจ
-      ctx.fillStyle = i < currentCP ? '#10b981' : (i === currentCP ? '#38bdf8' : '#64748b');
-      ctx.fillRect(cpPos, 80, 4, 30);
-
-      // ตัวเลขด่าน
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(cpPos + 2, 75, 10, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 10px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(i + 1, cpPos + 2, 79);
-    }
-
-    // วาดรถยนต์ (Car Body)
-    drawCar(carX, 140);
-
-    requestAnimationFrame(gameLoop);
-  }
-
-  function drawCar(x, y) {
-    // ล้อรถ
-    ctx.fillStyle = '#000000';
-    ctx.beginPath();
-    ctx.arc(x + 10, y + 25, 7, 0, Math.PI * 2);
-    ctx.arc(x + 40, y + 25, 7, 0, Math.PI * 2);
-    ctx.fill();
-
-    // ตัวถังรถสีแดงสปอร์ต
-    ctx.fillStyle = '#ef4444';
-    ctx.beginPath();
-    ctx.roundRect(x, y + 5, 52, 18, 4);
-    ctx.fill();
-
-    // หลังคารถ
-    ctx.fillStyle = '#b91c1c';
-    ctx.beginPath();
-    ctx.roundRect(x + 12, y - 5, 28, 14, 4);
-    ctx.fill();
-
-    // กระจกรถ
-    ctx.fillStyle = '#bae6fd';
-    ctx.fillRect(x + 16, y - 2, 20, 8);
-
-    // ไฟหน้า
-    ctx.fillStyle = '#fef08a';
-    ctx.fillRect(x + 48, y + 10, 4, 6);
-
-    // สัญลักษณ์ Word เล็ก ๆ ข้างประตู
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 8px sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText('W', x + 23, y + 16);
-  }
-
-  window.onload = initGame;
+  window.onload = init;
 </script>
 
 </body>
-</html># word-road-mission
+</html>
