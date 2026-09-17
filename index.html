@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🚗 Word Road: 3-Lane Snap Driving (E1)</title>
+  <title>🚗 Word Road: 3-Lane Switch (E1)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
@@ -28,7 +28,6 @@
       flex-direction: column;
       align-items: center;
       padding: 12px;
-      outline: none;
     }
 
     .main-wrapper {
@@ -94,19 +93,26 @@
       position: absolute;
       top: 14px; left: 50%;
       transform: translateX(-50%);
-      width: 240px;
-      height: 38px;
+      width: 250px;
+      height: 40px;
       background: #1e293b;
       border: 2px solid #64748b;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
+      gap: 10px;
+      font-size: 0.85rem;
       color: #94a3b8;
       font-family: 'Chakra Petch';
       box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
+    .lane-indicator {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .lane-active { background: #38bdf8; color: #000; }
 
     .dashboard {
       position: absolute;
@@ -129,7 +135,7 @@
       transform: translateX(-50%);
       width: 240px;
       height: 240px;
-      transition: transform 0.12s ease-out;
+      transition: transform 0.15s cubic-bezier(0.18, 0.89, 0.32, 1.28);
     }
     .wheel-ring {
       width: 100%; height: 100%;
@@ -298,7 +304,7 @@
     }
   </style>
 </head>
-<body tabindex="0">
+<body>
 
 <div class="main-wrapper">
 
@@ -315,7 +321,12 @@
 
     <div class="cockpit-overlay">
       <div class="windshield-frame"></div>
-      <div class="rearview-mirror">LANE: [A] LEFT | [D] RIGHT 🚗</div>
+      <div class="rearview-mirror">
+        <span class="lane-indicator" id="lane-L">L</span>
+        <span class="lane-indicator lane-active" id="lane-C">C</span>
+        <span class="lane-indicator" id="lane-R">R</span>
+        <span style="margin-left: 8px;">(กด A / D เปลี่ยนเลน)</span>
+      </div>
 
       <div class="dashboard">
         <div class="gauge">
@@ -409,25 +420,27 @@
   let isArrivedAtGate = false;
   let steeringAngle = 0;
 
-  // ระบบ 3 เลนแบบ Snap
-  const lanePositions = [-0.6, 0.0, 0.6]; // พิกัด X ของเลน ซ้าย, กลาง, ขวา
-  let currentLane = 1; // เริ่มที่เลนกลาง (index 1)
-  let targetX = lanePositions[1];
-  let currentX = lanePositions[1];
+  // เลนทั้ง 3: เลน 0 (ซ้าย), เลน 1 (กลาง), เลน 2 (ขวา)
+  const laneOffsets = [-1.0, 0.0, 1.0];
+  let currentLane = 1; // เริ่มต้นที่เลนกลาง
+  let targetX = 0.0;
+  let currentX = 0.0;
 
-  let obstacles = [
-    { z: 0.35, lane: 0, type: 'cone', hit: false },
-    { z: 0.65, lane: 2, type: 'barrier', hit: false },
-    { z: 0.95, lane: 1, type: 'broken_car', hit: false }
-  ];
+  let obstacles = [];
 
-  function spawnObstaclePattern(startZ) {
+  // การันตีว่าต้องมีอย่างน้อย 1 เลนที่ว่างและปลอดภัยเสมอ
+  function spawnObstacleWave(startZ) {
     const types = ['cone', 'barrier', 'broken_car'];
-    // สุ่มปิด 1 หรือ 2 เลน (เหลืออย่างน้อย 1 เลนว่างเสมอ)
-    const blockCount = Math.random() < 0.65 ? 1 : 2;
-    let chosenLanes = [0, 1, 2].sort(() => Math.random() - 0.5).slice(0, blockCount);
+    
+    // สุ่มเลือก 1 เลนที่เป็น "เลนปลอดภัย" ที่ห้ามมีสิ่งกีดขวางเด็ดขาด
+    const safeLane = Math.floor(Math.random() * 3);
+    
+    // สุ่มว่าจะปิด 1 เลน หรือ 2 เลนที่เหลือ
+    const lanesToBlock = [0, 1, 2].filter(l => l !== safeLane);
+    const blockCount = Math.random() < 0.5 ? 1 : 2;
+    const blockedLanes = lanesToBlock.sort(() => Math.random() - 0.5).slice(0, blockCount);
 
-    chosenLanes.forEach(laneIdx => {
+    blockedLanes.forEach(laneIdx => {
       obstacles.push({
         z: startZ,
         lane: laneIdx,
@@ -462,71 +475,72 @@
   function init() {
     bindControls();
     updateHUD();
-    window.focus();
-    document.body.focus();
+    spawnObstacleWave(0.4);
+    spawnObstacleWave(0.8);
     requestAnimationFrame(gameLoop);
   }
 
-  // ระบบสลับเลนทันที (1 เลนต่อ 1 ครั้งที่กด)
-  function switchLane(direction) {
+  // เปลี่ยนเลนทันทีและแสดงไฟสถานะเลน
+  function changeLane(direction) {
     if (isArrivedAtGate) return;
+
     if (direction === -1 && currentLane > 0) {
       currentLane--;
-      targetX = lanePositions[currentLane];
-      steeringAngle = -28;
+      steeringAngle = -35;
     } else if (direction === 1 && currentLane < 2) {
       currentLane++;
-      targetX = lanePositions[currentLane];
-      steeringAngle = 28;
+      steeringAngle = 35;
     }
+
+    targetX = laneOffsets[currentLane];
+    updateLaneUI();
+  }
+
+  function updateLaneUI() {
+    document.getElementById('lane-L').className = 'lane-indicator' + (currentLane === 0 ? ' lane-active' : '');
+    document.getElementById('lane-C').className = 'lane-indicator' + (currentLane === 1 ? ' lane-active' : '');
+    document.getElementById('lane-R').className = 'lane-indicator' + (currentLane === 2 ? ' lane-active' : '');
   }
 
   function bindControls() {
-    window.addEventListener('keydown', (e) => {
+    // ดักจับที่ window ระดับสูงสุด ป้องกันคีย์หลุด
+    window.onkeydown = (e) => {
       if (isArrivedAtGate) return;
-      const code = e.code;
       const key = e.key.toLowerCase();
+      const code = e.code;
 
-      // เดินหน้า / เร่งเครื่อง
-      if (code === 'KeyW' || code === 'ArrowUp' || key === 'w' || key === 'arrowup') {
+      if (code === 'KeyW' || key === 'w' || code === 'ArrowUp' || key === 'arrowup') {
         isGasPressed = true;
         e.preventDefault();
       }
-      // สลับไปเลนซ้าย
-      if (code === 'KeyA' || code === 'ArrowLeft' || key === 'a' || key === 'arrowleft') {
-        switchLane(-1);
+      if (code === 'KeyA' || key === 'a' || code === 'ArrowLeft' || key === 'arrowleft') {
+        changeLane(-1);
         e.preventDefault();
       }
-      // สลับไปเลนขวา
-      if (code === 'KeyD' || code === 'ArrowRight' || key === 'd' || key === 'arrowright') {
-        switchLane(1);
+      if (code === 'KeyD' || key === 'd' || code === 'ArrowRight' || key === 'arrowright') {
+        changeLane(1);
         e.preventDefault();
       }
-    }, false);
+    };
 
-    window.addEventListener('keyup', (e) => {
-      const code = e.code;
+    window.onkeyup = (e) => {
       const key = e.key.toLowerCase();
-      if (code === 'KeyW' || code === 'ArrowUp' || key === 'w' || key === 'arrowup') {
+      const code = e.code;
+      if (code === 'KeyW' || key === 'w' || code === 'ArrowUp' || key === 'arrowup') {
         isGasPressed = false;
       }
-    }, false);
+    };
 
-    document.getElementById('viewport').addEventListener('click', () => {
-      window.focus();
-    });
-
-    // ปุ่มสัมผัสหน้าจอ
-    document.getElementById('btn-left').addEventListener('click', (e) => { e.preventDefault(); switchLane(-1); });
-    document.getElementById('btn-right').addEventListener('click', (e) => { e.preventDefault(); switchLane(1); });
+    document.getElementById('btn-left').onclick = (e) => { e.preventDefault(); changeLane(-1); };
+    document.getElementById('btn-right').onclick = (e) => { e.preventDefault(); changeLane(1); };
 
     const gasBtn = document.getElementById('btn-gas');
     const startGas = (e) => { e.preventDefault(); if (!isArrivedAtGate) isGasPressed = true; };
     const endGas = (e) => { e.preventDefault(); isGasPressed = false; };
-    gasBtn.addEventListener('mousedown', startGas);
-    gasBtn.addEventListener('mouseup', endGas);
-    gasBtn.addEventListener('touchstart', startGas);
-    gasBtn.addEventListener('touchend', endGas);
+    gasBtn.onmousedown = startGas;
+    gasBtn.onmouseup = endGas;
+    gasBtn.ontouchstart = startGas;
+    gasBtn.ontouchend = endGas;
   }
 
   function updateHUD() {
@@ -540,7 +554,7 @@
   }
 
   function triggerCrash() {
-    speed = Math.max(15, speed * 0.25);
+    speed = Math.max(15, speed * 0.2);
     shields--;
     updateHUD();
 
@@ -549,18 +563,18 @@
     setTimeout(() => { flash.style.display = 'none'; }, 250);
 
     if (shields <= 0) {
-      setTimeout(showRepairModal, 400);
+      setTimeout(showRepairModal, 350);
     }
   }
 
   function gameLoop() {
     if (!isArrivedAtGate) {
-      if (isGasPressed) speed = Math.min(speed + 2.0, maxSpeed);
+      if (isGasPressed) speed = Math.min(speed + 2.2, maxSpeed);
       else speed = Math.max(speed - 1.2, 0);
 
-      // Smooth Snap เลื่อนรถเข้าหากึ่งกลางเลนเป้าหมาย
-      currentX += (targetX - currentX) * 0.2;
-      steeringAngle *= 0.85; // พวงมาลัยคืนศูนย์
+      // โยกสลับมุมมองเข้าเลนเป้าหมาย
+      currentX += (targetX - currentX) * 0.22;
+      steeringAngle *= 0.82;
       wheelEl.style.transform = `translateX(-50%) rotate(${steeringAngle}deg)`;
 
       roadPosition += speed;
@@ -576,13 +590,14 @@
         if (item.z >= 1) item.z -= 1;
       });
 
+      // ขยับสิ่งกีดขวาง
       for (let i = obstacles.length - 1; i >= 0; i--) {
         let obs = obstacles[i];
         obs.z += (speed * 0.00016);
 
-        // ตรวจสอบการชนตามเลนที่รถอยู่จริง
+        // ชนเมื่ออยู่ในเลนเดียวกันและเข้ามาใกล้
         if (!obs.hit && obs.z > 0.72 && obs.z < 0.94) {
-          if (currentLane === obs.lane && Math.abs(currentX - lanePositions[obs.lane]) < 0.28) {
+          if (currentLane === obs.lane) {
             obs.hit = true;
             triggerCrash();
           }
@@ -593,8 +608,9 @@
         }
       }
 
-      if (obstacles.length < 4 && Math.random() < 0.03 && distanceToNextGate > 350) {
-        spawnObstaclePattern(0.05);
+      // สุ่มเกิดระลอกสิ่งกีดขวางใหม่ (มีช่องว่างให้ผ่านเสมอ)
+      if (obstacles.length < 3 && Math.random() < 0.03 && distanceToNextGate > 350) {
+        spawnObstacleWave(0.05);
       }
 
       if (distanceToNextGate <= 0) {
@@ -657,7 +673,7 @@
     ctx.fillStyle = '#4ade80';
     ctx.fillRect(0, horizon, w, h - horizon);
 
-    // 4. ถนน 3 เลน
+    // 4. ถนน 3 เลน (Perspective สัมพันธ์กับ currentX)
     const segments = 60;
     for (let i = 0; i < segments; i++) {
       const z = i / segments;
@@ -666,11 +682,12 @@
       const y1 = horizon + Math.pow(z, 2.6) * (h - horizon);
       const y2 = horizon + Math.pow(nextZ, 2.6) * (h - horizon);
 
-      const roadW1 = (w * 0.14) + (w * 0.94) * Math.pow(z, 2.6);
-      const roadW2 = (w * 0.14) + (w * 0.94) * Math.pow(nextZ, 2.6);
+      const roadW1 = (w * 0.16) + (w * 0.95) * Math.pow(z, 2.6);
+      const roadW2 = (w * 0.16) + (w * 0.95) * Math.pow(nextZ, 2.6);
 
-      const x1 = (w / 2) - (currentX * 180 * (1 - z));
-      const x2 = (w / 2) - (currentX * 180 * (1 - nextZ));
+      // โยกฉากถนนตามตำแหน่งเลนปัจจุบันอย่างชัดเจน
+      const x1 = (w / 2) - (currentX * (roadW1 * 0.33) * (1 - z * 0.2));
+      const x2 = (w / 2) - (currentX * (roadW2 * 0.33) * (1 - nextZ * 0.2));
 
       const isStripe = Math.floor((roadPosition * 0.08 - i)) % 2 === 0;
 
@@ -680,6 +697,7 @@
       ctx.lineTo(w, y2); ctx.lineTo(0, y2);
       ctx.fill();
 
+      // ขอบทางแดง-ขาว
       ctx.fillStyle = isStripe ? '#ef4444' : '#ffffff';
       ctx.beginPath();
       ctx.moveTo(x1 - roadW1 * 0.54, y1);
@@ -688,6 +706,7 @@
       ctx.lineTo(x1 + roadW1 * 0.54, y1);
       ctx.fill();
 
+      // พื้นถนนลาดยาง 3 เลน
       ctx.fillStyle = isStripe ? '#475569' : '#334155';
       ctx.beginPath();
       ctx.moveTo(x1 - roadW1 * 0.5, y1);
@@ -696,21 +715,25 @@
       ctx.lineTo(x1 + roadW1 * 0.5, y1);
       ctx.fill();
 
+      // เส้นประสีขาว 2 เส้นแบ่งเป็น 3 เลนชัดเจน
       if (isStripe) {
         ctx.fillStyle = '#ffffff';
         const laneW1 = roadW1 / 3;
-        const lineW1 = roadW1 * 0.018;
-        const lineW2 = roadW2 * 0.018;
+        const laneW2 = roadW2 / 3;
+        const lineW1 = roadW1 * 0.016;
+        const lineW2 = roadW2 * 0.016;
 
+        // เส้นแบ่งเลนซ้าย-กลาง
         const l1_x1 = x1 - (laneW1 * 0.5);
-        const l1_x2 = x2 - ((roadW2 / 3) * 0.5);
+        const l1_x2 = x2 - (laneW2 * 0.5);
         ctx.beginPath();
         ctx.moveTo(l1_x1 - lineW1, y1); ctx.lineTo(l1_x2 - lineW2, y2);
         ctx.lineTo(l1_x2 + lineW2, y2); ctx.lineTo(l1_x1 + lineW1, y1);
         ctx.fill();
 
+        // เส้นแบ่งเลนกลาง-ขวา
         const l2_x1 = x1 + (laneW1 * 0.5);
-        const l2_x2 = x2 + ((roadW2 / 3) * 0.5);
+        const l2_x2 = x2 + (laneW2 * 0.5);
         ctx.beginPath();
         ctx.moveTo(l2_x1 - lineW1, y1); ctx.lineTo(l2_x2 - lineW2, y2);
         ctx.lineTo(l2_x2 + lineW2, y2); ctx.lineTo(l2_x1 + lineW1, y1);
@@ -723,8 +746,8 @@
     sortedItems.forEach(item => {
       const z = item.z;
       const y = horizon + Math.pow(z, 2.6) * (h - horizon);
-      const roadW = (w * 0.14) + (w * 0.94) * Math.pow(z, 2.6);
-      const roadCenterX = (w / 2) - (currentX * 180 * (1 - z));
+      const roadW = (w * 0.16) + (w * 0.95) * Math.pow(z, 2.6);
+      const roadCenterX = (w / 2) - (currentX * (roadW * 0.33) * (1 - z * 0.2));
       const scale = Math.pow(z, 2.0);
       const itemX = roadCenterX + (item.side * (roadW * 0.56 + scale * 120));
 
@@ -739,12 +762,13 @@
       if (z <= 0.02 || z >= 1.02) return;
 
       const y = horizon + Math.pow(z, 2.6) * (h - horizon);
-      const roadW = (w * 0.14) + (w * 0.94) * Math.pow(z, 2.6);
-      const roadCenterX = (w / 2) - (currentX * 180 * (1 - z));
+      const roadW = (w * 0.16) + (w * 0.95) * Math.pow(z, 2.6);
+      const roadCenterX = (w / 2) - (currentX * (roadW * 0.33) * (1 - z * 0.2));
       const scale = Math.pow(z, 2.0);
       const laneWidth = (roadW / 3);
 
-      const laneOffset = lanePositions[obs.lane] * (roadW * 0.44);
+      // วางตำแหน่งตรงกึ่งกลางเลนของสิ่งกีดขวางนั้น ๆ
+      const laneOffset = laneOffsets[obs.lane] * laneWidth;
       const obsX = roadCenterX + laneOffset;
 
       if (obs.type === 'cone') drawTrafficConeBig(obsX, y, scale, laneWidth);
@@ -759,7 +783,7 @@
       const gateY = horizon + gateScale * (h - horizon - 100);
       const gateW = (w * 0.9) * gateScale;
       const gateH = 180 * gateScale;
-      const gateX = (w / 2) - (currentX * 180 * (1 - gateProgress));
+      const gateX = (w / 2) - (currentX * (gateW * 0.33) * (1 - gateProgress * 0.2));
 
       ctx.fillStyle = '#0284c7';
       ctx.fillRect(gateX - gateW / 2, gateY, 32 * gateScale, gateH);
@@ -1007,7 +1031,6 @@
           shields = 2;
           modal.style.display = 'none';
           updateHUD();
-          window.focus();
           const btns = document.querySelectorAll('#term-options .opt-btn');
           btns.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
         } else {
@@ -1023,13 +1046,13 @@
   function continueDriving() {
     document.getElementById('terminal').style.display = 'none';
     currentStageIndex++;
-    window.focus();
 
     if (currentStageIndex < 12) {
       distanceToNextGate = 1000;
       isArrivedAtGate = false;
       obstacles = [];
-      spawnObstaclePattern(0.3);
+      spawnObstacleWave(0.4);
+      spawnObstacleWave(0.8);
       updateHUD();
     } else {
       alert(`🏆 ยินดีด้วย! คุณขับรถพิชิตครบทั้ง 12 Checkpoints สำเร็จแล้ว!\nคะแนนรวม E1: ${totalScoreE1}/120 (${Math.round((totalScoreE1/120)*100)}%)\nพร้อมก้าวสู่เกม E2 (Word Jump) ต่อไป!`);
