@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🚗 Word Road: Mobile & Tablet Edition (E1)</title>
+  <title>🚗 Word Road: Fair Hitbox & Full Shield Repair (E1)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -45,7 +45,6 @@
       gap: 8px;
     }
 
-    /* Responsive HUD */
     .hud-top {
       background: rgba(30, 41, 59, 0.95);
       border: 2px solid #38bdf8;
@@ -63,7 +62,6 @@
     }
     .hud-val { color: #38bdf8; font-weight: bold; font-size: 1rem; }
 
-    /* Viewport ปรับขนาดตามหน้าจอมือถือ */
     .cockpit-viewport {
       position: relative;
       width: 100%;
@@ -75,7 +73,7 @@
       border: 4px solid var(--cockpit-frame);
       box-shadow: 0 12px 35px rgba(0,0,0,0.5);
       background: #87ceeb;
-      touch-action: none; /* รองรับ Swipe */
+      touch-action: none;
     }
 
     canvas {
@@ -159,7 +157,6 @@
     .gauge-num { font-size: 1.6rem; font-weight: 700; color: #38bdf8; }
     .gauge-label { font-size: 0.65rem; color: #94a3b8; }
 
-    /* ปุ่มควบคุมขนาดใหญ่สำหรับนิ้วโป้งบนมือถือและแท็บเล็ต */
     .pedals {
       position: absolute;
       bottom: 10px; left: 10px; right: 10px;
@@ -191,7 +188,6 @@
       z-index: 50;
     }
 
-    /* Modal ตอบคำถามแบบ Responsive เต็มจอในมือถือ */
     .mission-terminal {
       position: absolute;
       top: 15px; left: 50%;
@@ -341,6 +337,44 @@
       cursor: pointer;
     }
     .table-cell.selected { background: #38bdf8; border-color: #0284c7; }
+
+    /* หน้าต่างซ่อมแซมรถฉุกเฉิน */
+    .repair-modal {
+      position: fixed; inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(6px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .repair-card {
+      background: #ffffff;
+      border: 4px solid #f87171;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 100%;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .repair-opt-btn {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      color: #1e293b;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-family: 'Kanit';
+      font-size: 0.95rem;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .repair-opt-btn:active { background: #e0f2fe; border-color: #38bdf8; }
   </style>
 </head>
 <body>
@@ -413,20 +447,35 @@
 
 </div>
 
+<!-- Repair Mission Modal (กู้ภัยเติม 3 เกราะเต็ม) -->
+<div class="repair-modal" id="repair-modal">
+  <div class="repair-card">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="font-size:1.6rem;">🔧</span>
+      <h3 style="color:#ef4444; font-family:'Kanit';">สถานีซ่อมแซมฉุกเฉิน (กู้คืนเกราะเต็ม 3 ดวง)</h3>
+    </div>
+    <p id="repair-desc" style="color:#64748b; font-size:0.92rem; line-height:1.5;"></p>
+    <div style="background:#f8fafc; border:2px dashed #cbd5e1; padding:14px; border-radius:14px; display:flex; flex-direction:column; gap:10px;">
+      <strong id="repair-q" style="color:#0284c7; font-size:1rem;">คำถามฟื้นฟูเกราะ...</strong>
+      <div id="repair-opts" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+  </div>
+</div>
+
 <script>
   const stageData = [
-    { id: 1, world: "World 1", title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", mode: "ribbon", q: "ภารกิจ: แตะเลือกแท็บ Ribbon ที่ใช้เปลี่ยนแบบฟอนต์และขนาดตัวอักษร:", target: "Home", hint: "คำสั่งเปลี่ยนฟอนต์ จัดขนาด จะรวมอยู่ที่แท็บหลัก 'Home (หน้าแรก)'" },
-    { id: 2, world: "World 1", title: "Checkpoint 2: บันทึกไฟล์ด่วน", badge: "Save Master", mode: "shortcut", q: "ภารกิจ: แตะปุ่มด้านล่างเพื่อสั่ง 'บันทึกเอกสาร (Save)':", keyReq: "s", codeReq: "KeyS", displayKey: "Ctrl + S", hint: "แตะที่ปุ่ม [ Ctrl + S ] ได้โดยตรงเลยจ้า" },
-    { id: 3, world: "World 1", title: "Checkpoint 3: ย้อนเวลากู้ข้อความ", badge: "Text Editor", mode: "shortcut", q: "ภารกิจ: เผลอลบข้อความ! แตะปุ่มเพื่อ 'ยกเลิกคำสั่ง (Undo)':", keyReq: "z", codeReq: "KeyZ", displayKey: "Ctrl + Z", hint: "แตะที่ปุ่ม [ Ctrl + Z ] ได้โดยตรงเลยจ้า" },
-    { id: 4, world: "World 2", title: "Checkpoint 4: ทำหัวข้อตัวหนา", badge: "Format Master", mode: "shortcut", q: "ภารกิจ: แตะปุ่มลัดเพื่อทำข้อความ 'ตัวหนา (Bold)':", keyReq: "b", codeReq: "KeyB", displayKey: "Ctrl + B", hint: "แตะที่ปุ่ม [ Ctrl + B ] ได้โดยตรงเลยจ้า" },
-    { id: 5, world: "World 2", title: "Checkpoint 5: จัดกึ่งกลางหน้ากระดาษ", badge: "Paragraph Pro", mode: "align", q: "ภารกิจ: แตะปุ่มจัดตำแหน่งเอกสารให้อยู่ 'กึ่งกลาง':", target: "center", hint: "แตะเลือกปุ่ม 'กึ่งกลาง' เพื่อย้ายข้อความมาตรงกลาง" },
-    { id: 6, world: "World 2", title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", mode: "ribbon_list", q: "ภารกิจ: แตะเลือกเครื่องมือใส่ลำดับ 1, 2, 3 ให้ข้อความ:", target: "Numbering", hint: "ลำดับขั้นตอนก่อน-หลัง ต้องใช้ Numbering (ตัวเลข)" },
-    { id: 7, world: "World 3", title: "Checkpoint 7: ปลดล็อกรูปภาพ", badge: "Media Specialist", mode: "wrap_text", q: "ภารกิจ: แตะเลือกการตัดข้อความเพื่อให้รูปเลื่อนอิสระ:", target: "Square", hint: "เลือก Square (จัตุรัส) เพื่อให้ข้อความล้อมรอบภาพ" },
-    { id: 8, world: "World 3", title: "Checkpoint 8: สร้างตารางข้อมูล", badge: "Table Builder", mode: "table_grid", q: "ภารกิจ: แตะช่องตารางให้มีขนาด '3 คอลัมน์ x 2 แถว':", targetCols: 3, targetRows: 2, hint: "แตะช่องตาราง แนวนอน 3 ช่อง และแนวตั้ง 2 ช่อง" },
-    { id: 9, world: "World 3", title: "Checkpoint 9: กระดาษแนวนอน", badge: "Layout Pilot", mode: "orientation", q: "ภารกิจ: ปรับเปลี่ยนการวางกระดาษเป็น 'แนวนอน (Landscape)':", target: "landscape", hint: "Landscape คือกระดาษแนวนอน ส่วน Portrait คือแนวตั้ง" },
-    { id: 10, world: "World 4", title: "Checkpoint 10: คำสะกดผิด", badge: "Doc Inspector", mode: "spell_check", q: "ภารกิจ: คำใดมีเส้นหยักแดงเตือนว่าสะกดผิด แตะเลือกคำนั้น:", target: "word_error", hint: "เส้นใต้หยักสีแดงใน Word เตือนว่าสะกดคำผิด" },
-    { id: 11, world: "World 4", title: "Checkpoint 11: สารบัญอัตโนมัติ", badge: "Style Maestro", mode: "styles", q: "ภารกิจ: แตะเลือกสไตล์ที่ใช้ทำหัวข้อหลักสำหรับสารบัญ:", target: "Heading 1", hint: "Heading 1 ใช้สำหรับกำหนดหัวข้อหลักของรายงาน" },
-    { id: 12, world: "World 4", title: "Checkpoint 12: ส่งออกพิมพ์งาน", badge: "Word Grand Master", mode: "export_pdf", q: "ภารกิจ: ส่งงานไปพิมพ์โดยไม่ให้ฟอนต์เพี้ยน แตะเลือกชนิดไฟล์:", target: ".pdf", hint: "ไฟล์ PDF ล็อคหน้ากระดาษและฟอนต์ไม่ให้เพี้ยน 100%" }
+    { id: 1, world: "World 1", title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", mode: "ribbon", q: "ภารกิจ: แตะเลือกแท็บ Ribbon ที่ใช้เปลี่ยนแบบฟอนต์และขนาดตัวอักษร:", target: "Home", hint: "คำสั่งเปลี่ยนฟอนต์ จัดขนาด จะรวมอยู่ที่แท็บหลัก 'Home (หน้าแรก)'", rq: "ปุ่มเปลี่ยนแบบฟอนต์และขนาดตัวอักษร รวมอยู่ที่แท็บใด?", ro: ["หน้าแรก (Home)", "แทรก (Insert)", "มุมมอง (View)"], ra: 0 },
+    { id: 2, world: "World 1", title: "Checkpoint 2: บันทึกไฟล์ด่วน", badge: "Save Master", mode: "shortcut", q: "ภารกิจ: แตะปุ่มด้านล่างเพื่อสั่ง 'บันทึกเอกสาร (Save)':", keyReq: "s", codeReq: "KeyS", displayKey: "Ctrl + S", hint: "แตะที่ปุ่ม [ Ctrl + S ] ได้โดยตรงเลยจ้า", rq: "คีย์ลัด Ctrl + S ใช้สำหรับคำสั่งใดใน Word?", ro: ["บันทึกเอกสาร (Save)", "สั่งพิมพ์เอกสาร (Print)", "เปิดไฟล์ใหม่ (New)"], ra: 0 },
+    { id: 3, world: "World 1", title: "Checkpoint 3: ย้อนเวลากู้ข้อความ", badge: "Text Editor", mode: "shortcut", q: "ภารกิจ: เผลอลบข้อความ! แตะปุ่มเพื่อ 'ยกเลิกคำสั่ง (Undo)':", keyReq: "z", codeReq: "KeyZ", displayKey: "Ctrl + Z", hint: "แตะที่ปุ่ม [ Ctrl + Z ] ได้โดยตรงเลยจ้า", rq: "ปุ่มลัดใดใช้ทำหน้าที่ยกเลิกคำสั่งล่าสุด (Undo)?", ro: ["Ctrl + Z", "Ctrl + C", "Ctrl + V"], ra: 0 },
+    { id: 4, world: "World 2", title: "Checkpoint 4: ทำหัวข้อตัวหนา", badge: "Format Master", mode: "shortcut", q: "ภารกิจ: แตะปุ่มลัดเพื่อทำข้อความ 'ตัวหนา (Bold)':", keyReq: "b", codeReq: "KeyB", displayKey: "Ctrl + B", hint: "แตะที่ปุ่ม [ Ctrl + B ] ได้โดยตรงเลยจ้า", rq: "ตัวอักษร B บนแถบเครื่องมือหมายถึงรูปแบบใด?", ro: ["ตัวหนา (Bold)", "ตัวเอียง (Italic)", "ขีดเส้นใต้ (Underline)"], ra: 0 },
+    { id: 5, world: "World 2", title: "Checkpoint 5: จัดกึ่งกลางหน้ากระดาษ", badge: "Paragraph Pro", mode: "align", q: "ภารกิจ: แตะปุ่มจัดตำแหน่งเอกสารให้อยู่ 'กึ่งกลาง':", target: "center", hint: "แตะเลือกปุ่ม 'กึ่งกลาง' เพื่อย้ายข้อความมาตรงกลาง", rq: "คำสั่งใดใช้จัดข้อความให้อยู่กึ่งกลางหน้ากระดาษ?", ro: ["Center (กึ่งกลาง)", "Align Left (ชิดซ้าย)", "Align Right (ชิดขวา)"], ra: 0 },
+    { id: 6, world: "World 2", title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", mode: "ribbon_list", q: "ภารกิจ: แตะเลือกเครื่องมือใส่ลำดับ 1, 2, 3 ให้ข้อความ:", target: "Numbering", hint: "ลำดับขั้นตอนก่อน-หลัง ต้องใช้ Numbering (ตัวเลข)", rq: "ถ้าต้องการทำรายการข้อ 1, 2, 3 ควรเลือกเครื่องมือใด?", ro: ["Numbering (ลำดับเลข)", "Bullets (จุดกลม)", "Table (ตาราง)"], ra: 0 },
+    { id: 7, world: "World 3", title: "Checkpoint 7: ปลดล็อกรูปภาพ", badge: "Media Specialist", mode: "wrap_text", q: "ภารกิจ: แตะเลือกการตัดข้อความเพื่อให้รูปเลื่อนอิสระ:", target: "Square", hint: "เลือก Square (จัตุรัส) เพื่อให้ข้อความล้อมรอบภาพ", rq: "คำสั่ง Wrap Text มีประโยชน์หลักอย่างไร?", ro: ["จัดระเบียบรูปภาพร่วมกับข้อความ", "เปลี่ยนสีรูปภาพ", "หมุนหน้ากระดาษ"], ra: 0 },
+    { id: 8, world: "World 3", title: "Checkpoint 8: สร้างตารางข้อมูล", badge: "Table Builder", mode: "table_grid", q: "ภารกิจ: แตะช่องตารางให้มีขนาด '3 คอลัมน์ x 2 แถว':", targetCols: 3, targetRows: 2, hint: "แตะช่องตาราง แนวนอน 3 ช่อง และแนวตั้ง 2 ช่อง", rq: "คำสั่งผสานช่องตารางให้รวมเป็นช่องเดียวเรียกว่าอะไร?", ro: ["Merge Cells", "Split Cells", "Delete Cells"], ra: 0 },
+    { id: 9, world: "World 3", title: "Checkpoint 9: กระดาษแนวนอน", badge: "Layout Pilot", mode: "orientation", q: "ภารกิจ: ปรับเปลี่ยนการวางกระดาษเป็น 'แนวนอน (Landscape)':", target: "landscape", hint: "Landscape คือกระดาษแนวนอน ส่วน Portrait คือแนวตั้ง", rq: "Landscape หมายถึงการวางแนวกระดาษแบบใด?", ro: ["แนวนอน", "แนวตั้ง", "แนวเฉียง"], ra: 0 },
+    { id: 10, world: "World 4", title: "Checkpoint 10: คำสะกดผิด", badge: "Doc Inspector", mode: "spell_check", q: "ภารกิจ: คำใดมีเส้นหยักแดงเตือนว่าสะกดผิด แตะเลือกคำนั้น:", target: "word_error", hint: "เส้นใต้หยักสีแดงใน Word เตือนว่าสะกดคำผิด", rq: "เส้นหยักสีแดงใต้คำเตือนเรื่องใด?", ro: ["คำสะกดผิด", "ตัวหนังสือเล็กเกินไป", "ลืมเซฟไฟล์"], ra: 0 },
+    { id: 11, world: "World 4", title: "Checkpoint 11: สารบัญอัตโนมัติ", badge: "Style Maestro", mode: "styles", q: "ภารกิจ: แตะเลือกสไตล์ที่ใช้ทำหัวข้อหลักสำหรับสารบัญ:", target: "Heading 1", hint: "Heading 1 ใช้สำหรับกำหนดหัวข้อหลักของรายงาน", rq: "สไตล์ใดนิยมนำมาใช้ตั้งเป็นหัวข้อหลักเพื่อทำสารบัญ?", ro: ["Heading 1", "Normal", "Title"], ra: 0 },
+    { id: 12, world: "World 4", title: "Checkpoint 12: ส่งออกพิมพ์งาน", badge: "Word Grand Master", mode: "export_pdf", q: "ภารกิจ: ส่งงานไปพิมพ์โดยไม่ให้ฟอนต์เพี้ยน แตะเลือกชนิดไฟล์:", target: ".pdf", hint: "ไฟล์ PDF ล็อคหน้ากระดาษและฟอนต์ไม่ให้เพี้ยน 100%", rq: "ไฟล์ชนิดใดคงรูปแบบหน้ากระดาษและฟอนต์ได้ดีที่สุด?", ro: [".pdf", ".txt", ".rtf"], ra: 0 }
   ];
 
   const worldThemes = [
@@ -460,7 +509,7 @@
     const types = ['cone', 'barrier', 'broken_car'];
     const safeLane = Math.floor(Math.random() * 3);
     const blockedLanes = [0, 1, 2].filter(l => l !== safeLane);
-    const count = Math.random() < 0.45 ? 1 : 2;
+    const count = Math.random() < 0.4 ? 1 : 2;
     const finalLanes = blockedLanes.sort(() => Math.random() - 0.5).slice(0, count);
 
     finalLanes.forEach(laneIdx => {
@@ -511,12 +560,10 @@
     targetX = laneOffsets[currentLane];
   }
 
-  // ระบบ Swipe ปัดหน้าจอมือถือ
   let touchStartX = 0;
   let touchStartY = 0;
 
   function bindControls() {
-    // Touch Gestures บนจอภาพ
     viewportEl.addEventListener('touchstart', (e) => {
       touchStartX = e.changedTouches[0].screenX;
       touchStartY = e.changedTouches[0].screenY;
@@ -527,12 +574,11 @@
       const diffY = e.changedTouches[0].screenY - touchStartY;
 
       if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 35) {
-        if (diffX > 0) changeLane(1); // ปัดขวา
-        else changeLane(-1); // ปัดซ้าย
+        if (diffX > 0) changeLane(1);
+        else changeLane(-1);
       }
     }, { passive: true });
 
-    // คีย์บอร์ด
     window.addEventListener('keydown', (e) => {
       if (isArrivedAtGate && !taskCompleted) {
         handleMinigameKeyboard(e);
@@ -551,7 +597,6 @@
       if (code === 'KeyW' || key === 'w' || code === 'ArrowUp' || key === 'arrowup') isGasPressed = false;
     });
 
-    // ปุ่มควบคุมแบบสัมผัส
     document.getElementById('btn-left').onclick = (e) => { e.preventDefault(); changeLane(-1); };
     document.getElementById('btn-right').onclick = (e) => { e.preventDefault(); changeLane(1); };
 
@@ -587,10 +632,38 @@
     setTimeout(() => { flash.style.display = 'none'; }, 250);
 
     if (shields <= 0) {
-      alert("🚨 เกราะหมด! เข้าสู่สถานีซ่อมบำรุงฉุกเฉิน (ฟื้นฟู 2 หน่วย)");
-      shields = 2;
-      updateHUD();
+      showRepairModal();
     }
+  }
+
+  // หน้าต่างซ่อมแซมรถฉุกเฉิน กู้คืนเกราะเต็ม 3 ดวง
+  function showRepairModal() {
+    const stage = stageData[currentStageIndex];
+    const modal = document.getElementById('repair-modal');
+    document.getElementById('repair-desc').innerText = `ระบบตรวจพบว่าเกราะรถหมดลง สรุปแนวคิดเรื่อง "${stage.topic}": ${stage.hint}`;
+    document.getElementById('repair-q').innerText = stage.rq;
+
+    const box = document.getElementById('repair-opts');
+    box.innerHTML = '';
+    stage.ro.forEach((txt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'repair-opt-btn';
+      btn.innerText = `${idx + 1}. ${txt}`;
+      btn.onclick = () => {
+        if (idx === stage.ra) {
+          alert('🔧 ซ่อมแซมระบบสำเร็จ! ฟื้นฟูเกราะรถเต็ม 3 ดวง ❤️❤️❤️');
+          shields = 3;
+          modal.style.display = 'none';
+          updateHUD();
+          window.focus();
+        } else {
+          alert('ยังไม่ถูกต้องนะ ลองอ่านทบทวนใหม่อีกครั้ง');
+        }
+      };
+      box.appendChild(btn);
+    });
+
+    modal.style.display = 'flex';
   }
 
   function gameLoop() {
@@ -615,12 +688,16 @@
         if (item.z >= 1) item.z -= 1;
       });
 
+      // ตรวจสอบการชน: ปรับ Hitbox ให้แม่นยำและไม่ชนมั่ว
       for (let i = obstacles.length - 1; i >= 0; i--) {
         let obs = obstacles[i];
         obs.z += (speed * 0.00016);
 
-        if (!obs.hit && obs.z > 0.72 && obs.z < 0.94) {
-          if (speed > 5 && currentLane === obs.lane) {
+        // ตรวจจับเฉพาะจังหวะที่วัตถุอยู่ประชิดจริงๆ (z: 0.78 ถึง 0.90)
+        // และรถต้องอยู่ใกล้กึ่งกลางเลนนั้นจริง (ระยะห่าง < 0.18 ไม่จับกินขอบเลน)
+        if (!obs.hit && obs.z > 0.78 && obs.z < 0.90) {
+          const laneCenter = laneOffsets[obs.lane];
+          if (speed > 5 && Math.abs(currentX - laneCenter) < 0.18) {
             obs.hit = true;
             triggerCrash();
           }
@@ -630,7 +707,7 @@
       }
 
       const closestObstacleZ = obstacles.reduce((min, o) => Math.min(min, o.z), 1.0);
-      if (closestObstacleZ > 0.55 && distanceToNextGate > 350) {
+      if (closestObstacleZ > 0.65 && distanceToNextGate > 350) {
         spawnObstacleWave(0.04);
       }
 
@@ -659,14 +736,12 @@
 
     ctx.clearRect(0, 0, w, h);
 
-    // ท้องฟ้า
     const skyGrad = ctx.createLinearGradient(0, 0, 0, horizon);
     skyGrad.addColorStop(0, theme.skyTop);
     skyGrad.addColorStop(1, theme.skyBottom);
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, w, horizon);
 
-    // พระอาทิตย์
     ctx.fillStyle = '#fef08a';
     ctx.beginPath();
     ctx.arc(820, 65, 34, 0, Math.PI * 2);
@@ -674,7 +749,6 @@
 
     clouds.forEach(c => drawCloud(c.x, c.y, c.scale));
 
-    // เนินเขา
     ctx.fillStyle = theme.mountain;
     ctx.beginPath();
     ctx.moveTo(0, horizon);
@@ -682,11 +756,9 @@
     ctx.quadraticCurveTo(700, horizon - 45, w, horizon);
     ctx.fill();
 
-    // ทุ่งหญ้า
     ctx.fillStyle = theme.grass;
     ctx.fillRect(0, horizon, w, h - horizon);
 
-    // ถนน 3 เลน
     const roadW_near = w * 1.1;
     const roadW_far = w * 0.16;
     const x_near = (w / 2) - (currentX * (roadW_near * 0.33));
@@ -708,7 +780,6 @@
     ctx.lineTo(x_far + roadW_far * 0.5, horizon);
     ctx.fill();
 
-    // เส้นประ 3 เลน
     const segments = 40;
     for (let i = 0; i < segments; i++) {
       const isStripe = Math.floor((roadPosition * 0.08 - i)) % 2 === 0;
@@ -747,7 +818,6 @@
       ctx.fill();
     }
 
-    // ต้นไม้
     let sortedItems = [...roadsideItems].sort((a, b) => a.z - b.z);
     sortedItems.forEach(item => {
       const z = item.z;
@@ -759,7 +829,6 @@
       drawBigTree(itemX, y, scale);
     });
 
-    // สิ่งกีดขวาง
     let sortedObstacles = [...obstacles].sort((a, b) => a.z - b.z);
     sortedObstacles.forEach(obs => {
       const z = obs.z;
@@ -779,7 +848,6 @@
       else if (obs.type === 'broken_car') drawBrokenCarBig(obsX, y, scale, laneWidth);
     });
 
-    // ซุ้มประตู
     if (distanceToNextGate < 450) {
       const gateProgress = (1 - (distanceToNextGate / 450));
       const gateScale = Math.pow(gateProgress, 2.1);
@@ -824,6 +892,10 @@
     ctx.fillRect(leftX, archTopY + topBarH * 0.8, postW, archH - topBarH * 0.8);
     ctx.fillRect(rightX - postW, archTopY + topBarH * 0.8, postW, archH - topBarH * 0.8);
 
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(leftX + postW * 0.35, archTopY + topBarH, postW * 0.3, archH - topBarH - 12 * gateScale);
+    ctx.fillRect(rightX - postW * 0.65, archTopY + topBarH, postW * 0.3, archH - topBarH - 12 * gateScale);
+
     const signLeft = leftX - 10 * gateScale;
     const signW = archW + 20 * gateScale;
 
@@ -841,7 +913,6 @@
     ctx.fillRect(signLeft, archTopY, signW, 4 * gateScale);
     ctx.fillRect(signLeft, archTopY + topBarH - 4 * gateScale, signW, 4 * gateScale);
 
-    // ธงตาหมากรุก
     const checkH = 14 * gateScale;
     const checkY = archTopY + topBarH;
     const checkSize = 14 * gateScale;
@@ -984,7 +1055,6 @@
     ctx.restore();
   }
 
-  // เข้า Checkpoint
   function arriveAtCheckpoint() {
     const stage = stageData[currentStageIndex];
     taskCompleted = false;
@@ -1005,7 +1075,6 @@
     const stageBox = document.getElementById('minigame-area');
     stageBox.innerHTML = '';
 
-    // โหมด Shortcut: แตะปุ่มบนจอได้ทันที
     if (stage.mode === 'shortcut') {
       stageBox.innerHTML = `
         <div style="text-align:center;">
@@ -1015,7 +1084,6 @@
         </div>
       `;
     }
-    // โหมด Ribbon
     else if (stage.mode === 'ribbon') {
       const tabs = ["ไฟล์ (File)", "หน้าแรก (Home)", "แทรก (Insert)", "เค้าโครง (Layout)"];
       const ribbonDiv = document.createElement('div');
@@ -1032,7 +1100,6 @@
       });
       stageBox.appendChild(ribbonDiv);
     }
-    // โหมด Alignment
     else if (stage.mode === 'align') {
       stageBox.innerHTML = `
         <div class="doc-preview-box">
@@ -1046,7 +1113,6 @@
         </div>
       `;
     }
-    // โหมดตาราง Table Grid
     else if (stage.mode === 'table_grid') {
       const grid = document.createElement('div');
       grid.className = 'table-picker';
@@ -1067,7 +1133,6 @@
       stageBox.innerHTML = `<div style="font-size:0.85rem; color:#64748b; margin-bottom:2px;">แตะเลือกขนาด 3 x 2:</div>`;
       stageBox.appendChild(grid);
     }
-    // โหมดอื่นๆ
     else {
       const defaultDiv = document.createElement('div');
       defaultDiv.style.display = 'flex';
@@ -1143,7 +1208,7 @@
     totalStars += 3;
 
     document.getElementById('ai-tip').innerHTML = `
-      <strong style="color:#15803d">Word Co-Pilot:</strong> เยี่ยมมาก! ปฏิบัติภารกิจถูกต้อง 🎉 (+${scoreGained} แต้ม | 3 ⭐)
+      <strong style="color:#15803d">Word Co-Pilot:</strong> ยอดเยี่ยมมาก! ปฏิบัติภารกิจถูกต้อง 🎉 (+${scoreGained} แต้ม | 3 ⭐)
     `;
 
     updateHUD();
@@ -1157,9 +1222,7 @@
       <strong style="color:#b91c1c">Word Co-Pilot:</strong> ยังไม่ถูกนะ เกราะลด 1 ดวง! คำใบ้: ${stageData[currentStageIndex].hint}
     `;
     if (shields <= 0) {
-      alert("🚨 เกราะหมด! เข้าสู่สถานีซ่อมบำรุงฉุกเฉิน (ฟื้นฟู 2 หน่วย)");
-      shields = 2;
-      updateHUD();
+      showRepairModal();
     }
   }
 
