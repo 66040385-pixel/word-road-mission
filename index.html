@@ -2,8 +2,8 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🚗 Word Road: 4-Worlds Interactive Quest (E1)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🚗 Word Road: Mobile & Tablet Edition (E1)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -17,7 +17,14 @@
       --cockpit-frame: #334155;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
 
     body {
       background: #0f172a;
@@ -27,7 +34,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 12px;
+      padding: 8px;
     }
 
     .main-wrapper {
@@ -35,33 +42,40 @@
       max-width: 960px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
+    /* Responsive HUD */
     .hud-top {
       background: rgba(30, 41, 59, 0.95);
       border: 2px solid #38bdf8;
-      border-radius: 14px;
-      padding: 10px 20px;
+      border-radius: 12px;
+      padding: 8px 14px;
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       font-family: 'Chakra Petch', sans-serif;
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       color: #fff;
+      font-size: 0.9rem;
+      gap: 6px;
     }
-    .hud-val { color: #38bdf8; font-weight: bold; font-size: 1.1rem; }
+    .hud-val { color: #38bdf8; font-weight: bold; font-size: 1rem; }
 
+    /* Viewport ปรับขนาดตามหน้าจอมือถือ */
     .cockpit-viewport {
       position: relative;
       width: 100%;
-      height: 560px;
-      border-radius: 20px;
+      height: 70vh;
+      max-height: 560px;
+      min-height: 380px;
+      border-radius: 16px;
       overflow: hidden;
-      border: 5px solid var(--cockpit-frame);
+      border: 4px solid var(--cockpit-frame);
       box-shadow: 0 12px 35px rgba(0,0,0,0.5);
       background: #87ceeb;
-      cursor: pointer;
+      touch-action: none; /* รองรับ Swipe */
     }
 
     canvas {
@@ -84,48 +98,48 @@
     .windshield-frame {
       position: absolute;
       inset: 0;
-      box-shadow: inset 0 12px 25px rgba(0,0,0,0.3), 
-                  inset 24px 0 30px rgba(15,23,42,0.8), 
-                  inset -24px 0 30px rgba(15,23,42,0.8);
-      border-top: 14px solid #1e293b;
+      box-shadow: inset 0 10px 20px rgba(0,0,0,0.3), 
+                  inset 18px 0 25px rgba(15,23,42,0.8), 
+                  inset -18px 0 25px rgba(15,23,42,0.8);
+      border-top: 10px solid #1e293b;
     }
 
     .dashboard {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 165px;
+      height: 140px;
       background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
-      border-top: 4px solid #475569;
+      border-top: 3px solid #475569;
       box-shadow: 0 -8px 25px rgba(0,0,0,0.5);
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      padding: 0 30px 14px 30px;
-      clip-path: polygon(0 20%, 30% 0, 70% 0, 100% 20%, 100% 100%, 0 100%);
+      padding: 0 20px 10px 20px;
+      clip-path: polygon(0 20%, 25% 0, 75% 0, 100% 20%, 100% 100%, 0 100%);
     }
 
     .steering-wheel-container {
       position: absolute;
       left: 50%;
-      bottom: -65px;
+      bottom: -60px;
       transform: translateX(-50%);
-      width: 240px;
-      height: 240px;
+      width: 190px;
+      height: 190px;
       transition: transform 0.15s cubic-bezier(0.18, 0.89, 0.32, 1.28);
     }
     .wheel-ring {
       width: 100%; height: 100%;
       border-radius: 50%;
-      border: 20px solid #0f172a;
+      border: 16px solid #0f172a;
       border-top-color: #475569;
-      box-shadow: inset 0 0 10px #000, 0 8px 16px rgba(0,0,0,0.6);
+      box-shadow: inset 0 0 8px #000, 0 6px 14px rgba(0,0,0,0.6);
       position: relative;
     }
     .wheel-hub {
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 65px; height: 65px;
+      width: 50px; height: 50px;
       background: #1e293b;
       border-radius: 50%;
       border: 3px solid #38bdf8;
@@ -135,18 +149,20 @@
       font-family: 'Chakra Petch';
       font-weight: 700;
       color: #38bdf8;
+      font-size: 0.8rem;
     }
     .wheel-spoke { position: absolute; background: #0f172a; }
-    .spoke-h { top: 50%; left: 0; right: 0; height: 14px; transform: translateY(-50%); }
-    .spoke-v { bottom: 0; left: 50%; width: 14px; height: 50%; transform: translateX(-50%); }
+    .spoke-h { top: 50%; left: 0; right: 0; height: 12px; transform: translateY(-50%); }
+    .spoke-v { bottom: 0; left: 50%; width: 12px; height: 50%; transform: translateX(-50%); }
 
     .gauge { font-family: 'Chakra Petch', sans-serif; text-align: center; z-index: 5; }
-    .gauge-num { font-size: 2.2rem; font-weight: 700; color: #38bdf8; }
-    .gauge-label { font-size: 0.75rem; color: #94a3b8; }
+    .gauge-num { font-size: 1.6rem; font-weight: 700; color: #38bdf8; }
+    .gauge-label { font-size: 0.65rem; color: #94a3b8; }
 
+    /* ปุ่มควบคุมขนาดใหญ่สำหรับนิ้วโป้งบนมือถือและแท็บเล็ต */
     .pedals {
       position: absolute;
-      bottom: 14px; left: 14px; right: 14px;
+      bottom: 10px; left: 10px; right: 10px;
       display: flex;
       justify-content: space-between;
       pointer-events: auto;
@@ -158,11 +174,11 @@
       color: #fff;
       font-family: 'Kanit';
       font-weight: 500;
-      padding: 12px 20px;
-      border-radius: 10px;
+      padding: 12px 18px;
+      border-radius: 12px;
       font-size: 0.95rem;
-      touch-action: manipulation;
       cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
     .pedal-btn:active { background: #38bdf8; color: #000; }
 
@@ -175,31 +191,31 @@
       z-index: 50;
     }
 
-    /* กล่องหน้าต่างมินิเกมปฏิบัติการ */
+    /* Modal ตอบคำถามแบบ Responsive เต็มจอในมือถือ */
     .mission-terminal {
       position: absolute;
-      top: 30px; left: 50%;
+      top: 15px; left: 50%;
       transform: translateX(-50%);
-      width: 90%;
-      max-width: 800px;
+      width: 94%;
+      max-width: 780px;
+      max-height: 90vh;
+      overflow-y: auto;
       background: #ffffff;
-      border: 4px solid #38bdf8;
-      border-radius: 24px;
-      padding: 22px 26px;
-      box-shadow: 0 16px 40px rgba(0, 120, 212, 0.25), 0 0 0 8px rgba(56, 189, 248, 0.2);
+      border: 3px solid #38bdf8;
+      border-radius: 20px;
+      padding: 16px 20px;
+      box-shadow: 0 16px 40px rgba(0, 120, 212, 0.25);
       display: none;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       z-index: 100;
       pointer-events: auto;
-      animation: popIn 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
     }
-    @keyframes popIn { from { opacity: 0; transform: translate(-50%, 25px) scale(0.95); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
 
     .terminal-title {
       font-family: 'Kanit';
       font-weight: 600;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       color: #0284c7;
       display: flex;
       justify-content: space-between;
@@ -212,42 +228,41 @@
       background: #fef08a;
       color: #854d0e;
       border: 2px solid #facc15;
-      padding: 4px 14px;
+      padding: 2px 10px;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       font-weight: 600;
     }
 
     .terminal-q {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       line-height: 1.5;
       color: #1e293b;
       font-weight: 500;
     }
 
-    /* กล่องพื้นที่เล่นมินิเกม */
     .minigame-stage {
       background: #f8fafc;
       border: 2px solid #cbd5e1;
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 14px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 150px;
-      gap: 12px;
+      min-height: 130px;
+      gap: 10px;
     }
 
     .ai-co-pilot {
       background: #fefce8;
       border: 2px solid #fef08a;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 0.92rem;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.85rem;
       color: #713f12;
       display: flex;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
     }
 
@@ -258,88 +273,85 @@
       font-family: 'Kanit';
       font-weight: 600;
       font-size: 1rem;
-      padding: 10px 26px;
-      border-radius: 14px;
+      padding: 10px 24px;
+      border-radius: 12px;
       cursor: pointer;
       align-self: flex-end;
       box-shadow: 0 4px 0 #0369a1;
-      transition: all 0.15s;
       display: none;
     }
-    .btn-drive-on:hover { filter: brightness(1.1); transform: translateY(-2px); }
-    .btn-drive-on:active { transform: translateY(2px); box-shadow: none; }
 
-    /* สไตล์เฉพาะแต่ละมินิเกม */
-    .key-badge {
-      display: inline-block;
-      background: #e2e8f0;
-      border: 2px solid #94a3b8;
-      border-radius: 8px;
-      padding: 6px 14px;
+    .key-badge-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border: 3px solid #0284c7;
+      border-radius: 12px;
+      padding: 12px 28px;
       font-family: 'Chakra Petch';
       font-weight: 700;
-      font-size: 1.3rem;
-      color: #0f172a;
-      box-shadow: 0 4px 0 #94a3b8;
+      font-size: 1.4rem;
+      color: #0284c7;
+      box-shadow: 0 5px 0 #bae6fd;
+      cursor: pointer;
     }
+    .key-badge-btn:active { transform: translateY(3px); box-shadow: none; }
 
     .ribbon-bar {
       display: flex;
-      gap: 8px;
-      background: #f1f5f9;
-      padding: 8px;
-      border-radius: 10px;
-      border: 1px solid #cbd5e1;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
     }
     .ribbon-btn {
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 8px;
-      border: 2px solid transparent;
+      border: 2px solid #cbd5e1;
       background: #fff;
       font-family: 'Kanit';
       cursor: pointer;
       font-weight: 500;
+      font-size: 0.9rem;
     }
-    .ribbon-btn:hover { background: #e0f2fe; border-color: #38bdf8; }
+    .ribbon-btn:active { background: #e0f2fe; border-color: #38bdf8; }
 
     .doc-preview-box {
-      width: 220px;
-      height: 90px;
+      width: 180px;
+      height: 75px;
       background: #ffffff;
       border: 2px solid #cbd5e1;
       border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      transition: all 0.3s;
     }
 
     .table-picker {
       display: grid;
-      grid-template-columns: repeat(4, 32px);
-      grid-template-rows: repeat(3, 32px);
-      gap: 4px;
+      grid-template-columns: repeat(4, 36px);
+      grid-template-rows: repeat(3, 36px);
+      gap: 6px;
     }
     .table-cell {
       background: #e2e8f0;
       border: 1px solid #cbd5e1;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
     }
     .table-cell.selected { background: #38bdf8; border-color: #0284c7; }
   </style>
 </head>
-<body tabindex="0">
+<body>
 
 <div class="main-wrapper">
 
   <div class="hud-top">
-    <div>🛡️ เกราะรถ: <span id="health-val" class="hud-val">❤️❤️❤️</span></div>
-    <div>🚩 ด่าน: <span id="cp-track-val" class="hud-val">ด่าน 1 / 12</span></div>
-    <div>⭐ ดาวสะสม: <span id="star-val" class="hud-val">0 ⭐</span></div>
-    <div>📊 ประสิทธิภาพ E1: <span id="e1-val" class="hud-val" style="color:#4ade80">0%</span></div>
+    <div>🛡️ <span id="health-val" class="hud-val">❤️❤️❤️</span></div>
+    <div>🚩 <span id="cp-track-val" class="hud-val">ด่าน 1/12</span></div>
+    <div>⭐ <span id="star-val" class="hud-val">0</span></div>
+    <div>📊 E1: <span id="e1-val" class="hud-val" style="color:#4ade80">0%</span></div>
   </div>
 
   <div class="cockpit-viewport" id="viewport">
@@ -352,12 +364,12 @@
       <div class="dashboard">
         <div class="gauge">
           <div class="gauge-num" id="speed-num">0</div>
-          <div class="gauge-label">SPEED (KM/H)</div>
+          <div class="gauge-label">KM/H</div>
         </div>
 
         <div class="gauge">
           <div class="gauge-num" id="dist-num" style="color:var(--sunny-gold)">1000</div>
-          <div class="gauge-label">DIST TO GATE (M)</div>
+          <div class="gauge-label">DIST (M)</div>
         </div>
       </div>
 
@@ -370,15 +382,15 @@
       </div>
 
       <div class="pedals">
-        <div style="display:flex; gap:8px;">
-          <button class="pedal-btn" id="btn-left">◀ สลับเลนซ้าย (A)</button>
-          <button class="pedal-btn" id="btn-right">สลับเลนขวา (D) ▶</button>
+        <div style="display:flex; gap:6px;">
+          <button class="pedal-btn" id="btn-left">◀ ซ้าย</button>
+          <button class="pedal-btn" id="btn-right">ขวา ▶</button>
         </div>
-        <button class="pedal-btn" id="btn-gas" style="background:#0284c7; border-color:#38bdf8;">⚡ เร่งเครื่อง (W / ▲)</button>
+        <button class="pedal-btn" id="btn-gas" style="background:#0284c7; border-color:#38bdf8; padding: 12px 24px;">⚡ เร่งเครื่อง</button>
       </div>
     </div>
 
-    <!-- Cute Interactive Mission Terminal -->
+    <!-- Terminal -->
     <div class="mission-terminal" id="terminal">
       <div class="terminal-title">
         <span id="term-title">🚧 CHECKPOINT 1</span>
@@ -387,15 +399,14 @@
 
       <div class="terminal-q" id="term-q">ภารกิจปฏิบัติการ...</div>
 
-      <!-- พื้นที่จำลองมินิเกมของด่าน -->
       <div class="minigame-stage" id="minigame-area"></div>
 
       <div class="ai-co-pilot">
-        <div style="font-size:1.6rem;">🤖</div>
-        <div id="ai-tip"><strong>Word Co-Pilot:</strong> ลอดซุ้มด่านสำเร็จ! ลงมือทำภารกิจเพื่อไปต่อ</div>
+        <div style="font-size:1.4rem;">🤖</div>
+        <div id="ai-tip"><strong>Word Co-Pilot:</strong> ลงมือทำภารกิจเพื่อไปต่อ</div>
       </div>
 
-      <button id="btn-drive" class="btn-drive-on" onclick="continueDriving()">ผ่านภารกิจ! ลุยต่อ ➔</button>
+      <button id="btn-drive" class="btn-drive-on" onclick="continueDriving()">ผ่านด่าน! ลุยต่อ ➔</button>
     </div>
 
   </div>
@@ -403,35 +414,26 @@
 </div>
 
 <script>
-  // โครงสร้าง 4 Worlds x 3 Checkpoints = 12 ด่าน พร้อมโหมดมินิเกมจริง
   const stageData = [
-    // World 1: Starter Highway (ทุ่งหญ้าสดใส - คีย์ลัดและพื้นฐาน)
-    { id: 1, world: "World 1: Starter Highway", title: "Checkpoint 1: เมนูแถบ Ribbon", badge: "Word Beginner", mode: "ribbon", q: "ภารกิจ: ต้องการเปลี่ยนแบบตัวอักษรและจัดย่อหน้า คลิกเลือกแท็บเมนูที่ถูกต้องบนแถบ Ribbon:", target: "Home", hint: "คำสั่งเปลี่ยนฟอนต์ จัดขนาด จะรวมอยู่ที่แท็บหลัก 'Home (หน้าแรก)'" },
-    { id: 2, world: "World 1: Starter Highway", title: "Checkpoint 2: บันทึกงานด่วน", badge: "Save Master", mode: "shortcut", q: "ภารกิจด่วน: เอกสารพร้อมแล้ว! กดคีย์ลัดบนแป้นพิมพ์เพื่อ 'บันทึกไฟล์ (Save)':", keyReq: "s", displayKey: "Ctrl + S", hint: "คีย์ลัดเซฟไฟล์คือการกดปุ่ม Ctrl ค้างไว้แล้วตามด้วยปุ่ม S" },
-    { id: 3, world: "World 1: Starter Highway", title: "Checkpoint 3: ย้อนเวลากู้ข้อความ", badge: "Text Editor", mode: "shortcut", q: "ภารกิจด่วน: เผลอลบข้อความสำคัญทิ้ง! กดคีย์ลัดเพื่อ 'ยกเลิกคำสั่ง (Undo)':", keyReq: "z", displayKey: "Ctrl + Z", hint: "ปุ่มย้อนเวลากลับมาคือ Ctrl ค้างไว้แล้วตามด้วยปุ่ม Z" },
-
-    // World 2: Typography Canyon (หุบเขาอาทิตย์อัสดง - จัดรูปแบบและย่อหน้า)
-    { id: 4, world: "World 2: Typography Canyon", title: "Checkpoint 4: ทำหัวข้อตัวหนา", badge: "Format Master", mode: "shortcut", q: "ภารกิจด่วน: ทำหัวข้อให้โดดเด่นสะดุดตา! กดคีย์ลัดเพื่อทำข้อความ 'ตัวหนา (Bold)':", keyReq: "b", displayKey: "Ctrl + B", hint: "Bold เริ่มต้นด้วยตัว B คีย์ลัดคือ Ctrl + B" },
-    { id: 5, world: "World 2: Typography Canyon", title: "Checkpoint 5: จัดกึ่งกลางหน้ากระดาษ", badge: "Paragraph Pro", mode: "align", q: "ภารกิจ: หัวข้อรายงานต้องอยู่กึ่งกลางพอดี คลิกปุ่มจัดตำแหน่งเอกสารให้ถูกต้อง:", target: "center", hint: "กดเลือกคำสั่ง Center เพื่อย้ายข้อความมาตรงกลางพอดี" },
-    { id: 6, world: "World 2: Typography Canyon", title: "Checkpoint 6: ลำดับขั้นตอนทดลอง", badge: "List Architect", mode: "ribbon_list", q: "ภารกิจ: ต้องการใส่ลำดับขั้นตอน 1, 2, 3 ให้ข้อความ คลิกเลือกเครื่องมือที่ถูกต้อง:", target: "Numbering", hint: "สิ่งที่มีลำดับก่อน-หลัง ต้องใช้ Numbering (ตัวเลข)" },
-
-    // World 3: Media & Table Valley (ทะเลสาบกราฟิกและตาราง)
-    { id: 7, world: "World 3: Media & Table Valley", title: "Checkpoint 7: ปลดล็อกรูปภาพอิสระ", badge: "Media Specialist", mode: "wrap_text", q: "ภารกิจ: รูปภาพขยับไม่ได้! เลือกการตัดข้อความ (Wrap Text) เพื่อให้รูปเลื่อนอิสระ:", target: "Square", hint: "การเลือก Square (จัตุรัส) จะช่วยให้ข้อความล้อมรอบภาพและเลื่อนได้คล่องตัว" },
-    { id: 8, world: "World 3: Media & Table Valley", title: "Checkpoint 8: สร้างตารางข้อมูล", badge: "Table Builder", mode: "table_grid", q: "ภารกิจ: โจทย์สั่งให้สร้างตารางขนาด '3 คอลัมน์ x 2 แถว' ลากคลุมช่องตารางให้ถูกต้อง:", targetCols: 3, targetRows: 2, hint: "เอาเมาส์จิ้มที่ช่องตาราง แนวนอน 3 ช่อง และแนวตั้ง 2 ช่อง" },
-    { id: 9, world: "World 3: Media & Table Valley", title: "Checkpoint 9: ปรับกระดาษแนวนอน", badge: "Layout Pilot", mode: "orientation", q: "ภารกิจ: แผนภูมิต้องใช้พื้นที่กว้าง! ปรับเปลี่ยนการวางหน้ากระดาษเป็น 'แนวนอน (Landscape)':", target: "landscape", hint: "Landscape คือกระดาษแนวนอน ส่วน Portrait คือแนวตั้ง" },
-
-    // World 4: Pro Document City (นครไอที - สารบัญและการส่งออก)
-    { id: 10, world: "World 4: Pro Document City", title: "Checkpoint 10: ตรวจจับคำสะกดผิด", badge: "Doc Inspector", mode: "spell_check", q: "ภารกิจ: ข้อความใดในหน้าเอกสารมี 'เส้นหยักสีแดง' แจ้งเตือนสะกดคำผิด คลิกตรวจคำ:", target: "word_error", hint: "เส้นหยักสีแดงใน Word เตือนว่าคำนั้นอาจสะกดไม่ถูกต้อง" },
-    { id: 11, world: "World 4: Pro Document City", title: "Checkpoint 11: สร้างสารบัญอัตโนมัติ", badge: "Style Maestro", mode: "styles", q: "ภารกิจ: เตรียมดึงสารบัญรายงาน! คลิกเลือกสไตล์ที่ต้องนำไปครอบหัวข้อหลัก:", target: "Heading 1", hint: "Heading 1 ใช้สำหรับกำหนดหัวข้อหลักในการดึง Table of Contents" },
-    { id: 12, world: "World 4: Pro Document City", title: "Checkpoint 12: ส่งออกไฟล์พิมพ์งาน", badge: "Word Grand Master", mode: "export_pdf", q: "ภารกิจสุดท้าย: ส่งงานไปพิมพ์ที่ร้านโดยไม่ให้หน้าเคลื่อนหรือฟอนต์เพี้ยน คลิกเลือกสกุลไฟล์:", target: ".pdf", hint: "ไฟล์ PDF เป็นมาตรฐานที่ล็อคหน้ากระดาษและฟอนต์ไม่ให้เพี้ยน 100%" }
+    { id: 1, world: "World 1", title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", mode: "ribbon", q: "ภารกิจ: แตะเลือกแท็บ Ribbon ที่ใช้เปลี่ยนแบบฟอนต์และขนาดตัวอักษร:", target: "Home", hint: "คำสั่งเปลี่ยนฟอนต์ จัดขนาด จะรวมอยู่ที่แท็บหลัก 'Home (หน้าแรก)'" },
+    { id: 2, world: "World 1", title: "Checkpoint 2: บันทึกไฟล์ด่วน", badge: "Save Master", mode: "shortcut", q: "ภารกิจ: แตะปุ่มด้านล่างเพื่อสั่ง 'บันทึกเอกสาร (Save)':", keyReq: "s", codeReq: "KeyS", displayKey: "Ctrl + S", hint: "แตะที่ปุ่ม [ Ctrl + S ] ได้โดยตรงเลยจ้า" },
+    { id: 3, world: "World 1", title: "Checkpoint 3: ย้อนเวลากู้ข้อความ", badge: "Text Editor", mode: "shortcut", q: "ภารกิจ: เผลอลบข้อความ! แตะปุ่มเพื่อ 'ยกเลิกคำสั่ง (Undo)':", keyReq: "z", codeReq: "KeyZ", displayKey: "Ctrl + Z", hint: "แตะที่ปุ่ม [ Ctrl + Z ] ได้โดยตรงเลยจ้า" },
+    { id: 4, world: "World 2", title: "Checkpoint 4: ทำหัวข้อตัวหนา", badge: "Format Master", mode: "shortcut", q: "ภารกิจ: แตะปุ่มลัดเพื่อทำข้อความ 'ตัวหนา (Bold)':", keyReq: "b", codeReq: "KeyB", displayKey: "Ctrl + B", hint: "แตะที่ปุ่ม [ Ctrl + B ] ได้โดยตรงเลยจ้า" },
+    { id: 5, world: "World 2", title: "Checkpoint 5: จัดกึ่งกลางหน้ากระดาษ", badge: "Paragraph Pro", mode: "align", q: "ภารกิจ: แตะปุ่มจัดตำแหน่งเอกสารให้อยู่ 'กึ่งกลาง':", target: "center", hint: "แตะเลือกปุ่ม 'กึ่งกลาง' เพื่อย้ายข้อความมาตรงกลาง" },
+    { id: 6, world: "World 2", title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", mode: "ribbon_list", q: "ภารกิจ: แตะเลือกเครื่องมือใส่ลำดับ 1, 2, 3 ให้ข้อความ:", target: "Numbering", hint: "ลำดับขั้นตอนก่อน-หลัง ต้องใช้ Numbering (ตัวเลข)" },
+    { id: 7, world: "World 3", title: "Checkpoint 7: ปลดล็อกรูปภาพ", badge: "Media Specialist", mode: "wrap_text", q: "ภารกิจ: แตะเลือกการตัดข้อความเพื่อให้รูปเลื่อนอิสระ:", target: "Square", hint: "เลือก Square (จัตุรัส) เพื่อให้ข้อความล้อมรอบภาพ" },
+    { id: 8, world: "World 3", title: "Checkpoint 8: สร้างตารางข้อมูล", badge: "Table Builder", mode: "table_grid", q: "ภารกิจ: แตะช่องตารางให้มีขนาด '3 คอลัมน์ x 2 แถว':", targetCols: 3, targetRows: 2, hint: "แตะช่องตาราง แนวนอน 3 ช่อง และแนวตั้ง 2 ช่อง" },
+    { id: 9, world: "World 3", title: "Checkpoint 9: กระดาษแนวนอน", badge: "Layout Pilot", mode: "orientation", q: "ภารกิจ: ปรับเปลี่ยนการวางกระดาษเป็น 'แนวนอน (Landscape)':", target: "landscape", hint: "Landscape คือกระดาษแนวนอน ส่วน Portrait คือแนวตั้ง" },
+    { id: 10, world: "World 4", title: "Checkpoint 10: คำสะกดผิด", badge: "Doc Inspector", mode: "spell_check", q: "ภารกิจ: คำใดมีเส้นหยักแดงเตือนว่าสะกดผิด แตะเลือกคำนั้น:", target: "word_error", hint: "เส้นใต้หยักสีแดงใน Word เตือนว่าสะกดคำผิด" },
+    { id: 11, world: "World 4", title: "Checkpoint 11: สารบัญอัตโนมัติ", badge: "Style Maestro", mode: "styles", q: "ภารกิจ: แตะเลือกสไตล์ที่ใช้ทำหัวข้อหลักสำหรับสารบัญ:", target: "Heading 1", hint: "Heading 1 ใช้สำหรับกำหนดหัวข้อหลักของรายงาน" },
+    { id: 12, world: "World 4", title: "Checkpoint 12: ส่งออกพิมพ์งาน", badge: "Word Grand Master", mode: "export_pdf", q: "ภารกิจ: ส่งงานไปพิมพ์โดยไม่ให้ฟอนต์เพี้ยน แตะเลือกชนิดไฟล์:", target: ".pdf", hint: "ไฟล์ PDF ล็อคหน้ากระดาษและฟอนต์ไม่ให้เพี้ยน 100%" }
   ];
 
-  // ธีมทัศนียภาพของ 4 Worlds
   const worldThemes = [
-    { name: "World 1: Starter Highway", skyTop: "#38bdf8", skyBottom: "#e0f2fe", grass: "#16a34a", mountain: "#4ade80", road: "#334155" },
-    { name: "World 2: Typography Canyon", skyTop: "#f97316", skyBottom: "#ffedd5", grass: "#b45309", mountain: "#ea580c", road: "#292524" },
-    { name: "World 3: Media & Table Valley", skyTop: "#0ea5e9", skyBottom: "#e0f2fe", grass: "#059669", mountain: "#34d399", road: "#1e293b" },
-    { name: "World 4: Pro Document City", skyTop: "#1e1b4b", skyBottom: "#312e81", grass: "#0f172a", mountain: "#4338ca", road: "#020617" }
+    { skyTop: "#38bdf8", skyBottom: "#e0f2fe", grass: "#16a34a", mountain: "#4ade80", road: "#334155" },
+    { skyTop: "#f97316", skyBottom: "#ffedd5", grass: "#b45309", mountain: "#ea580c", road: "#292524" },
+    { skyTop: "#0ea5e9", skyBottom: "#e0f2fe", grass: "#059669", mountain: "#34d399", road: "#1e293b" },
+    { skyTop: "#1e1b4b", skyBottom: "#312e81", grass: "#0f172a", mountain: "#4338ca", road: "#020617" }
   ];
 
   let currentStageIndex = 0;
@@ -454,10 +456,9 @@
 
   let obstacles = [];
 
-  // ระบบการันตี 1 เลนว่างเสมอ ไม่เกิดซ้ำซ้อน
   function spawnObstacleWave(startZ) {
     const types = ['cone', 'barrier', 'broken_car'];
-    const safeLane = Math.floor(Math.random() * 3); // ล็อก 1 เลนปลอดภัยเสมอ
+    const safeLane = Math.floor(Math.random() * 3);
     const blockedLanes = [0, 1, 2].filter(l => l !== safeLane);
     const count = Math.random() < 0.45 ? 1 : 2;
     const finalLanes = blockedLanes.sort(() => Math.random() - 0.5).slice(0, count);
@@ -488,6 +489,7 @@
   const canvas = document.getElementById('roadCanvas');
   const ctx = canvas.getContext('2d');
   const wheelEl = document.getElementById('wheel');
+  const viewportEl = document.getElementById('viewport');
 
   function init() {
     bindControls();
@@ -509,38 +511,47 @@
     targetX = laneOffsets[currentLane];
   }
 
+  // ระบบ Swipe ปัดหน้าจอมือถือ
+  let touchStartX = 0;
+  let touchStartY = 0;
+
   function bindControls() {
-    window.onkeydown = (e) => {
-      // ดักจับคีย์ลัดเฉพาะตอนอยู่ในมินิเกม
+    // Touch Gestures บนจอภาพ
+    viewportEl.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    viewportEl.addEventListener('touchend', (e) => {
+      const diffX = e.changedTouches[0].screenX - touchStartX;
+      const diffY = e.changedTouches[0].screenY - touchStartY;
+
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 35) {
+        if (diffX > 0) changeLane(1); // ปัดขวา
+        else changeLane(-1); // ปัดซ้าย
+      }
+    }, { passive: true });
+
+    // คีย์บอร์ด
+    window.addEventListener('keydown', (e) => {
       if (isArrivedAtGate && !taskCompleted) {
         handleMinigameKeyboard(e);
         return;
       }
-
       const key = e.key.toLowerCase();
       const code = e.code;
-      if (code === 'KeyW' || key === 'w' || code === 'ArrowUp' || key === 'arrowup') {
-        isGasPressed = true;
-        e.preventDefault();
-      }
-      if (code === 'KeyA' || key === 'a' || code === 'ArrowLeft' || key === 'arrowleft') {
-        changeLane(-1);
-        e.preventDefault();
-      }
-      if (code === 'KeyD' || key === 'd' || code === 'ArrowRight' || key === 'arrowright') {
-        changeLane(1);
-        e.preventDefault();
-      }
-    };
+      if (code === 'KeyW' || key === 'w' || code === 'ArrowUp' || key === 'arrowup') isGasPressed = true;
+      if (code === 'KeyA' || key === 'a' || code === 'ArrowLeft' || key === 'arrowleft') changeLane(-1);
+      if (code === 'KeyD' || key === 'd' || code === 'ArrowRight' || key === 'arrowright') changeLane(1);
+    });
 
-    window.onkeyup = (e) => {
+    window.addEventListener('keyup', (e) => {
       const key = e.key.toLowerCase();
       const code = e.code;
-      if (code === 'KeyW' || key === 'w' || code === 'ArrowUp' || key === 'arrowup') {
-        isGasPressed = false;
-      }
-    };
+      if (code === 'KeyW' || key === 'w' || code === 'ArrowUp' || key === 'arrowup') isGasPressed = false;
+    });
 
+    // ปุ่มควบคุมแบบสัมผัส
     document.getElementById('btn-left').onclick = (e) => { e.preventDefault(); changeLane(-1); };
     document.getElementById('btn-right').onclick = (e) => { e.preventDefault(); changeLane(1); };
 
@@ -559,12 +570,11 @@
     document.getElementById('health-val').innerText = hearts;
 
     const currentWorldIndex = Math.floor(currentStageIndex / 3);
-    const worldShort = `W${currentWorldIndex + 1}`;
-    document.getElementById('cp-track-val').innerText = `${worldShort}: ด่าน ${currentStageIndex + 1} / 12`;
-    document.getElementById('star-val').innerText = `${totalStars} ⭐`;
+    document.getElementById('cp-track-val').innerText = `W${currentWorldIndex + 1}: ด่าน ${currentStageIndex + 1}/12`;
+    document.getElementById('star-val').innerText = totalStars;
 
     const pct = Math.round((totalScoreE1 / 120) * 100);
-    document.getElementById('e1-val').innerText = `${totalScoreE1}/120 (${pct}%)`;
+    document.getElementById('e1-val').innerText = `${pct}%`;
   }
 
   function triggerCrash() {
@@ -577,7 +587,7 @@
     setTimeout(() => { flash.style.display = 'none'; }, 250);
 
     if (shields <= 0) {
-      alert("🚨 เกราะรถหมด! เข้าสู่ระบบซ่อมบำรุงฉุกเฉิน (ฟื้นฟูเกราะ 2 หน่วย)");
+      alert("🚨 เกราะหมด! เข้าสู่สถานีซ่อมบำรุงฉุกเฉิน (ฟื้นฟู 2 หน่วย)");
       shields = 2;
       updateHUD();
     }
@@ -605,7 +615,6 @@
         if (item.z >= 1) item.z -= 1;
       });
 
-      // ตรวจสอบสิ่งกีดขวาง
       for (let i = obstacles.length - 1; i >= 0; i--) {
         let obs = obstacles[i];
         obs.z += (speed * 0.00016);
@@ -620,7 +629,6 @@
         if (obs.z >= 1.05) obstacles.splice(i, 1);
       }
 
-      // เกิดระลอกใหม่เมื่อชุดเก่าผ่านไปไกลเกิน z > 0.55
       const closestObstacleZ = obstacles.reduce((min, o) => Math.min(min, o.z), 1.0);
       if (closestObstacleZ > 0.55 && distanceToNextGate > 350) {
         spawnObstacleWave(0.04);
@@ -651,7 +659,7 @@
 
     ctx.clearRect(0, 0, w, h);
 
-    // 1. ท้องฟ้าประจำ World
+    // ท้องฟ้า
     const skyGrad = ctx.createLinearGradient(0, 0, 0, horizon);
     skyGrad.addColorStop(0, theme.skyTop);
     skyGrad.addColorStop(1, theme.skyBottom);
@@ -666,7 +674,7 @@
 
     clouds.forEach(c => drawCloud(c.x, c.y, c.scale));
 
-    // 2. เนินเขาประจำ World
+    // เนินเขา
     ctx.fillStyle = theme.mountain;
     ctx.beginPath();
     ctx.moveTo(0, horizon);
@@ -674,18 +682,16 @@
     ctx.quadraticCurveTo(700, horizon - 45, w, horizon);
     ctx.fill();
 
-    // 3. ทุ่งหญ้าเนียนเรียบ
+    // ทุ่งหญ้า
     ctx.fillStyle = theme.grass;
     ctx.fillRect(0, horizon, w, h - horizon);
 
-    // 4. ถนน 3 เลน
+    // ถนน 3 เลน
     const roadW_near = w * 1.1;
     const roadW_far = w * 0.16;
-
     const x_near = (w / 2) - (currentX * (roadW_near * 0.33));
     const x_far = (w / 2) - (currentX * (roadW_far * 0.33) * 0.8);
 
-    // ไหล่ทางแดง-ขาว
     ctx.fillStyle = '#ef4444';
     ctx.beginPath();
     ctx.moveTo(x_far - roadW_far * 0.54, horizon);
@@ -694,7 +700,6 @@
     ctx.lineTo(x_far + roadW_far * 0.54, horizon);
     ctx.fill();
 
-    // ผิวถนน
     ctx.fillStyle = theme.road;
     ctx.beginPath();
     ctx.moveTo(x_far - roadW_far * 0.5, horizon);
@@ -703,7 +708,7 @@
     ctx.lineTo(x_far + roadW_far * 0.5, horizon);
     ctx.fill();
 
-    // เส้นประแบ่ง 3 เลน
+    // เส้นประ 3 เลน
     const segments = 40;
     for (let i = 0; i < segments; i++) {
       const isStripe = Math.floor((roadPosition * 0.08 - i)) % 2 === 0;
@@ -727,7 +732,6 @@
       const lineW2 = rW2 * 0.016;
 
       ctx.fillStyle = '#ffffff';
-
       const l1_x1 = rx1 - (laneW1 * 0.5);
       const l1_x2 = rx2 - (laneW2 * 0.5);
       ctx.beginPath();
@@ -743,7 +747,7 @@
       ctx.fill();
     }
 
-    // 5. ต้นไม้ข้างทาง
+    // ต้นไม้
     let sortedItems = [...roadsideItems].sort((a, b) => a.z - b.z);
     sortedItems.forEach(item => {
       const z = item.z;
@@ -752,11 +756,10 @@
       const roadCenterX = (w / 2) - (currentX * (roadW * 0.33));
       const scale = Math.pow(z, 2.0);
       const itemX = roadCenterX + (item.side * (roadW * 0.56 + scale * 160));
-
       drawBigTree(itemX, y, scale);
     });
 
-    // 6. สิ่งกีดขวาง
+    // สิ่งกีดขวาง
     let sortedObstacles = [...obstacles].sort((a, b) => a.z - b.z);
     sortedObstacles.forEach(obs => {
       const z = obs.z;
@@ -776,7 +779,7 @@
       else if (obs.type === 'broken_car') drawBrokenCarBig(obsX, y, scale, laneWidth);
     });
 
-    // 7. ซุ้มประตู Checkpoint โอ่อ่า
+    // ซุ้มประตู
     if (distanceToNextGate < 450) {
       const gateProgress = (1 - (distanceToNextGate / 450));
       const gateScale = Math.pow(gateProgress, 2.1);
@@ -806,15 +809,12 @@
     const postW = 28 * gateScale;
 
     ctx.save();
-
-    // ฐานคอนกรีตนอกถนน
     ctx.fillStyle = '#1e293b';
     ctx.beginPath();
     ctx.roundRect(leftX - postW * 0.3, groundY - 12 * gateScale, postW * 1.6, 14 * gateScale, 3 * gateScale);
     ctx.roundRect(rightX - postW * 1.3, groundY - 12 * gateScale, postW * 1.6, 14 * gateScale, 3 * gateScale);
     ctx.fill();
 
-    // เสาค้ำคู่
     const pillarGrad = ctx.createLinearGradient(leftX, 0, leftX + postW, 0);
     pillarGrad.addColorStop(0, '#0284c7');
     pillarGrad.addColorStop(0.5, '#38bdf8');
@@ -824,11 +824,6 @@
     ctx.fillRect(leftX, archTopY + topBarH * 0.8, postW, archH - topBarH * 0.8);
     ctx.fillRect(rightX - postW, archTopY + topBarH * 0.8, postW, archH - topBarH * 0.8);
 
-    ctx.fillStyle = '#facc15';
-    ctx.fillRect(leftX + postW * 0.35, archTopY + topBarH, postW * 0.3, archH - topBarH - 12 * gateScale);
-    ctx.fillRect(rightX - postW * 0.65, archTopY + topBarH, postW * 0.3, archH - topBarH - 12 * gateScale);
-
-    // คานป้ายด้านบน
     const signLeft = leftX - 10 * gateScale;
     const signW = archW + 20 * gateScale;
 
@@ -846,18 +841,16 @@
     ctx.fillRect(signLeft, archTopY, signW, 4 * gateScale);
     ctx.fillRect(signLeft, archTopY + topBarH - 4 * gateScale, signW, 4 * gateScale);
 
-    // แถบธงตาหมากรุก
+    // ธงตาหมากรุก
     const checkH = 14 * gateScale;
     const checkY = archTopY + topBarH;
     const checkSize = 14 * gateScale;
     const numChecks = Math.ceil(signW / checkSize);
-
     for (let c = 0; c < numChecks; c++) {
       ctx.fillStyle = (c % 2 === 0) ? '#0f172a' : '#ffffff';
       ctx.fillRect(signLeft + (c * checkSize), checkY, checkSize, checkH);
     }
 
-    // หมายเลขด่าน
     const badgeR = 24 * gateScale;
     const badgeX = signLeft + 35 * gateScale;
     const badgeY = archTopY + topBarH / 2;
@@ -873,15 +866,12 @@
     ctx.textBaseline = 'middle';
     ctx.fillText(`${currentStageIndex + 1}`, badgeX, badgeY);
 
-    // ข้อความ Checkpoint
     ctx.fillStyle = '#ffffff';
     ctx.font = `bold ${Math.max(10, 19 * gateScale)}px 'Chakra Petch'`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-
     const stageTitle = `CHECKPOINT ${currentStageIndex + 1}: ${stageData[currentStageIndex].badge.toUpperCase()}`;
     ctx.fillText(stageTitle, roadCenter + 15 * gateScale, archTopY + (topBarH * 0.46));
-
     ctx.restore();
   }
 
@@ -994,7 +984,7 @@
     ctx.restore();
   }
 
-  // เข้าสู่ Checkpoint และโหลดมินิเกมตามด่าน
+  // เข้า Checkpoint
   function arriveAtCheckpoint() {
     const stage = stageData[currentStageIndex];
     taskCompleted = false;
@@ -1005,34 +995,31 @@
     document.getElementById('term-title').innerText = `🚧 ${stage.title} (${stage.world})`;
     document.getElementById('term-badge').innerText = `🏅 ${stage.badge}`;
     document.getElementById('term-q').innerText = stage.q;
-    document.getElementById('ai-tip').innerHTML = `<strong>Word Co-Pilot:</strong> ลอดซุ้มด่านสำเร็จ! ${stage.hint}`;
+    document.getElementById('ai-tip').innerHTML = `<strong>Word Co-Pilot:</strong> ${stage.hint}`;
     document.getElementById('btn-drive').style.display = 'none';
 
     renderMinigame(stage);
   }
 
-  // เรนเดอร์มินิเกมจำลองเครื่องมือ Word จริง
   function renderMinigame(stage) {
     const stageBox = document.getElementById('minigame-area');
     stageBox.innerHTML = '';
 
-    // โหมด 1: คีย์ลัดด่วน (Quick-Time Shortcut)
+    // โหมด Shortcut: แตะปุ่มบนจอได้ทันที
     if (stage.mode === 'shortcut') {
       stageBox.innerHTML = `
         <div style="text-align:center;">
-          <p style="color:#64748b; font-size:0.95rem; margin-bottom:8px;">กดปุ่มจริงบนคีย์บอร์ดของคุณ:</p>
-          <div class="key-badge" id="shortcut-badge">${stage.displayKey}</div>
-          <p id="shortcut-status" style="margin-top:10px; font-weight:600; color:#0284c7;">รอตรวจจับสัญญาณแป้นพิมพ์...</p>
+          <p style="color:#64748b; font-size:0.9rem; margin-bottom:8px;">แตะปุ่มนี้เพื่อใช้งานคำสั่งด่วน:</p>
+          <button class="key-badge-btn" id="shortcut-badge" onclick="triggerShortcutSuccess()">${stage.displayKey}</button>
+          <p id="shortcut-status" style="margin-top:10px; font-weight:600; color:#0284c7; font-size:0.9rem;">👉 แตะปุ่ม [ ${stage.displayKey} ] เลยจ้า</p>
         </div>
       `;
     }
-
-    // โหมด 2: แถบ Ribbon จำลอง (Ribbon Inspector)
+    // โหมด Ribbon
     else if (stage.mode === 'ribbon') {
       const tabs = ["ไฟล์ (File)", "หน้าแรก (Home)", "แทรก (Insert)", "เค้าโครง (Layout)"];
       const ribbonDiv = document.createElement('div');
       ribbonDiv.className = 'ribbon-bar';
-
       tabs.forEach(t => {
         const btn = document.createElement('button');
         btn.className = 'ribbon-btn';
@@ -1045,23 +1032,21 @@
       });
       stageBox.appendChild(ribbonDiv);
     }
-
-    // โหมด 3: ปรับทิศทางเอกสาร (Alignment & Orientation)
+    // โหมด Alignment
     else if (stage.mode === 'align') {
       stageBox.innerHTML = `
-        <div class="doc-preview-box" id="preview-paper">
-          <div id="sample-text" style="font-size:0.95rem; font-weight:600; color:#0f172a; text-align:left;">หัวข้อรายงาน ม.1</div>
-          <div style="height:6px; background:#e2e8f0; width:100%; border-radius:4px; margin-top:6px;"></div>
+        <div class="doc-preview-box">
+          <div id="sample-text" style="font-size:0.9rem; font-weight:600; color:#0f172a; text-align:left;">หัวข้อรายงาน ม.1</div>
+          <div style="height:5px; background:#e2e8f0; width:100%; border-radius:4px; margin-top:6px;"></div>
         </div>
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:6px;">
           <button class="ribbon-btn" onclick="applyAlignment('left')">◀ ชิดซ้าย</button>
           <button class="ribbon-btn" style="background:#e0f2fe; border-color:#38bdf8;" onclick="applyAlignment('center')">⬛ กึ่งกลาง</button>
           <button class="ribbon-btn" onclick="applyAlignment('right')">ชิดขวา ▶</button>
         </div>
       `;
     }
-
-    // โหมด 4: ตารางข้อมูล (Table Grid Builder)
+    // โหมดตาราง Table Grid
     else if (stage.mode === 'table_grid') {
       const grid = document.createElement('div');
       grid.className = 'table-picker';
@@ -1071,23 +1056,22 @@
           cell.className = 'table-cell';
           cell.dataset.r = r;
           cell.dataset.c = c;
-          cell.onmouseover = () => highlightGrid(c, r);
           cell.onclick = () => {
+            highlightGrid(c, r);
             if (c === stage.targetCols && r === stage.targetRows) finishTaskSuccess(10);
             else finishTaskFail();
           };
           grid.appendChild(cell);
         }
       }
-      stageBox.innerHTML = `<div style="font-size:0.9rem; color:#64748b; margin-bottom:4px;">ลากเมาส์คลิกขนาด 3 x 2:</div>`;
+      stageBox.innerHTML = `<div style="font-size:0.85rem; color:#64748b; margin-bottom:2px;">แตะเลือกขนาด 3 x 2:</div>`;
       stageBox.appendChild(grid);
     }
-
-    // โหมดทั่วไปอื่นๆ: ตัวเลือกแบบไอคอนน่ารัก
+    // โหมดอื่นๆ
     else {
       const defaultDiv = document.createElement('div');
       defaultDiv.style.display = 'flex';
-      defaultDiv.style.gap = '10px';
+      defaultDiv.style.gap = '8px';
       defaultDiv.style.flexWrap = 'wrap';
       defaultDiv.style.justifyContent = 'center';
 
@@ -1106,25 +1090,37 @@
     }
   }
 
-  // ดักจับคีย์บอร์ดสำหรับโหมด Shortcut
+  function triggerShortcutSuccess() {
+    if (taskCompleted) return;
+    const badge = document.getElementById('shortcut-badge');
+    if (badge) {
+      badge.style.background = '#dcfce7';
+      badge.style.borderColor = '#22c55e';
+      badge.style.color = '#15803d';
+    }
+    document.getElementById('shortcut-status').innerText = '🎉 ทำภารกิจสำเร็จ!';
+    document.getElementById('shortcut-status').style.color = '#15803d';
+    finishTaskSuccess(10);
+  }
+
   function handleMinigameKeyboard(e) {
     const stage = stageData[currentStageIndex];
     if (stage.mode !== 'shortcut') return;
 
-    if (e.ctrlKey && e.key.toLowerCase() === stage.keyReq) {
+    const isCtrl = e.ctrlKey || e.metaKey;
+    const isTargetCode = e.code === stage.codeReq;
+    const isTargetKey = e.key.toLowerCase() === stage.keyReq;
+
+    if (isCtrl && (isTargetCode || isTargetKey)) {
       e.preventDefault();
-      document.getElementById('shortcut-badge').style.background = '#dcfce7';
-      document.getElementById('shortcut-badge').style.borderColor = '#22c55e';
-      document.getElementById('shortcut-status').innerText = '🎉 ทำคีย์ลัดสำเร็จ!';
-      document.getElementById('shortcut-status').style.color = '#15803d';
-      finishTaskSuccess(10);
+      triggerShortcutSuccess();
     }
   }
 
   function applyAlignment(type) {
     document.getElementById('sample-text').style.textAlign = type;
     if (type === 'center') {
-      setTimeout(() => finishTaskSuccess(10), 300);
+      setTimeout(() => finishTaskSuccess(10), 250);
     } else {
       finishTaskFail();
     }
@@ -1147,7 +1143,7 @@
     totalStars += 3;
 
     document.getElementById('ai-tip').innerHTML = `
-      <strong style="color:#15803d">Word Co-Pilot:</strong> เยี่ยมมาก! ปฏิบัติภารกิจถูกต้อง 🎉 (+${scoreGained} แต้ม E1 | 3 ⭐)
+      <strong style="color:#15803d">Word Co-Pilot:</strong> เยี่ยมมาก! ปฏิบัติภารกิจถูกต้อง 🎉 (+${scoreGained} แต้ม | 3 ⭐)
     `;
 
     updateHUD();
@@ -1158,7 +1154,7 @@
     shields--;
     updateHUD();
     document.getElementById('ai-tip').innerHTML = `
-      <strong style="color:#b91c1c">Word Co-Pilot:</strong> เครื่องมือยังไม่ตรงกับโจทย์นะ เกราะลด 1 หน่วย! คำใบ้: ${stageData[currentStageIndex].hint}
+      <strong style="color:#b91c1c">Word Co-Pilot:</strong> ยังไม่ถูกนะ เกราะลด 1 ดวง! คำใบ้: ${stageData[currentStageIndex].hint}
     `;
     if (shields <= 0) {
       alert("🚨 เกราะหมด! เข้าสู่สถานีซ่อมบำรุงฉุกเฉิน (ฟื้นฟู 2 หน่วย)");
@@ -1170,7 +1166,6 @@
   function continueDriving() {
     document.getElementById('terminal').style.display = 'none';
     currentStageIndex++;
-    window.focus();
 
     if (currentStageIndex < 12) {
       distanceToNextGate = 1000;
