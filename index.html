@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🚗 Word Road: Smooth Drive (E1)</title>
+  <title>🚗 Word Road: Smooth Start (E1)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
@@ -397,9 +397,9 @@
 
   let obstacles = [];
 
+  // สร้างสิ่งกีดขวางแบบการันตีเลนว่างเสมอ
   function spawnObstacleWave(startZ) {
     const types = ['cone', 'barrier', 'broken_car'];
-    // เลือกล็อกเลนปลอดภัย 1 เลนเสมอ
     const safeLane = Math.floor(Math.random() * 3);
     const lanesToBlock = [0, 1, 2].filter(l => l !== safeLane);
     const blockCount = Math.random() < 0.5 ? 1 : 2;
@@ -415,7 +415,6 @@
     });
   }
 
-  // ต้นไม้ขนาดใหญ่ขนาบข้างถนน
   let roadsideItems = [];
   for (let i = 0; i < 12; i++) {
     roadsideItems.push({
@@ -440,8 +439,9 @@
   function init() {
     bindControls();
     updateHUD();
-    spawnObstacleWave(0.4);
-    spawnObstacleWave(0.85);
+    // ป้องกันการเกิดสิ่งกีดขวางใกล้ตัวรถตอนเริ่ม โดยให้เกิดที่ระยะไกล z <= 0.15 เท่านั้น
+    obstacles = [];
+    spawnObstacleWave(0.1);
     requestAnimationFrame(gameLoop);
   }
 
@@ -545,12 +545,13 @@
         if (item.z >= 1) item.z -= 1;
       });
 
+      // ตรวจสอบสิ่งกีดขวางเฉพาะเมื่อรถวิ่งอยู่ (speed > 5) เพื่อป้องกันการชนตั้งแต่ตอนจอด
       for (let i = obstacles.length - 1; i >= 0; i--) {
         let obs = obstacles[i];
         obs.z += (speed * 0.00016);
 
         if (!obs.hit && obs.z > 0.72 && obs.z < 0.94) {
-          if (currentLane === obs.lane) {
+          if (speed > 5 && currentLane === obs.lane) {
             obs.hit = true;
             triggerCrash();
           }
@@ -561,6 +562,7 @@
         }
       }
 
+      // สุ่มเกิดสิ่งกีดขวางที่ระยะขอบฟ้า z = 0.05
       if (obstacles.length < 3 && Math.random() < 0.03 && distanceToNextGate > 350) {
         spawnObstacleWave(0.05);
       }
@@ -611,11 +613,11 @@
     ctx.quadraticCurveTo(700, horizon - 45, w, horizon);
     ctx.fill();
 
-    // 3. ทุ่งหญ้าสีเขียวเนียนเรียบ (ไม่มีริ้วลายถี่ๆ ที่ทำให้เวียนหัว)
+    // 3. ทุ่งหญ้าสีเขียวเนียนเรียบ
     ctx.fillStyle = '#16a34a';
     ctx.fillRect(0, horizon, w, h - horizon);
 
-    // 4. วาดตัวถนน 3 เลน (สีแอสฟัลต์เรียบเนียนสม่ำเสมอ)
+    // 4. วาดตัวถนน 3 เลน
     const roadW_near = w * 1.1;
     const roadW_far = w * 0.16;
 
@@ -631,7 +633,7 @@
     ctx.lineTo(x_far + roadW_far * 0.54, horizon);
     ctx.fill();
 
-    // ผิวถนนลาดยางสีเทาเรียบ
+    // ผิวถนนลาดยางสีเทา
     ctx.fillStyle = '#334155';
     ctx.beginPath();
     ctx.moveTo(x_far - roadW_far * 0.5, horizon);
@@ -640,7 +642,7 @@
     ctx.lineTo(x_far + roadW_far * 0.5, horizon);
     ctx.fill();
 
-    // วาดเส้นประแบ่ง 3 เลน (เฉพาะเส้นประที่ขยับตามความเร็วอย่างนุ่มนวล)
+    // วาดเส้นประแบ่ง 3 เลน
     const segments = 40;
     for (let i = 0; i < segments; i++) {
       const isStripe = Math.floor((roadPosition * 0.08 - i)) % 2 === 0;
@@ -682,7 +684,7 @@
       ctx.fill();
     }
 
-    // 5. วาดต้นไม้ใหญ่ขนาบข้างถนน (Big Trees)
+    // 5. วาดต้นไม้ใหญ่ขนาบข้างถนน
     let sortedItems = [...roadsideItems].sort((a, b) => a.z - b.z);
     sortedItems.forEach(item => {
       const z = item.z;
@@ -695,7 +697,7 @@
       drawBigTree(itemX, y, scale);
     });
 
-    // 6. วาดสิ่งกีดขวางขนาดใหญ่เต็มเลน
+    // 6. วาดสิ่งกีดขวาง
     let sortedObstacles = [...obstacles].sort((a, b) => a.z - b.z);
     sortedObstacles.forEach(obs => {
       const z = obs.z;
@@ -741,18 +743,15 @@
     }
   }
 
-  // วาดต้นไม้ใหญ่ยักษ์สมส่วน
   function drawBigTree(x, y, scale) {
     if (scale < 0.05) return;
     ctx.save();
 
-    // ลำต้นใหญ่แข็งแรง
     ctx.fillStyle = '#78350f';
     const trunkW = 32 * scale;
     const trunkH = 150 * scale;
     ctx.fillRect(x - trunkW / 2, y - trunkH, trunkW, trunkH);
 
-    // พุ่มไม้หนาขนาดใหญ่ 3 ชั้น
     ctx.fillStyle = '#14532d';
     ctx.beginPath();
     ctx.arc(x, y - trunkH - 30 * scale, 95 * scale, 0, Math.PI * 2);
@@ -970,9 +969,9 @@
     if (currentStageIndex < 12) {
       distanceToNextGate = 1000;
       isArrivedAtGate = false;
+      // ล้างสิ่งกีดขวางทั้งหมด และวางที่จุดเริ่มต้นไกลๆ เท่านั้น
       obstacles = [];
-      spawnObstacleWave(0.4);
-      spawnObstacleWave(0.85);
+      spawnObstacleWave(0.1);
       updateHUD();
     } else {
       alert(`🏆 ยินดีด้วย! คุณขับรถพิชิตครบทั้ง 12 Checkpoints สำเร็จแล้ว!\nคะแนนรวม E1: ${totalScoreE1}/120 (${Math.round((totalScoreE1/120)*100)}%)\nพร้อมก้าวสู่เกม E2 (Word Jump) ต่อไป!`);
