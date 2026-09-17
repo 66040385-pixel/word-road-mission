@@ -144,7 +144,6 @@
     }
     .rbx-green-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #00603d; }
 
-    /* START SCREEN: โทนสว่างสดใส สไตล์ Arcade ไม่ใช้อิโมจิ */
     #start-screen {
       background: radial-gradient(circle at 50% 40%, rgba(14, 165, 233, 0.45) 0%, rgba(15, 23, 42, 0.92) 80%);
       backdrop-filter: blur(12px);
@@ -467,10 +466,8 @@
     </div>
   </div>
 
-  <!-- START SCREEN: ไร้อิโมจิ 100% ใช้ SVG Vector Icons ทั้งหมด -->
   <div id="start-screen" class="overlay-screen">
     <div class="start-modal">
-      
       <div class="hero-banner">
         <div class="game-logo-title">WORD ROAD 3D</div>
         <div class="game-sub-badge">
@@ -499,7 +496,7 @@
 
       <div class="rule-banner-single">
         <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-        <div><b>วิธีปลดม่านเลเซอร์:</b> ขับรถชนม่านพลังงานแต่ละด่าน จากนั้นคลิกเลือกเมนูหรือกดคีย์ลัดจริงบนแป้นพิมพ์เพื่อเปิดทางไปต่อ!</div>
+        <div><b>วิธีปลดม่านเลเซอร์:</b> ขับรถชนม่านพลังงานแต่ละด่าน จากนั้นคลิกเลือกเมนูหรือกดปุ่มเพื่อเปิดทางไปต่อ!</div>
       </div>
 
       <input type="text" id="player-input" class="start-input" placeholder="พิมพ์ชื่อ - นามสกุล หรือ เลขที่..." autocomplete="off" />
@@ -508,7 +505,6 @@
         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         เข้าสู่สนามแข่ง (START MISSION)
       </button>
-
     </div>
   </div>
 
@@ -528,7 +524,7 @@
 
       <div style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; color: #475569; display: flex; gap: 8px; align-items: center;">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="#64748b"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-        <span>แตะปุ่มบนหน้าจอ หรือกดแป้นพิมพ์คีย์ลัดจริงเพื่อปลดล็อกม่านเลเซอร์</span>
+        <span>แตะเลือกคำสั่งที่ถูกต้อง เพื่อปลดล็อกม่านเลเซอร์</span>
       </div>
     </div>
   </div>
@@ -554,7 +550,7 @@
 
       <div class="kn-notice">
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-        <span>รอบแก้ตัวนี้จะช่วยให้รถขับผ่านด่านได้ แต่จะไม่ได้รับคะแนนเพิ่มเพื่อรักษาเกณฑ์คะแนนจริง</span>
+        <span>รอบแก้ตัวนี้จะช่วยให้รถผ่านด่านได้ แต่จะไม่ได้รับคะแนนเพิ่มเพื่อรักษาเกณฑ์คะแนนจริง</span>
       </div>
 
       <button class="rbx-green-btn" onclick="retryMission()">
@@ -589,9 +585,11 @@
   </div>
 
   <script>
+    // 12 Checkpoint Tasks: คะแนนรวม 20 คะแนนเต็ม
+    // มีเฉพาะ Checkpoint 2 ข้อเดียวที่เป็นระบบ Shortcut (Ctrl + S) ที่เหลือปรับเป็นตัวเลือก / Ribbon / Alignment / Table
     const missions = [
       {
-        id: 1, title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", pts: 1.0,
+        id: 1, title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", pts: 1,
         mode: "ribbon",
         q: "ภารกิจ: เลือกแท็บเมนู Ribbon ที่ใช้เปลี่ยนแบบฟอนต์และขนาดตัวอักษร:",
         target: "Home",
@@ -599,7 +597,7 @@
         knText: "แถบ <b>หน้าแรก (Home)</b> เป็นศูนย์รวมคำสั่งพื้นฐานที่ใช้บ่อยที่สุด ได้แก่ การเปลี่ยนฟอนต์, ปรับขนาดอักษร, ทำตัวหนา/เอียง/ขีดเส้นใต้, และการจัดตำแหน่งย่อหน้า"
       },
       {
-        id: 2, title: "Checkpoint 2: บันทึกเอกสาร", badge: "Save Master", pts: 1.0,
+        id: 2, title: "Checkpoint 2: บันทึกเอกสาร", badge: "Save Master", pts: 1,
         mode: "shortcut",
         q: "ภารกิจ: แตะที่ปุ่มด้านล่าง หรือกดบนคีย์บอร์ดจริงเพื่อ 'บันทึกเอกสาร (Save)':",
         keyReq: "s", codeReq: "KeyS", displayKey: "Ctrl + S",
@@ -607,23 +605,25 @@
         knText: "การบันทึกเอกสารใช้คีย์ลัด <b>Ctrl + S</b> (ย่อมาจาก Save) เป็นปุ่มที่ควรหมั่นกดเป็นประจำเพื่อป้องกันข้อมูลสูญหาย"
       },
       {
-        id: 3, title: "Checkpoint 3: ยกเลิกคำสั่งล่าสุด", badge: "Text Editor", pts: 1.0,
-        mode: "shortcut",
-        q: "ภารกิจ: แตะที่ปุ่มด้านล่าง หรือกดบนคีย์บอร์ดจริงเพื่อ 'ยกเลิกคำสั่งล่าสุด (Undo)':",
-        keyReq: "z", codeReq: "KeyZ", displayKey: "Ctrl + Z",
-        knTitle: "การยกเลิกคำสั่งล่าสุด (Undo)",
-        knText: "เมื่อทำงานพลาดหรือเผลอลบข้อความ ให้ใช้คีย์ลัด <b>Ctrl + Z</b> เพื่อยกเลิกคำสั่งล่าสุด (Undo) ดึงข้อมูลเดิมกลับคืนมาทันที"
+        id: 3, title: "Checkpoint 3: เปิดเอกสารใหม่", badge: "Text Editor", pts: 1,
+        mode: "choice",
+        q: "ภารกิจ: เลือกคำสั่งที่ใช้สำหรับสร้างไฟล์เอกสารเปล่าขึ้นมาใหม่:",
+        target: "New Document",
+        opts: ["Open File", "New Document", "Print Document"],
+        knTitle: "การสร้างเอกสารใหม่ (New)",
+        knText: "คำสั่ง <b>New (ใหม่)</b> ใช้สำหรับเปิดหน้ากระดาษเอกสารเปล่าขึ้นมาใหม่เพื่อเริ่มพิมพ์งานชิ้นใหม่"
       },
       {
-        id: 4, title: "Checkpoint 4: สไตล์ตัวอักษร", badge: "Format Master", pts: 1.0,
-        mode: "shortcut",
-        q: "ภารกิจ: แตะที่ปุ่มลัดด้านล่าง หรือกดบนแป้นพิมพ์เพื่อทำข้อความ 'ตัวหนา (Bold)':",
-        keyReq: "b", codeReq: "KeyB", displayKey: "Ctrl + B",
-        knTitle: "การเน้นข้อความตัวหนา (Bold)",
-        knText: "การปรับแต่งสไตล์ข้อความให้เป็นตัวหนาใช้ไอคอนตัว <b>B</b> (Bold) หรือกดคีย์ลัด <b>Ctrl + B</b> นิยมใช้สำหรับเน้นหัวข้อหรือคำสำคัญ"
+        id: 4, title: "Checkpoint 4: สไตล์ตัวอักษร", badge: "Format Master", pts: 1,
+        mode: "choice",
+        q: "ภารกิจ: เครื่องมือลักษณะใดใช้ทำข้อความให้เป็น 'ตัวเอียง (Italic)':",
+        target: "Italic",
+        opts: ["Bold", "Italic", "Underline"],
+        knTitle: "การทำตัวเอียง (Italic)",
+        knText: "รูปแบบตัวเอียงใช้สัญลักษณ์ตัว <i>I</i> (Italic) บนแถบ Ribbon ช่วยให้ข้อความดูโดดเด่นหรือใช้สำหรับคำศัพท์ภาษาต่างประเทศ"
       },
       {
-        id: 5, title: "Checkpoint 5: จัดตำแหน่งย่อหน้า", badge: "Paragraph Pro", pts: 1.5,
+        id: 5, title: "Checkpoint 5: จัดตำแหน่งย่อหน้า", badge: "Paragraph Pro", pts: 1,
         mode: "align",
         q: "ภารกิจ: ทดลองกดปุ่มจัดตำแหน่งเอกสาร เพื่อวางข้อความให้อยู่ 'กึ่งกลางหน้ากระดาษ':",
         target: "center",
@@ -631,7 +631,7 @@
         knText: "การจัดข้อความให้อยู่ตรงกลางหน้ากระดาษพอดีให้ใช้คำสั่ง <b>Center</b> (หรือกด Ctrl + E) ซึ่งเหมาะสำหรับการจัดชื่อเรื่องหรือหัวข้อรายงาน"
       },
       {
-        id: 6, title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", pts: 1.5,
+        id: 6, title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", pts: 1,
         mode: "choice",
         q: "ภารกิจ: เครื่องมือใดใช้สำหรับสร้างรายการข้อความที่มีลำดับ 1, 2, 3 ก่อนหลัง:",
         target: "Numbering",
@@ -640,7 +640,7 @@
         knText: "เมื่อข้อความมีขั้นตอนที่ต้องทำตามลำดับก่อนหลัง ให้ใช้คำสั่ง <b>Numbering (ลำดับเลข)</b> แต่หากเป็นรายการทั่วไปที่สลับลำดับได้ ให้ใช้ <b>Bullets (สัญลักษณ์จุด)</b>"
       },
       {
-        id: 7, title: "Checkpoint 7: การตัดข้อความรูปภาพ", badge: "Media Specialist", pts: 1.5,
+        id: 7, title: "Checkpoint 7: การตัดข้อความรูปภาพ", badge: "Media Specialist", pts: 2,
         mode: "choice",
         q: "ภารกิจ: คำสั่ง Wrap Text รูปแบบใดทำให้ข้อความไหลล้อมรอบกรอบรูปภาพอย่างอิสระ:",
         target: "Square",
@@ -649,7 +649,7 @@
         knText: "การตั้งค่า <b>Wrap Text</b> เป็น <b>Square</b> จะช่วยให้ข้อความไหลล้อมรอบกรอบสี่เหลี่ยมของภาพ และทำให้สามารถเลื่อนตำแหน่งภาพได้อย่างอิสระ"
       },
       {
-        id: 8, title: "Checkpoint 8: โครงสร้างตาราง", badge: "Table Builder", pts: 1.5,
+        id: 8, title: "Checkpoint 8: โครงสร้างตาราง", badge: "Table Builder", pts: 2,
         mode: "table_grid",
         q: "ภารกิจ: กำหนดขนาดสร้างตารางข้อมูลจำนวน '3 คอลัมน์ x 2 แถว' ให้ถูกต้อง:",
         targetCols: 3, targetRows: 2,
@@ -657,7 +657,7 @@
         knText: "การสร้างตารางใน Word จะนับตาม <b>คอลัมน์ (แนวตั้ง)</b> x <b>แถว (แนวนอน)</b> ตารางขนาด 3 x 2 จึงหมายถึง มี 3 ช่องแนวตั้ง และ 2 แถวแนวนอน"
       },
       {
-        id: 9, title: "Checkpoint 9: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 2.5,
+        id: 9, title: "Checkpoint 9: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 2,
         mode: "choice",
         q: "ภารกิจ: หากต้องการพิมพ์เอกสารที่มีตารางกว้าง ต้องตั้งค่าหน้ากระดาษแบบใดในเมนู Orientation:",
         target: "แนวนอน (Landscape)",
@@ -666,7 +666,7 @@
         knText: "ในแท็บ <b>Layout (เค้าโครง)</b> คำสั่ง <b>Orientation</b> มี 2 แบบ: <b>Portrait (แนวตั้ง)</b> สำหรับเอกสารทั่วไป และ <b>Landscape (แนวนอน)</b> สำหรับตารางหรือรูปภาพขนาดกว้าง"
       },
       {
-        id: 10, title: "Checkpoint 10: สัญลักษณ์ตรวจคำผิด", badge: "Doc Inspector", pts: 2.5,
+        id: 10, title: "Checkpoint 10: สัญลักษณ์ตรวจคำผิด", badge: "Doc Inspector", pts: 2,
         mode: "choice",
         q: "ภารกิจ: ในโปรแกรม Word การตรวจพบคำที่อาจสะกดผิดจะแจ้งเตือนด้วยสัญลักษณ์ใดใต้คำ:",
         target: "เส้นใต้หยักสีแดง",
@@ -675,7 +675,7 @@
         knText: "ใน Microsoft Word เส้นหยักใต้ข้อความมีความหมายเฉพาะ: <b>เส้นหยักสีแดง</b> หมายถึงสะกดคำผิด ส่วน <b>เส้นหยักสีฟ้า</b> หมายถึงไวยากรณ์หรือการเว้นวรรคผิดพลาด"
       },
       {
-        id: 11, title: "Checkpoint 11: การทำสารบัญ", badge: "Style Maestro", pts: 2.5,
+        id: 11, title: "Checkpoint 11: การทำสารบัญ", badge: "Style Maestro", pts: 3,
         mode: "choice",
         q: "ภารกิจ: การเตรียมข้อความเพื่อดึงทำสารบัญอัตโนมัติ (Table of Contents) ต้องกำหนดสไตล์ใดให้กับหัวข้อหลัก:",
         target: "Heading 1",
@@ -684,7 +684,7 @@
         knText: "การจะให้โปรแกรม Word ดึงสารบัญอัตโนมัติได้ ผู้พิมพ์จะต้องกำหนดรูปแบบหัวข้อรายงานด้วยสไตล์ <b>Heading 1 (หัวเรื่อง 1)</b> หรือ Heading 2 ก่อนเสมอ"
       },
       {
-        id: 12, title: "Checkpoint 12: การบันทึกส่งออกไฟล์", badge: "Word Grand Master", pts: 2.5,
+        id: 12, title: "Checkpoint 12: การบันทึกส่งออกไฟล์", badge: "Word Grand Master", pts: 3,
         mode: "choice",
         q: "ภารกิจ: การส่งออกไฟล์เอกสารชนิดใดที่คงสภาพหน้ากระดาษและฟอนต์ได้แน่นอนที่สุดสำหรับนำไปพิมพ์งาน:",
         target: ".pdf",
@@ -1363,7 +1363,7 @@
 
       currentStage = stageIdx + 1;
       document.getElementById("hud-stage").innerText = `ด่าน ${Math.min(currentStage + 1, 12)} / 12`;
-      document.getElementById("hud-score").innerText = `${Number(score.toFixed(1))} / 20`;
+      document.getElementById("hud-score").innerText = `${score} / 20`;
       document.getElementById("checkpoint-modal").style.display = "none";
       isModalOpen = false;
 
@@ -1460,8 +1460,7 @@
     function finishGame() {
       isGameOver = true;
       document.getElementById("finish-screen").style.display = "flex";
-      const displayScore = Number(score.toFixed(1));
-      document.getElementById("final-score").innerText = `${displayScore} / 20`;
+      document.getElementById("final-score").innerText = `${score} / 20`;
 
       let rank = "ผู้ขับขี่ฝึกหัด (ควรทบทวนเนื้อหาเพิ่มเติม)";
       if (score >= 17) rank = "ยอดนักขับระดับ Master (ยอดเยี่ยมมาก)";
@@ -1469,14 +1468,13 @@
       else if (score >= 10) rank = "ผ่านเกณฑ์การทดสอบ";
       document.getElementById("final-rank").innerText = `ระดับ: ${rank}`;
 
-      const code = `WR3D-${btoa(encodeURIComponent(playerName)).slice(0, 5).toUpperCase()}-${displayScore}PTS-${Date.now().toString().slice(-4)}`;
+      const code = `WR3D-${btoa(encodeURIComponent(playerName)).slice(0, 5).toUpperCase()}-${score}PTS-${Date.now().toString().slice(-4)}`;
       document.getElementById("cert-code").innerText = `รหัสยืนยันผลการขับขี่: ${code}`;
 
-      // บันทึกคะแนน
       const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScDqf_3sbr3G8XbgR4atsdlcKscqiL_snt7iXLfACcwBjGj1g/formResponse";
       const formData = new FormData();
       formData.append("entry.1063080801", playerName);
-      formData.append("entry.557379494", displayScore);
+      formData.append("entry.557379494", score);
       formData.append("entry.851103684", code);
 
       fetch(FORM_URL, {
