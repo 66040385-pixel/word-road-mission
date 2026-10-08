@@ -221,92 +221,109 @@
     .badge-kick-btn:active { transform: scale(0.9); }
     .hidden { display: none !important; }
 
-    /* ปรับแต่งดีไซน์กล่องวิธีการเล่นให้ตรงตามภาพ */
-    .mission-pill-tag {
-      background: #ffb703;
-      color: #0f172a;
-      padding: 6px 16px;
-      border-radius: 30px;
-      font-size: 12px;
-      font-weight: 800;
+    /* ========================================================
+       สไตล์ส่วนวิธีการเล่น (โครงสร้างแบบในภาพ + โทนชมพูหวาน)
+       ======================================================== */
+    .guide-banner-card {
+      border-radius: 22px;
+      overflow: hidden;
+      border: 2px solid #ffccd5;
+      background: #ffffff;
+      box-shadow: 0 10px 25px rgba(255, 117, 143, 0.15);
+      margin-bottom: 14px;
+    }
+    .guide-header-pink {
+      background: linear-gradient(180deg, #ff4d6d 0%, #e01e37 100%);
+      padding: 16px 12px 14px 12px;
+      color: #ffffff;
+      text-align: center;
+      border-bottom: 4px solid #ffb3c1;
+    }
+    .guide-main-title {
+      font-size: clamp(20px, 5.5vw, 25px);
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #ffffff;
+      margin: 0;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .guide-sub-pill {
+      background: #ffe4e6;
+      color: #b91c1c;
+      font-size: 11.5px;
+      font-weight: 900;
+      padding: 5px 14px;
+      border-radius: 20px;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
-      box-shadow: 0 3px 10px rgba(255, 183, 3, 0.35);
-      margin: 2px 0 14px 0;
+      margin-top: 8px;
+      border: 1.5px solid #ffccd5;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
-    .instruction-wrapper {
-      margin-bottom: 12px;
-      text-align: left;
+    .guide-content-body {
+      padding: 12px;
+      background: #fff;
     }
-    .instruction-cards-grid {
+    .guide-boxes-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-bottom: 10px;
+      text-align: left;
     }
-    .instruction-card {
-      border-radius: 18px;
-      padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.02);
+    .guide-subbox {
+      border-radius: 16px;
+      padding: 10px 12px;
+      font-size: 11.5px;
     }
-    .instruction-card.card-blue {
-      background: #f0f9ff;
-      border: 2px solid #bae6fd;
+    .guide-subbox-pink-soft {
+      background: #fff5f7;
+      border: 2px solid #ffccd5;
     }
-    .instruction-card.card-amber {
-      background: #fefce8;
-      border: 2px solid #fde047;
+    .guide-subbox-rose {
+      background: #fff1f2;
+      border: 2px solid #fecdd3;
     }
-    .instruction-card-title {
-      font-size: 12px;
+    .guide-box-title {
       font-weight: 900;
-      margin-bottom: 8px;
+      font-size: 12px;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
-    .instruction-card.card-blue .instruction-card-title {
-      color: #0284c7;
+    .guide-subbox-pink-soft .guide-box-title {
+      color: #e01e37;
     }
-    .instruction-card.card-amber .instruction-card-title {
-      color: #b45309;
+    .guide-subbox-rose .guide-box-title {
+      color: #be123c;
     }
-    .instruction-card-content {
-      font-size: 11px;
-      color: #334155;
+    .guide-bullets {
+      margin: 0;
+      padding-left: 14px;
+      color: #475569;
       line-height: 1.55;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
     }
-    .instruction-card-item {
-      position: relative;
-      padding-left: 12px;
+    .guide-bullets li {
+      margin-bottom: 2px;
     }
-    .instruction-card-item::before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      font-weight: bold;
-      color: #64748b;
-    }
-    .instruction-banner-box {
-      border: 2px dashed #cbd5e1;
-      border-radius: 18px;
-      padding: 10px 14px;
-      background: #f8fafc;
+    .guide-dashed-tip {
+      background: #fff5f7;
+      border: 2px dashed #fda4af;
+      border-radius: 16px;
+      padding: 9px 12px;
       font-size: 11.5px;
       color: #334155;
       line-height: 1.45;
+      text-align: left;
       display: flex;
       align-items: flex-start;
-      gap: 8px;
+      gap: 7px;
     }
     @media (max-width: 440px) {
-      .instruction-cards-grid {
+      .guide-boxes-row {
         grid-template-columns: 1fr;
       }
     }
@@ -746,59 +763,61 @@
 
   <!-- 1. หน้าแรก -->
   <div id="view-mode" class="container">
-    <h1>HUNTER CYBER MISSION</h1>
     
-    <div class="mission-pill-tag">
-      <svg class="svg-ic" style="width: 15px; height: 15px;" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 16h2v2h-2v-2zm0-6h2v4h-2v-4z"/></svg>
-      ภารกิจกระโดดพิชิต Microsoft Word (20 ข้อ)
-    </div>
-
-    <!-- ส่วนวิธีการเล่นที่จัดรูปแบบใหม่ให้สวยงามตามภาพต้นฉบับ -->
-    <div class="instruction-wrapper">
-      <div class="instruction-cards-grid">
-        <!-- กล่องซ้าย: วิธีการเล่น / การบังคับ -->
-        <div class="instruction-card card-blue">
-          <div class="instruction-card-title">
-            <svg class="svg-ic" style="width: 17px; height: 17px;" viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-            วิธีการควบคุมตัวละคร
-          </div>
-          <div class="instruction-card-content">
-            <div class="instruction-card-item">ใช้ปุ่มลูกศร หรือ A - D บังคับทิศทาง</div>
-            <div class="instruction-card-item">Spacebar หรือปุ่ม Jump เพื่อกระโดด</div>
-            <div class="instruction-card-item">เหยียบสปริงเขียวเพื่อพุ่งสูงความเร็วสูง</div>
-          </div>
-        </div>
-
-        <!-- กล่องขวา: ระบบคะแนนและพลังงาน -->
-        <div class="instruction-card card-amber">
-          <div class="instruction-card-title">
-            <svg class="svg-ic" style="width: 17px; height: 17px;" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
-            ระบบคำถาม & พลังงาน
-          </div>
-          <div class="instruction-card-content">
-            <div class="instruction-card-item">ข้อสอบ Microsoft Word รวม 20 ข้อ</div>
-            <div class="instruction-card-item">ตอบถูกรับพลังงาน +5 ต่อข้อ</div>
-            <div class="instruction-card-item">ชิงอันดับความสูงสูงสุดตามเวลาที่กำหนด</div>
-          </div>
+    <!-- กล่องแสดงหัวเรื่องและวิธีการเล่น โทนสีชมพู ตามดีไซน์ในภาพ -->
+    <div class="guide-banner-card">
+      <div class="guide-header-pink">
+        <h1 class="guide-main-title">HUNTER CYBER MISSION</h1>
+        <div class="guide-sub-pill">
+          <svg class="svg-ic" style="width:14px; height:14px; color:#b91c1c;" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 16h2v2h-2v-2zm0-6h2v4h-2v-4z"/></svg>
+          ภารกิจกระโดดพิชิต Microsoft Word (20 ข้อ)
         </div>
       </div>
+      
+      <div class="guide-content-body">
+        <div class="guide-boxes-row">
+          <!-- กล่องซ้าย: วิธีการควบคุม -->
+          <div class="guide-subbox guide-subbox-pink-soft">
+            <div class="guide-box-title">
+              <svg class="svg-ic" viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+              วิธีการเล่น & ควบคุม
+            </div>
+            <ul class="guide-bullets">
+              <li>ใช้ปุ่มลูกศร / A-D เคลื่อนที่</li>
+              <li>ปุ่ม Spacebar / W เพื่อกระโดด</li>
+              <li>กระโดด 1 ครั้ง ใช้พลังงาน 1 หน่วย</li>
+            </ul>
+          </div>
 
-      <!-- แถบคำแนะนำล่าง: เคล็ดลับเอาตัวรอด -->
-      <div class="instruction-banner-box">
-        <svg class="svg-ic" style="color: #0284c7; width: 18px; height: 18px; margin-top: 1px;" viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A5.006 5.006 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-        <div>
-          <b>กลยุทธ์การเล่น:</b> ระวังกับดักสีแดงและแผ่นไม้เปราะบาง! หากพลังงานหมดหรือติดกับดัก สามารถกดปุ่มตอบคำถามเพื่อชาร์จตัวละครได้ทันที
+          <!-- กล่องขวา: ระบบคะแนนและพลังงาน -->
+          <div class="guide-subbox guide-subbox-rose">
+            <div class="guide-box-title">
+              <svg class="svg-ic" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+              ระบบคิดคะแนน (20 ข้อ)
+            </div>
+            <ul class="guide-bullets">
+              <li>รวม 20 ข้อ วัดความรู้ Microsoft Word</li>
+              <li>ตอบถูกรับพลังงาน +5 ต่อข้อ</li>
+              <li>ชิงอันดับความสูงสูงสุดตามเวลา</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- แถบด้านล่างเส้นประ -->
+        <div class="guide-dashed-tip">
+          <svg class="svg-ic" style="color: #e01e37; margin-top: 1px;" viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A5.006 5.006 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
+          <div><b>วิธีเอาตัวรอด:</b> ระวังกับดักสีแดงและแท่นเปราะบาง! หากพลังงานหมดหรือติดกับดัก สามารถกดปุ่มตอบคำถามเพื่อชาร์จตัวละครได้ทันที!</div>
         </div>
       </div>
     </div>
 
     <button class="btn" id="btn-mode-join" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); margin-bottom: 8px;" onclick="switchScreen('view-join')">
       <svg class="svg-ic" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      ผู้เรียน (Join เข้าสู่สมรภูมิ)
+      ผู้เรียน (Join เข้าเล่น)
     </button>
     <button class="btn" id="btn-mode-host" style="background:#475569;" onclick="openTeacherAuthModal()">
       <svg class="svg-ic" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5m14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
-      ผู้สอน (Host สร้างห้องแข่งขัน)
+      ผู้สอน (Host สร้างห้อง)
     </button>
   </div>
 
