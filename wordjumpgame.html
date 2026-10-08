@@ -9,8 +9,6 @@
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      -webkit-user-select: none;
     }
     html, body {
       margin: 0;
@@ -63,9 +61,9 @@
       background: linear-gradient(135deg, #ff758f 0%, #ff4d6d 100%);
       color: white;
       border: none;
-      padding: 13px;
+      padding: 14px;
       border-radius: 18px;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
       cursor: pointer;
       width: 100%;
@@ -73,19 +71,21 @@
       box-shadow: 0 8px 20px rgba(255, 77, 109, 0.35);
       display: block;
       transition: all 0.15s ease;
+      touch-action: manipulation;
     }
     .btn:active { transform: scale(0.97); }
     .btn-sweet-green {
       background: linear-gradient(135deg, #34d399 0%, #059669 100%);
       color: white;
       border: none;
-      padding: 12px;
+      padding: 13px;
       border-radius: 18px;
       font-weight: 800;
       cursor: pointer;
       width: 100%;
       box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
       transition: all 0.15s ease;
+      touch-action: manipulation;
     }
     .btn-sweet-green:active { transform: scale(0.97); }
 
@@ -104,22 +104,19 @@
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
       transition: all 0.15s ease;
     }
-    .btn-excel-luxury:active { transform: scale(0.96); }
 
     input, select {
       width: 100%;
-      padding: 12px 14px;
-      margin: 5px 0 10px 0;
+      padding: 13px 14px;
+      margin: 6px 0 12px 0;
       border-radius: 16px;
       border: 2px solid #ffccd5;
       background: #fff5f7;
       color: #e01e37;
       text-align: center;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: bold;
       outline: none;
-      user-select: auto;
-      -webkit-user-select: auto;
       transition: all 0.2s;
     }
     input:focus, select:focus {
@@ -188,7 +185,6 @@
       line-height: 1;
       padding: 0;
     }
-    .badge-kick-btn:active { transform: scale(0.9); }
     .hidden { display: none !important; }
 
     #view-host-live {
@@ -815,7 +811,7 @@
     <h2>เข้าสู่สมรภูมิขนมหวาน</h2>
     <input type="text" id="input-pin" placeholder="รหัสห้อง 6 หลัก" maxlength="6" inputmode="numeric">
     <input type="text" id="input-name" placeholder="ชื่อเล่นของคุณ" maxlength="12">
-    <button class="btn" id="btn-do-join">เข้าสู่ห้อง</button>
+    <button class="btn" id="btn-do-join" onclick="doJoinGame()">เข้าสู่ห้อง</button>
     <button class="btn" style="background:#64748b; padding:10px;" onclick="switchScreen('view-mode')">ย้อนกลับ</button>
   </div>
 
@@ -985,8 +981,6 @@
       { id: 19, q: "หากต้องการแทนที่คำหนึ่งด้วยอีกคำหนึ่งทั่วทั้งเอกสารอย่างรวดเร็ว ควรใช้คำสั่งใด?", c: ["Find", "Replace", "Zoom", "Copy"], a: 1 },
       { id: 20, q: "หากต้องการใส่หมายเลขหน้าให้กับเอกสาร ควรเลือกคำสั่งใด?", c: ["Insert → Page Number", "Home → Numbering", "Layout → Margins", "Review → Track Changes"], a: 0 }
     ];
-
-    quizData.sort(() => Math.random() - 0.5);
 
     let currentPin = null;
     let myPlayerId = null;
@@ -1297,8 +1291,6 @@
       const initialEnergy = parseInt(document.getElementById('select-energy').value) || 5;
       const endTime = Date.now() + (minutes * 60 * 1000);
 
-      quizData.sort(() => Math.random() - 0.5);
-
       const playerUpdates = {};
       Object.keys(allPlayersData).forEach(pid => {
         playerUpdates[`players/${pid}/height`] = 0;
@@ -1333,86 +1325,101 @@
       }, 500);
     };
 
-    document.getElementById('btn-do-join').onclick = async () => {
-      isHost = false;
+    // ฟังก์ชันเชื่อมต่อไปยังห้องเรียน (สำหรับนักเรียน)
+    window.doJoinGame = async function() {
       const pin = document.getElementById('input-pin').value.trim();
       const name = document.getElementById('input-name').value.trim();
-      if (!pin || !name) return alert('กรุณากรอก PIN และชื่อ');
-
-      const roomSnap = await get(ref(db, `rooms/${pin}`));
-      const room = roomSnap.val();
-      if (!room) return alert('ไม่พบห้องนี้');
-
-      if (room.status !== 'waiting') {
-        return alert('⚠️ การแข่งขันเริ่มต้นไปแล้วหรือสิ้นสุดแล้ว ไม่สามารถเข้าร่วมได้ในขณะนี้');
+      
+      if (!pin || !name) {
+        return alert('กรุณากรอก PIN และชื่อเล่นให้ครบถ้วน');
       }
 
-      const existingPlayers = room.players || {};
-      const isNameTaken = Object.values(existingPlayers).some(p => p.name && p.name.trim().toLowerCase() === name.toLowerCase());
-      if (isNameTaken) {
-        return alert('⚠️ ชื่อนี้มีผู้เล่นคนอื่นใช้ในห้องแล้ว กรุณาตั้งชื่อใหม่');
+      showToast("⏳ กำลังเข้าสู่ห้อง...");
+
+      try {
+        const roomSnap = await get(ref(db, `rooms/${pin}`));
+        const room = roomSnap.val();
+        
+        if (!room) {
+          return alert('❌ ไม่พบห้องรหัสนี้ กรุณาตรวจสอบ Room PIN ของครูผู้สอนอีกครั้ง');
+        }
+
+        if (room.status !== 'waiting') {
+          return alert('⚠️ การแข่งขันเริ่มต้นไปแล้วหรือสิ้นสุดแล้ว ไม่สามารถเข้าร่วมได้ในขณะนี้');
+        }
+
+        const existingPlayers = room.players || {};
+        const isNameTaken = Object.values(existingPlayers).some(p => p.name && p.name.trim().toLowerCase() === name.toLowerCase());
+        if (isNameTaken) {
+          return alert('⚠️ ชื่อนี้มีผู้เล่นคนอื่นใช้ในห้องแล้ว กรุณาตั้งชื่อใหม่');
+        }
+
+        isHost = false;
+        playerName = name;
+        currentPin = pin;
+        myStyleIndex = Math.floor(Math.random() * SWEET_PALETTES.length);
+
+        const pRef = push(ref(db, `rooms/${pin}/players`));
+        myPlayerId = pRef.key;
+        
+        await set(pRef, {
+          name: playerName,
+          height: 0,
+          x: 240 - 17,
+          y: 400,
+          facing: 'right',
+          styleIndex: myStyleIndex,
+          correct: 0,
+          wrong: 0,
+          quizStats: myQuizAnswers
+        });
+
+        document.getElementById('wait-pin').innerText = pin;
+        document.getElementById('wait-name').innerText = name;
+        switchScreen('view-waiting');
+
+        onValue(ref(db, `rooms/${pin}/players`), (pSnap) => {
+          allPlayersData = pSnap.val() || {};
+        });
+
+        onValue(ref(db, `rooms/${pin}`), (snap) => {
+          const liveRoom = snap.val();
+          if (!liveRoom) return;
+
+          if (myPlayerId && liveRoom.players && !liveRoom.players[myPlayerId]) {
+            alert('คุณถูกผู้สอนนำออกจากห้อง');
+            location.reload();
+            return;
+          }
+
+          if (liveRoom.status === 'playing' && !isGameOver && document.getElementById('game-wrapper').classList.contains('hidden')) {
+            energy = liveRoom.initialEnergy !== undefined ? liveRoom.initialEnergy : 5;
+            document.getElementById('ui-energy').innerText = energy;
+
+            switchScreen('game-wrapper');
+            initSweetPlatformer();
+            startPlayerTimer(liveRoom.endTime);
+            startBackgroundMusic();
+          }
+
+          if (liveRoom.status === 'ended' && !isGameOver) {
+            endGame();
+          }
+
+          if (liveRoom.status === 'waiting' && isGameOver) {
+            isGameOver = false;
+            currentMeters = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            currentQ = 0;
+            switchScreen('view-waiting');
+          }
+        });
+
+      } catch (err) {
+        console.error(err);
+        alert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + err.message);
       }
-
-      playerName = name;
-      myStyleIndex = Math.floor(Math.random() * SWEET_PALETTES.length);
-
-      onValue(ref(db, `rooms/${pin}`), (snap) => {
-        const liveRoom = snap.val();
-        if (!liveRoom) return;
-
-        if (myPlayerId && liveRoom.players && !liveRoom.players[myPlayerId]) {
-          alert('คุณถูกผู้สอนนำออกจากห้อง');
-          location.reload();
-          return;
-        }
-
-        if (!myPlayerId) {
-          currentPin = pin;
-          const pRef = push(ref(db, `rooms/${pin}/players`));
-          myPlayerId = pRef.key;
-          set(pRef, {
-            name: playerName,
-            height: 0,
-            x: 240 - 17,
-            y: 400,
-            facing: 'right',
-            styleIndex: myStyleIndex,
-            correct: 0,
-            wrong: 0,
-            quizStats: myQuizAnswers
-          });
-          document.getElementById('wait-pin').innerText = pin;
-          document.getElementById('wait-name').innerText = name;
-          switchScreen('view-waiting');
-
-          onValue(ref(db, `rooms/${pin}/players`), (pSnap) => {
-            allPlayersData = pSnap.val() || {};
-          });
-        }
-
-        if (liveRoom.status === 'playing' && !isGameOver && document.getElementById('game-wrapper').classList.contains('hidden')) {
-          energy = liveRoom.initialEnergy !== undefined ? liveRoom.initialEnergy : 5;
-          document.getElementById('ui-energy').innerText = energy;
-
-          switchScreen('game-wrapper');
-          initSweetPlatformer();
-          startPlayerTimer(liveRoom.endTime);
-          startBackgroundMusic();
-        }
-
-        if (liveRoom.status === 'ended' && !isGameOver) {
-          endGame();
-        }
-
-        if (liveRoom.status === 'waiting' && isGameOver) {
-          isGameOver = false;
-          currentMeters = 0;
-          correctCount = 0;
-          wrongCount = 0;
-          currentQ = 0;
-          switchScreen('view-waiting');
-        }
-      });
     };
 
     window.exportDataCSV = function() {
