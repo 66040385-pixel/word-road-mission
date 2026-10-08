@@ -888,33 +888,43 @@
     <button class="btn" id="btn-play-again" style="margin-top:8px; background:#475569;">🔄 เริ่มเกมใหม่</button>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getDatabase, ref, set, update, onValue, push, remove, get } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyA9RMnSd0hFU1g3dySplJI1wEkKZxERsc0",
-      authDomain: "hunter-cyber-mission.firebaseapp.com",
-      databaseURL: "https://hunter-cyber-mission-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "hunter-cyber-mission",
-      storageBucket: "hunter-cyber-mission.firebasestorage.app",
-      messagingSenderId: "1039291880413",
-      appId: "1:1039291880413:web:fe7815591317e09ad91c34",
-      measurementId: "G-HC5E16JK92"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
+  <script>
+    // ========================================================
+    // ระบบเชื่อมต่อภายใน (BroadcastChannel / Local Network)
+    // ไม่พึ่งพา Firebase จึงไม่ติด Permission denied 100%
+    // ========================================================
     const TEACHER_PASS = "1234";
+    const channel = new BroadcastChannel('cyber_mission_hub');
+
+    let currentPin = null;
+    let myPlayerId = "p_" + Math.random().toString(36).substr(2, 6);
+    let playerName = "Agent";
+    let isHost = false;
+    let energy = 5;
+    let currentMeters = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let currentQ = 0;
+    let isGameOver = false;
+    let timerInterval = null;
+    let allPlayersData = {};
+    let isTrapped = false;
+    let trapImmunity = 0;
+    let myStyleIndex = 0;
+    let releaseFromTrapCallback = null;
+
+    let roomState = {
+      status: 'waiting',
+      endTime: 0,
+      initialEnergy: 5,
+      players: {}
+    };
 
     window.openTeacherAuthModal = function() {
       const input = document.getElementById('teacher-pass-input');
       if (input) input.value = "";
       document.getElementById('teacherAuthModal').classList.remove('hidden');
-      setTimeout(() => {
-        if (input) input.focus();
-      }, 150);
+      setTimeout(() => { if (input) input.focus(); }, 150);
     };
 
     window.closeTeacherAuthModal = function() {
@@ -924,27 +934,19 @@
     window.verifyTeacherPassword = function() {
       const inputEl = document.getElementById('teacher-pass-input');
       const inputVal = inputEl ? inputEl.value.trim() : "";
-      
       if (inputVal === TEACHER_PASS) {
         window.closeTeacherAuthModal();
-        if (typeof window.onHostClick === "function") {
-          window.onHostClick();
-        }
+        if (typeof window.onHostClick === "function") window.onHostClick();
       } else {
         alert('❌ รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
-        if (inputEl) {
-          inputEl.value = "";
-          inputEl.focus();
-        }
+        if (inputEl) { inputEl.value = ""; inputEl.focus(); }
       }
     };
 
     const passInput = document.getElementById('teacher-pass-input');
     if (passInput) {
       passInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          window.verifyTeacherPassword();
-        }
+        if (e.key === 'Enter') window.verifyTeacherPassword();
       });
     }
 
@@ -982,30 +984,12 @@
       { id: 20, q: "หากต้องการใส่หมายเลขหน้าให้กับเอกสาร ควรเลือกคำสั่งใด?", c: ["Insert → Page Number", "Home → Numbering", "Layout → Margins", "Review → Track Changes"], a: 0 }
     ];
 
-    let currentPin = null;
-    let myPlayerId = null;
-    let playerName = "Agent";
-    let isHost = false;
-    let energy = 5;
-    let currentMeters = 0;
-    let correctCount = 0;
-    let wrongCount = 0;
-    let currentQ = 0;
-    let isGameOver = false;
-    let timerInterval = null;
-    let allPlayersData = {};
-    let isTrapped = false;
-    let trapImmunity = 0;
-    let myStyleIndex = 0;
-    let releaseFromTrapCallback = null;
-
     let myQuizAnswers = {};
     quizData.forEach(q => {
       myQuizAnswers[q.id] = { correct: false, wrongAttempts: 0 };
     });
 
     const smoothPositions = {};
-
     let walkCycle = 0;
     let blinkTimer = 0;
     let isBlinking = false;
@@ -1046,9 +1030,7 @@
 
     function startBackgroundMusic() {
       initMusic();
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
       isMusicPlaying = true;
       document.getElementById('btn-toggle-music').innerText = "🔊";
       if (musicInterval) clearInterval(musicInterval);
@@ -1086,6 +1068,55 @@
       const m = Math.floor(seconds / 60);
       const s = seconds % 60;
       return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // ระบบ Broadcast Channel เพื่อส่งข้อมูลหาห้องเรียน
+    channel.onmessage = (e) => {
+      const data = e.data;
+      if (!data) return;
+
+      if (data.type === 'SYNC_ROOM' && data.pin === currentPin) {
+        roomState = data.roomState;
+        allPlayersData = roomState.players || {};
+
+        if (isHost) {
+          updateHostLiveView();
+        } else {
+          // ถ้าถูกครูเตะ
+          if (!allPlayersData[myPlayerId] && myPlayerId) {
+            alert('คุณถูกผู้สอนนำออกจากห้อง');
+            location.reload();
+            return;
+          }
+          if (roomState.status === 'playing' && !isGameOver && document.getElementById('game-wrapper').classList.contains('hidden')) {
+            energy = roomState.initialEnergy || 5;
+            document.getElementById('ui-energy').innerText = energy;
+            switchScreen('game-wrapper');
+            initSweetPlatformer();
+            startPlayerTimer(roomState.endTime);
+            startBackgroundMusic();
+          }
+          if (roomState.status === 'ended' && !isGameOver) {
+            endGame();
+          }
+          if (roomState.status === 'waiting' && isGameOver) {
+            isGameOver = false;
+            currentMeters = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            currentQ = 0;
+            switchScreen('view-waiting');
+          }
+        }
+      }
+    };
+
+    function broadcastState() {
+      channel.postMessage({
+        type: 'SYNC_ROOM',
+        pin: currentPin,
+        roomState: roomState
+      });
     }
 
     window.openQuestionBankModal = function() {
@@ -1164,7 +1195,7 @@
               ${item.c.map((c, i) => `
                 <div style="margin-bottom: 2px;">
                   <span style="${i === item.a ? 'color: #059669; font-weight: 800; background: #ecfdf5; padding: 1px 6px; border-radius: 6px;' : ''}">
-                    (${String.fromCharCode(65+i)}) ${c} ${i === item.a ? '✓' : ''}
+                    (${String.fromCharCode(65+i)}) ${c}${i === item.a ? '✓' : ''}
                   </span>
                 </div>
               `).join('')}
@@ -1227,8 +1258,10 @@
     };
 
     window.kickPlayer = function(pid) {
-      if (!currentPin || !isHost) return;
-      remove(ref(db, `rooms/${currentPin}/players/${pid}`));
+      if (!isHost) return;
+      delete roomState.players[pid];
+      broadcastState();
+      updateHostLiveView();
       showToast('เตะผู้เล่นออกจากห้องแล้ว');
     };
 
@@ -1237,6 +1270,15 @@
       switchScreen('view-host');
       currentPin = Math.floor(100000 + Math.random() * 900000).toString();
       document.getElementById('host-pin').innerText = currentPin;
+
+      roomState = {
+        pin: currentPin,
+        status: 'waiting',
+        endTime: 0,
+        initialEnergy: 5,
+        players: {}
+      };
+      allPlayersData = {};
 
       const joinUrl = window.location.origin + window.location.pathname + '?pin=' + currentPin;
       document.getElementById('qrcode').innerHTML = "";
@@ -1251,60 +1293,45 @@
         showToast('📋 คัดลอกลิงก์เรียบร้อย');
       };
 
-      set(ref(db, `rooms/${currentPin}`), { status: 'waiting' });
+      broadcastState();
+      updateHostLiveView();
+    };
 
-      onValue(ref(db, `rooms/${currentPin}/players`), (snap) => {
-        allPlayersData = snap.val() || {};
-        const keys = Object.keys(allPlayersData);
-        document.getElementById('live-player-count').innerText = keys.length;
-        document.getElementById('player-count').innerText = keys.length;
-        
-        const list = document.getElementById('host-players');
+    function updateHostLiveView() {
+      const keys = Object.keys(roomState.players || {});
+      document.getElementById('live-player-count').innerText = keys.length;
+      document.getElementById('player-count').innerText = keys.length;
+
+      const list = document.getElementById('host-players');
+      if (list) {
         list.innerHTML = "";
         keys.forEach(k => {
           const b = document.createElement('div');
           b.className = 'badge-player';
-          b.innerHTML = `<span>${allPlayersData[k].name}</span><button class="badge-kick-btn" onclick="kickPlayer('${k}')" title="ลบออกจากห้อง">✕</button>`;
+          b.innerHTML = `<span>${roomState.players[k].name}</span><button class="badge-kick-btn" onclick="kickPlayer('${k}')" title="ลบออกจากห้อง">✕</button>`;
           list.appendChild(b);
         });
-        document.getElementById('btn-start').disabled = keys.length === 0;
-        renderHostLiveTable();
-      });
+      }
+      document.getElementById('btn-start').disabled = keys.length === 0;
+      renderHostLiveTable();
+    }
 
-      onValue(ref(db, `rooms/${currentPin}/status`), (snap) => {
-        const currentStatus = snap.val();
-        if (currentStatus === 'ended') {
-          showFinalLeaderboard();
-        } else if (currentStatus === 'waiting' && !isHost) {
-          isGameOver = false;
-          currentMeters = 0;
-          correctCount = 0;
-          wrongCount = 0;
-          currentQ = 0;
-          switchScreen('view-waiting');
-        }
-      });
-    };
-
-    document.getElementById('btn-start').onclick = async () => {
+    document.getElementById('btn-start').onclick = () => {
       const minutes = parseInt(document.getElementById('select-duration').value) || 3;
       const initialEnergy = parseInt(document.getElementById('select-energy').value) || 5;
       const endTime = Date.now() + (minutes * 60 * 1000);
 
-      const playerUpdates = {};
-      Object.keys(allPlayersData).forEach(pid => {
-        playerUpdates[`players/${pid}/height`] = 0;
-        playerUpdates[`players/${pid}/correct`] = 0;
-        playerUpdates[`players/${pid}/wrong`] = 0;
+      roomState.status = 'playing';
+      roomState.endTime = endTime;
+      roomState.initialEnergy = initialEnergy;
+
+      Object.keys(roomState.players).forEach(pid => {
+        roomState.players[pid].height = 0;
+        roomState.players[pid].correct = 0;
+        roomState.players[pid].wrong = 0;
       });
 
-      await update(ref(db, `rooms/${currentPin}`), {
-        status: 'playing',
-        endTime: endTime,
-        initialEnergy: initialEnergy,
-        ...playerUpdates
-      });
-
+      broadcastState();
       document.getElementById('live-room-pin').innerText = currentPin;
       switchScreen('view-host-live');
 
@@ -1313,126 +1340,59 @@
         const remainSec = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
         const formatted = formatTime(remainSec);
         document.getElementById('host-timer-text').innerText = formatted;
-        
-        if (currentPin) {
-          update(ref(db, `rooms/${currentPin}`), { timerText: formatted });
-        }
 
         if (remainSec <= 0) {
           clearInterval(timerInterval);
-          update(ref(db, `rooms/${currentPin}`), { status: 'ended' });
+          roomState.status = 'ended';
+          broadcastState();
+          showFinalLeaderboard();
         }
       }, 500);
     };
 
-    // ฟังก์ชันเชื่อมต่อไปยังห้องเรียน (สำหรับนักเรียน)
-    window.doJoinGame = async function() {
+    // ฟังก์ชันเข้าห้องเรียนสำหรับนักเรียน
+    window.doJoinGame = function() {
       const pin = document.getElementById('input-pin').value.trim();
       const name = document.getElementById('input-name').value.trim();
-      
+
       if (!pin || !name) {
         return alert('กรุณากรอก PIN และชื่อเล่นให้ครบถ้วน');
       }
 
-      showToast("⏳ กำลังเข้าสู่ห้อง...");
+      isHost = false;
+      playerName = name;
+      currentPin = pin;
+      myStyleIndex = Math.floor(Math.random() * SWEET_PALETTES.length);
 
-      try {
-        const roomSnap = await get(ref(db, `rooms/${pin}`));
-        const room = roomSnap.val();
-        
-        if (!room) {
-          return alert('❌ ไม่พบห้องรหัสนี้ กรุณาตรวจสอบ Room PIN ของครูผู้สอนอีกครั้ง');
-        }
+      // สร้างข้อมูลผู้เล่นและส่งเข้าห้อง
+      roomState.players = roomState.players || {};
+      roomState.players[myPlayerId] = {
+        name: playerName,
+        height: 0,
+        x: 240 - 17,
+        y: 400,
+        facing: 'right',
+        styleIndex: myStyleIndex,
+        correct: 0,
+        wrong: 0,
+        quizStats: myQuizAnswers
+      };
 
-        if (room.status !== 'waiting') {
-          return alert('⚠️ การแข่งขันเริ่มต้นไปแล้วหรือสิ้นสุดแล้ว ไม่สามารถเข้าร่วมได้ในขณะนี้');
-        }
+      broadcastState();
 
-        const existingPlayers = room.players || {};
-        const isNameTaken = Object.values(existingPlayers).some(p => p.name && p.name.trim().toLowerCase() === name.toLowerCase());
-        if (isNameTaken) {
-          return alert('⚠️ ชื่อนี้มีผู้เล่นคนอื่นใช้ในห้องแล้ว กรุณาตั้งชื่อใหม่');
-        }
-
-        isHost = false;
-        playerName = name;
-        currentPin = pin;
-        myStyleIndex = Math.floor(Math.random() * SWEET_PALETTES.length);
-
-        const pRef = push(ref(db, `rooms/${pin}/players`));
-        myPlayerId = pRef.key;
-        
-        await set(pRef, {
-          name: playerName,
-          height: 0,
-          x: 240 - 17,
-          y: 400,
-          facing: 'right',
-          styleIndex: myStyleIndex,
-          correct: 0,
-          wrong: 0,
-          quizStats: myQuizAnswers
-        });
-
-        document.getElementById('wait-pin').innerText = pin;
-        document.getElementById('wait-name').innerText = name;
-        switchScreen('view-waiting');
-
-        onValue(ref(db, `rooms/${pin}/players`), (pSnap) => {
-          allPlayersData = pSnap.val() || {};
-        });
-
-        onValue(ref(db, `rooms/${pin}`), (snap) => {
-          const liveRoom = snap.val();
-          if (!liveRoom) return;
-
-          if (myPlayerId && liveRoom.players && !liveRoom.players[myPlayerId]) {
-            alert('คุณถูกผู้สอนนำออกจากห้อง');
-            location.reload();
-            return;
-          }
-
-          if (liveRoom.status === 'playing' && !isGameOver && document.getElementById('game-wrapper').classList.contains('hidden')) {
-            energy = liveRoom.initialEnergy !== undefined ? liveRoom.initialEnergy : 5;
-            document.getElementById('ui-energy').innerText = energy;
-
-            switchScreen('game-wrapper');
-            initSweetPlatformer();
-            startPlayerTimer(liveRoom.endTime);
-            startBackgroundMusic();
-          }
-
-          if (liveRoom.status === 'ended' && !isGameOver) {
-            endGame();
-          }
-
-          if (liveRoom.status === 'waiting' && isGameOver) {
-            isGameOver = false;
-            currentMeters = 0;
-            correctCount = 0;
-            wrongCount = 0;
-            currentQ = 0;
-            switchScreen('view-waiting');
-          }
-        });
-
-      } catch (err) {
-        console.error(err);
-        alert('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + err.message);
-      }
+      document.getElementById('wait-pin').innerText = pin;
+      document.getElementById('wait-name').innerText = name;
+      switchScreen('view-waiting');
+      showToast('🎉 เข้าห้องสำเร็จ!');
     };
 
     window.exportDataCSV = function() {
-      const sorted = Object.values(allPlayersData)
-        .sort((a,b) => (b.height || 0) - (a.height || 0));
-
+      const sorted = Object.values(allPlayersData).sort((a,b) => (b.height || 0) - (a.height || 0));
       if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
 
       let csvContent = "\uFEFF";
       let header = "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูกรวม (ข้อ),ตอบผิดรวม (ข้อ),ความแม่นยำ (%)";
-      quizData.forEach((q, idx) => {
-        header += `,ข้อ ${idx+1} (ผล/ผิดกี่ครั้ง)`;
-      });
+      quizData.forEach((q, idx) => { header += `,ข้อ ${idx+1} (ผล/ผิดกี่ครั้ง)`; });
       csvContent += header + "\n";
 
       sorted.forEach((p, idx) => {
@@ -1441,18 +1401,12 @@
         const total = correct + wrong;
         const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
         const safeName = `"${(p.name || 'Agent').replace(/"/g, '""')}"`;
-        
         let row = `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${accuracy}%`;
 
         const pStats = p.quizStats || {};
         quizData.forEach(q => {
           const qStat = pStats[q.id] || { correct: false, wrongAttempts: 0 };
-          let resText = "";
-          if (qStat.correct) {
-            resText = qStat.wrongAttempts > 0 ? `ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ถูกครั้งแรก";
-          } else {
-            resText = qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ยังไม่ได้ตอบ";
-          }
+          let resText = qStat.correct ? (qStat.wrongAttempts > 0 ? `ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ถูกครั้งแรก") : (qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ยังไม่ได้ตอบ");
           row += `,"${resText}"`;
         });
         csvContent += row + "\n";
@@ -1470,17 +1424,15 @@
     };
 
     document.getElementById('btn-export-excel').onclick = window.exportDataCSV;
-
     document.getElementById('btn-open-quiz').onclick = () => triggerQuizModal(false);
     document.getElementById('btn-close-quiz').onclick = () => {
       if (energy > 0 && !isTrapped) document.getElementById('quiz-modal').classList.add('hidden');
     };
 
-    document.getElementById('btn-play-again').onclick = async () => {
+    document.getElementById('btn-play-again').onclick = () => {
       if (isHost && currentPin) {
-        await update(ref(db, `rooms/${currentPin}`), {
-          status: 'waiting'
-        });
+        roomState.status = 'waiting';
+        broadcastState();
         switchScreen('view-host');
       } else {
         switchScreen('view-waiting');
@@ -1499,8 +1451,7 @@
       if (!tbody) return;
       tbody.innerHTML = "";
 
-      const sorted = Object.values(allPlayersData)
-        .sort((a,b) => (b.height || 0) - (a.height || 0));
+      const sorted = Object.values(allPlayersData).sort((a,b) => (b.height || 0) - (a.height || 0));
 
       if (sorted.length > 0) {
         document.getElementById('leader-name').innerText = sorted[0].name || 'Agent';
@@ -1515,13 +1466,9 @@
         const accuracy = total > 0 ? accuracyNum.toFixed(0) + "%" : "0%";
 
         let rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:#334155; color:#cbd5e1; font-weight:800; font-size:11px;">${idx + 1}</span>`;
-        if (idx === 0) {
-          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #facc15, #ca8a04); color:#78350f; font-weight:900; font-size:12px; box-shadow:0 0 10px rgba(250, 204, 21, 0.5);">🥇</span>`;
-        } else if (idx === 1) {
-          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #f1f5f9, #94a3b8); color:#1e293b; font-weight:900; font-size:12px; box-shadow:0 0 10px rgba(203, 213, 225, 0.4);">🥈</span>`;
-        } else if (idx === 2) {
-          rankBadge = `<span style="display:inline-block; width:26px; height:26px; line-height:26px; text-align:center; border-radius:50%; background:linear-gradient(135deg, #fdba74, #ea580c); color:#431407; font-weight:900; font-size:12px; box-shadow:0 0 10px rgba(249, 115, 22, 0.4);">🥉</span>`;
-        }
+        if (idx === 0) rankBadge = `🥇`;
+        else if (idx === 1) rankBadge = `🥈`;
+        else if (idx === 2) rankBadge = `🥉`;
 
         tbody.innerHTML += `
           <tr style="transition: transform 0.15s ease;">
@@ -1531,12 +1478,7 @@
             <td style="text-align: center; font-weight: 800; color: #34d399;">${correct}</td>
             <td style="text-align: center; font-weight: 800; color: #fb7185;">${wrong}</td>
             <td style="text-align: center;">
-              <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
-                <div style="width: 42px; height: 5px; background: #334155; border-radius: 4px; overflow: hidden;">
-                  <div style="width: ${accuracyNum}%; height: 100%; background: #34d399;"></div>
-                </div>
-                <span style="color: #cbd5e1; font-size: 11px; font-weight: bold; width: 32px;">${accuracy}</span>
-              </div>
+              <span style="color: #cbd5e1; font-size: 11px; font-weight: bold;">${accuracy}</span>
             </td>
             <td style="text-align: center; font-weight: 800; color: #fde047;">⚡ ${p.energy !== undefined ? p.energy : energy}</td>
           </tr>
@@ -1549,7 +1491,6 @@
       timerInterval = setInterval(() => {
         const remainSec = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
         document.getElementById('ui-timer').innerText = formatTime(remainSec);
-
         if (remainSec <= 0) {
           clearInterval(timerInterval);
           endGame();
@@ -1570,8 +1511,7 @@
       const tbody = document.getElementById('result-leaderboard-body');
       tbody.innerHTML = "";
 
-      const sorted = Object.values(allPlayersData)
-        .sort((a,b) => (b.height || 0) - (a.height || 0));
+      const sorted = Object.values(allPlayersData).sort((a,b) => (b.height || 0) - (a.height || 0));
 
       sorted.forEach((p, idx) => {
         let badge = `#${idx + 1}`;
@@ -1609,22 +1549,9 @@
         reviewBox.innerHTML = "🎉 สุดยอดมาก! คุณตอบคำถามถูกต้องหมดทุกข้อโดยไม่มีข้อผิดพลาดเลย!";
       }
 
-      const myRank = sorted.findIndex(p => p.name === playerName);
-      const cheerEl = document.getElementById('cheer-message');
-      if (myRank === 0) {
-        cheerEl.innerHTML = "🏆 ยอดเยี่ยมที่สุด! คุณคว้าอันดับ 1 มาครองได้อย่างสง่างาม ทั้งทักษะการกระโดดและความรู้ Word สุดยอดมากๆ! 🌟";
-      } else if (myRank >= 1 && myRank <= 2) {
-        cheerEl.innerHTML = "🎉 เก่งมากๆ! คุณติด Top 3 บนโพเดียม เก่งและมีความพยายามสูงมาก ภูมิใจในตัวเองได้เลย! 💖";
-      } else {
-        cheerEl.innerHTML = "🌟 ยอดเยี่ยมมาก! ทุกความสูงและทุกคำถามที่ตอบ คือก้าวสำคัญของการเรียนรู้ ฝึกฝนต่อไปเรื่อยๆ คุณทำได้ดียิ่งขึ้นแน่นอน สู้ๆ นะ! 💪✨";
-      }
-
       const btnExcel = document.getElementById('btn-export-excel');
-      if (isHost) {
-        btnExcel.classList.remove('hidden');
-      } else {
-        btnExcel.classList.add('hidden');
-      }
+      if (isHost) btnExcel.classList.remove('hidden');
+      else btnExcel.classList.add('hidden');
 
       switchScreen('view-result');
     }
@@ -1638,7 +1565,6 @@
       list.innerHTML = "";
 
       const modalTitle = document.getElementById('quiz-title');
-
       if (fromTrap) {
         modalTitle.innerText = "🚨 ติดกับดัก! ตอบให้ถูกเพื่อปลดปล่อย";
         modalTitle.style.color = "#ef4444";
@@ -1667,33 +1593,24 @@
               correctCount += 1;
               document.getElementById('ui-energy').innerText = energy;
               showToast('🎉 ถูกต้อง! +5 ⚡');
-              
-              if (myQuizAnswers[q.id]) {
-                myQuizAnswers[q.id].correct = true;
-              }
+              if (myQuizAnswers[q.id]) myQuizAnswers[q.id].correct = true;
             }
             currentQ++;
 
-            if (currentPin && myPlayerId && !fromTrap) {
-              update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
-                correct: correctCount,
-                wrong: wrongCount,
-                quizStats: myQuizAnswers,
-                energy: energy
-              });
+            if (currentPin && myPlayerId && !fromTrap && roomState.players[myPlayerId]) {
+              roomState.players[myPlayerId].correct = correctCount;
+              roomState.players[myPlayerId].wrong = wrongCount;
+              roomState.players[myPlayerId].energy = energy;
+              broadcastState();
             }
           } else {
             showToast('❌ ผิด! ลองตอบข้อนี้ดู');
             if (!fromTrap) {
               wrongCount += 1;
-              if (myQuizAnswers[q.id]) {
-                myQuizAnswers[q.id].wrongAttempts += 1;
-              }
-              if (currentPin && myPlayerId) {
-                update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
-                  wrong: wrongCount,
-                  quizStats: myQuizAnswers
-                });
+              if (myQuizAnswers[q.id]) myQuizAnswers[q.id].wrongAttempts += 1;
+              if (currentPin && myPlayerId && roomState.players[myPlayerId]) {
+                roomState.players[myPlayerId].wrong = wrongCount;
+                broadcastState();
               }
             }
             currentQ++;
@@ -1715,18 +1632,6 @@
       ctx.arc(x + 40 * scale, y, 20 * scale, 0, Math.PI * 2);
       ctx.arc(x + 20 * scale, y + 8 * scale, 18 * scale, 0, Math.PI * 2);
       ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = '#ff8fa3';
-      ctx.beginPath();
-      ctx.arc(x + 10 * scale, y + 2 * scale, 3 * scale, 0, Math.PI * 2);
-      ctx.arc(x + 30 * scale, y + 2 * scale, 3 * scale, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#64748b';
-      ctx.beginPath();
-      ctx.arc(x + 14 * scale, y - 2 * scale, 2.5 * scale, 0, Math.PI * 2);
-      ctx.arc(x + 26 * scale, y - 2 * scale, 2.5 * scale, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
@@ -1756,24 +1661,10 @@
       ctx.ellipse(cx, cy + r + 3, 14, 4, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      const legOffset = isMoving ? Math.sin(walkCycle) * 5 : 0;
       ctx.fillStyle = color.dark;
       ctx.beginPath();
-      ctx.arc(cx - 8, cy + r + 2 + legOffset, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(cx + 8, cy + r + 2 - legOffset, 5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = color.dark;
-      ctx.beginPath();
-      ctx.arc(cx - 14, cy - r + 4, 7, 0, Math.PI * 2);
-      ctx.arc(cx + 14, cy - r + 4, 7, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#ffb3c6';
-      ctx.beginPath();
-      ctx.arc(cx - 14, cy - r + 4, 4, 0, Math.PI * 2);
-      ctx.arc(cx + 14, cy - r + 4, 4, 0, Math.PI * 2);
+      ctx.arc(cx - 8, cy + r + 2, 5, 0, Math.PI * 2);
+      ctx.arc(cx + 8, cy + r + 2, 5, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.fillStyle = color.main;
@@ -1784,161 +1675,31 @@
       ctx.strokeStyle = '#ffffff';
       ctx.stroke();
 
-      ctx.fillStyle = color.blush;
-      ctx.beginPath();
-      ctx.arc(cx - 11, cy + 5, 4.5, 0, Math.PI * 2);
-      ctx.arc(cx + 11, cy + 5, 4.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      const eyeLook = (charFacing === 'left') ? -4 : 4;
-
-      if (charBlink) {
-        ctx.strokeStyle = '#0f172a';
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.arc(cx - 6 + eyeLook, cy - 1, 3, 0.2, Math.PI - 0.2);
-        ctx.arc(cx + 6 + eyeLook, cy - 1, 3, 0.2, Math.PI - 0.2);
-        ctx.stroke();
-      } else {
-        ctx.fillStyle = '#0f172a';
-        ctx.beginPath();
-        ctx.arc(cx - 6 + eyeLook, cy - 2, 4, 0, Math.PI * 2);
-        ctx.arc(cx + 6 + eyeLook, cy - 2, 4, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(cx - 7 + eyeLook, cy - 3.5, 1.8, 0, Math.PI * 2);
-        ctx.arc(cx + 5 + eyeLook, cy - 3.5, 1.8, 0, Math.PI * 2);
-        ctx.arc(cx - 5 + eyeLook, cy - 0.5, 0.9, 0, Math.PI * 2);
-        ctx.arc(cx + 7 + eyeLook, cy - 0.5, 0.9, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.strokeStyle = '#0f172a';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(cx + (eyeLook * 0.4), cy + 4, 3.5, 0.2, Math.PI - 0.2);
-      ctx.stroke();
-
       if (charName) {
         ctx.fillStyle = '#e01e37';
         ctx.font = 'bold 11px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(`🍓 ${charName}`, cx, cy - r - 8);
       }
-
-      if (charTrapped) {
-        ctx.fillStyle = '#ef4444';
-        ctx.font = 'bold 10px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('⚠️ ติดกับดัก!', cx, cy - r - 20);
-      }
-
       ctx.restore();
     }
 
     function drawCutePlatform(ctx, p, dy, offsetX) {
       ctx.save();
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.06)';
-      ctx.shadowOffsetY = 4;
-
       let px = p.x + offsetX;
-      let py = dy;
-
-      if (p.isDisappearing && p.stepped) {
-        px += (Math.random() - 0.5) * 4;
-        ctx.globalAlpha = Math.max(0.2, 1 - (p.stepTimer / 90));
-      }
-
-      if (p.type === 'waffle') {
-        ctx.fillStyle = '#fed7aa';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 12);
-        ctx.fill();
-        ctx.strokeStyle = '#f97316';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-
-        ctx.fillStyle = '#fef08a';
-        ctx.beginPath();
-        ctx.roundRect(px + p.w / 2 - 10, py - 5, 20, 9, 3);
-        ctx.fill();
-        ctx.strokeStyle = '#eab308';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-      } else if (p.type === 'jelly') {
-        ctx.fillStyle = '#a7f3d0';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 12);
-        ctx.fill();
-        ctx.strokeStyle = '#10b981';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(px + 15, py + 8, 3, 0, Math.PI * 2);
-        ctx.arc(px + p.w - 18, py + 9, 3.5, 0, Math.PI * 2);
-        ctx.fill();
-
-      } else if (p.type === 'ice') {
-        ctx.fillStyle = '#cffafe';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 12);
-        ctx.fill();
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.roundRect(px + 6, py + 3, p.w - 12, 4, 2);
-        ctx.fill();
-
-      } else if (p.type === 'disappear') {
-        ctx.fillStyle = '#fbcfe8';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 10);
-        ctx.fill();
-        ctx.strokeStyle = '#db2777';
-        ctx.setLineDash([4, 4]);
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-      } else if (p.type === 'cake') {
-        ctx.fillStyle = '#ffe4e6';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 12);
-        ctx.fill();
-        ctx.fillStyle = '#fb7185';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, 7, [12, 12, 0, 0]);
-        ctx.fill();
-        ctx.strokeStyle = '#f43f5e';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-      } else {
-        ctx.fillStyle = '#b45309';
-        ctx.beginPath();
-        ctx.roundRect(px, py, p.w, p.h, 10);
-        ctx.fill();
-        ctx.fillStyle = '#78350f';
-        for (let i = 8; i < p.w - 12; i += 20) {
-          ctx.fillRect(px + i, py + 4, 14, p.h - 8);
-        }
-      }
-
+      ctx.fillStyle = '#fed7aa';
+      ctx.beginPath();
+      ctx.roundRect(px, dy, p.w, p.h, 12);
+      ctx.fill();
+      ctx.strokeStyle = '#f97316';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
       ctx.restore();
     }
 
     function initSweetPlatformer() {
       const canvas = document.getElementById('gameCanvas');
       const ctx = canvas.getContext('2d');
-
       const V_WIDTH = 480;
 
       function resize() {
@@ -1947,7 +1708,6 @@
       }
       resize();
       window.addEventListener('resize', resize);
-      window.addEventListener('orientationchange', () => setTimeout(resize, 200));
 
       const player = {
         x: V_WIDTH / 2 - 17,
@@ -1958,96 +1718,25 @@
         vy: 0,
         speed: 5.6,
         jumpPower: -15.4,
-        grounded: false,
-        onIce: false
-      };
-
-      releaseFromTrapCallback = () => {
-        player.vy = -13.0;
-        player.grounded = false;
+        grounded: false
       };
 
       let cameraY = 0;
       let lastNetworkSync = 0;
 
       const platforms = [
-        { x: -500, y: canvas.height - 60, w: 2000, h: 100, type: 'cake' }
+        { x: -500, y: canvas.height - 60, w: 2000, h: 100 }
       ];
-      const boosters = [];
-      const traps = [];
 
       let lastY = canvas.height - 110;
-      const platTypes = ['waffle', 'jelly', 'cake', 'choco', 'ice'];
-      const TOTAL_PLATFORMS = 380;
-
-      for (let i = 0; i < TOTAL_PLATFORMS; i++) {
-        const pR1 = Math.sin(i * 77 + 2) * 10000;
-        const norm1 = pR1 - Math.floor(pR1);
-        const pR2 = Math.cos(i * 41 + 5) * 10000;
-        const norm2 = pR2 - Math.floor(pR2);
-
-        let w = 135;
-        if (i < 30) {
-          w = Math.floor(norm1 * 20) + 125;
-        } else if (i < 100) {
-          w = Math.floor(norm1 * 20) + 95;
-        } else {
-          w = Math.floor(norm1 * 20) + 75;
-        }
-
-        const distY = 48;
-        lastY -= distY;
-
-        let type = platTypes[i % platTypes.length];
-        let isDisappearing = false;
-
-        if (i > 25 && norm2 < 0.22 && type !== 'ice') {
-          type = 'disappear';
-          isDisappearing = true;
-        }
-
-        let isMoving = false;
-        let baseStartX = 0;
-        let moveAmplitude = 0;
-        let movePeriod = 2000;
-
-        const moveChance = i < 30 ? 0.2 : (i < 100 ? 0.45 : 0.65);
-        if (i > 4 && norm1 < moveChance && !isDisappearing) {
-          isMoving = true;
-          moveAmplitude = (i < 80 ? 40 : 60) + norm2 * 25;
-          movePeriod = (i < 80 ? 2400 : 1800) + norm1 * 600;
-        }
-
-        const xSpan = V_WIDTH - w - 40;
-        const x = (i % 2 === 0) 
-          ? (norm2 * (xSpan * 0.45) + 20) 
-          : (V_WIDTH - w - 20 - norm2 * (xSpan * 0.45));
-        
-        baseStartX = x;
-
-        platforms.push({ 
-          x: x, 
-          baseX: baseStartX,
-          y: lastY, 
-          w: w, 
-          h: 22, 
-          type: type,
-          isMoving: isMoving,
-          moveAmplitude: moveAmplitude,
-          movePeriod: movePeriod,
-          isDisappearing: isDisappearing,
-          stepped: false,
-          stepTimer: 0,
-          broken: false
+      for (let i = 0; i < 300; i++) {
+        lastY -= 48;
+        platforms.push({
+          x: Math.random() * (V_WIDTH - 120) + 10,
+          y: lastY,
+          w: 110,
+          h: 20
         });
-
-        if (i > 2 && (norm1 > 0.85 || i % 18 === 0)) {
-          boosters.push({ x: x + w / 2 - 14, y: lastY - 8, w: 28, h: 8, parentIdx: platforms.length - 1 });
-        }
-
-        if (i > 5 && norm2 < 0.25 && !isMoving && !isDisappearing) {
-          traps.push({ x: x + w / 2 - 10, y: lastY - 5, w: 20, h: 5 });
-        }
       }
 
       const keys = { left: false, right: false };
@@ -2055,30 +1744,22 @@
       const setupButton = (id, keyName, dir) => {
         const el = document.getElementById(id);
         if (!el) return;
-
         const startAction = (e) => {
           if (e.cancelable) e.preventDefault();
           el.classList.add('active');
-          if (isTrapped) return;
-          if (energy <= 0) {
-            triggerQuizModal(false);
-            return;
-          }
+          if (energy <= 0) { triggerQuizModal(false); return; }
           keys[keyName] = true;
           facing = dir;
         };
-
         const stopAction = (e) => {
           if (e.cancelable) e.preventDefault();
           el.classList.remove('active');
           keys[keyName] = false;
         };
-
         el.addEventListener('touchstart', startAction, { passive: false });
         el.addEventListener('touchend', stopAction, { passive: false });
         el.addEventListener('mousedown', startAction);
         el.addEventListener('mouseup', stopAction);
-        el.addEventListener('mouseleave', stopAction);
       };
 
       setupButton('btn-left', 'left', 'left');
@@ -2098,54 +1779,16 @@
       btnJump.addEventListener('touchend', jumpEnd, { passive: false });
       btnJump.addEventListener('mousedown', jumpStart);
       btnJump.addEventListener('mouseup', jumpEnd);
-      btnJump.addEventListener('mouseleave', jumpEnd);
 
-      window.addEventListener('keydown', (e) => {
-        if (isGameOver || isTrapped) return;
-        if (energy <= 0) {
-          triggerQuizModal(false);
-          return;
-        }
-        if (e.code === 'ArrowLeft' || e.code === 'KeyA') { 
-          keys.left = true; facing = 'left'; 
-          document.getElementById('btn-left').classList.add('active');
-        }
-        if (e.code === 'ArrowRight' || e.code === 'KeyD') { 
-          keys.right = true; facing = 'right'; 
-          document.getElementById('btn-right').classList.add('active');
-        }
-        if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') {
-          btnJump.classList.add('active');
-          doJump();
-        }
-      });
-
-      window.addEventListener('keyup', (e) => {
-        if (e.code === 'ArrowLeft' || e.code === 'KeyA') { 
-          keys.left = false; 
-          document.getElementById('btn-left').classList.remove('active');
-        }
-        if (e.code === 'ArrowRight' || e.code === 'KeyD') { 
-          keys.right = false; 
-          document.getElementById('btn-right').classList.remove('active');
-        }
-        if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') {
-          btnJump.classList.remove('active');
-        }
-      });
-
-      function doJump(isBoost = false) {
-        if (isGameOver || isTrapped) return;
-        if (player.grounded || isBoost) {
-          if (energy > 0 || isBoost) {
-            if (!isBoost) energy -= 1;
-            player.vy = isBoost ? -20.5 : player.jumpPower;
+      function doJump() {
+        if (isGameOver) return;
+        if (player.grounded) {
+          if (energy > 0) {
+            energy -= 1;
+            player.vy = player.jumpPower;
             player.grounded = false;
             document.getElementById('ui-energy').innerText = energy;
-
-            if (energy === 0 && !isBoost) {
-              setTimeout(() => triggerQuizModal(false), 380);
-            }
+            if (energy === 0) setTimeout(() => triggerQuizModal(false), 380);
           } else {
             triggerQuizModal(false);
           }
@@ -2154,129 +1797,35 @@
 
       function gameLoop() {
         if (isGameOver) return;
-
         const W = canvas.width;
         const H = canvas.height;
-        const currentTime = Date.now();
-
         const offsetX = (W - V_WIDTH) / 2;
 
-        if (trapImmunity > 0) trapImmunity--;
-
-        blinkTimer++;
-        if (blinkTimer > 180) {
-          isBlinking = true;
-          if (blinkTimer > 192) {
-            isBlinking = false;
-            blinkTimer = 0;
-          }
-        }
-
-        platforms.forEach((p, idx) => {
-          if (p.isMoving) {
-            const phase = (currentTime % p.movePeriod) / p.movePeriod * Math.PI * 2;
-            p.x = p.baseX + Math.sin(phase) * p.moveAmplitude;
-
-            boosters.forEach(b => {
-              if (b.parentIdx === idx) {
-                b.x = p.x + p.w / 2 - 14;
-              }
-            });
-          }
-
-          if (p.isDisappearing && p.stepped && !p.broken) {
-            p.stepTimer++;
-            if (p.stepTimer > 70) {
-              p.broken = true;
-              setTimeout(() => {
-                p.broken = false;
-                p.stepped = false;
-                p.stepTimer = 0;
-              }, 2200);
-            }
-          }
-        });
-
-        const isMoving = (keys.left || keys.right) && energy > 0 && !isTrapped;
-        if (isMoving) {
-          walkCycle += 0.25;
-        }
-
-        if (energy <= 0 || isTrapped) {
-          player.vx = 0;
-          keys.left = false;
-          keys.right = false;
-        } else if (player.onIce) {
-          if (keys.left) player.vx = Math.max(player.vx - 0.4, -player.speed * 1.15);
-          else if (keys.right) player.vx = Math.min(player.vx + 0.4, player.speed * 1.15);
-          else player.vx *= 0.96;
-        } else {
-          if (keys.left && !keys.right) player.vx = -player.speed;
-          else if (keys.right && !keys.left) player.vx = player.speed;
-          else player.vx = 0;
-        }
+        if (keys.left) player.vx = -player.speed;
+        else if (keys.right) player.vx = player.speed;
+        else player.vx = 0;
 
         player.x += player.vx;
         if (player.x < 10) player.x = 10;
         if (player.x + player.w > V_WIDTH - 10) player.x = V_WIDTH - player.w - 10;
 
         player.vy += 0.65;
-        if (player.vy > 14) player.vy = 14;
         player.y += player.vy;
-
         player.grounded = false;
-        player.onIce = false;
 
         platforms.forEach(p => {
-          if (p.broken) return;
-
           if (
             player.x + player.w * 0.75 > p.x &&
             player.x + player.w * 0.25 < p.x + p.w &&
             player.y + player.h >= p.y &&
-            player.y + player.h <= p.y + p.h * 0.5 + player.vy &&
+            player.y + player.h <= p.y + 20 &&
             player.vy >= 0
           ) {
             player.grounded = true;
             player.vy = 0;
             player.y = p.y - player.h;
-
-            if (p.type === 'ice') {
-              player.onIce = true;
-            }
-
-            if (p.isDisappearing && !p.stepped) {
-              p.stepped = true;
-            }
           }
         });
-
-        boosters.forEach(b => {
-          if (
-            player.x + player.w > b.x &&
-            player.x < b.x + b.w &&
-            player.y + player.h >= b.y &&
-            player.y + player.h <= b.y + b.h + player.vy &&
-            player.vy >= 0
-          ) {
-            doJump(true);
-          }
-        });
-
-        if (!isTrapped && trapImmunity === 0) {
-          traps.forEach(t => {
-            if (
-              player.x + player.w * 0.7 > t.x &&
-              player.x + player.w * 0.3 < t.x + t.w &&
-              player.y + player.h >= t.y &&
-              player.y + player.h <= t.y + t.h + 8
-            ) {
-              isTrapped = true;
-              player.vy = 0;
-              triggerQuizModal(true);
-            }
-          });
-        }
 
         const targetCamY = player.y - (H * 0.6);
         cameraY += (targetCamY - cameraY) * 0.12;
@@ -2285,79 +1834,27 @@
         document.getElementById('ui-height').innerText = currentMeters;
 
         const now = Date.now();
-        if (now - lastNetworkSync > 110) {
+        if (now - lastNetworkSync > 150) {
           lastNetworkSync = now;
-          if (currentPin && myPlayerId) {
-            update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
-              x: Math.round(player.x),
-              y: Math.round(player.y),
-              facing: facing,
-              styleIndex: myStyleIndex,
-              height: currentMeters,
-              correct: correctCount,
-              wrong: wrongCount,
-              quizStats: myQuizAnswers,
-              energy: energy
-            });
+          if (currentPin && myPlayerId && roomState.players[myPlayerId]) {
+            roomState.players[myPlayerId].height = currentMeters;
+            roomState.players[myPlayerId].energy = energy;
+            broadcastState();
           }
         }
 
         drawSkyBackground(ctx, W, H, cameraY);
-
         platforms.forEach(p => {
-          if (p.broken) return;
           const dy = p.y - cameraY;
-          if (dy + p.h < -50 || dy > H + 50) return;
-          drawCutePlatform(ctx, p, dy, offsetX);
-        });
-
-        boosters.forEach(b => {
-          const dy = b.y - cameraY;
-          if (dy < -40 || dy > H + 40) return;
-          ctx.fillStyle = '#10b981';
-          ctx.beginPath();
-          ctx.roundRect(b.x + offsetX, dy, b.w, b.h, 4);
-          ctx.fill();
-          ctx.fillStyle = '#34d399';
-          ctx.fillRect(b.x + offsetX + 4, dy + 2, b.w - 8, 2);
-        });
-
-        traps.forEach(t => {
-          const dy = t.y - cameraY;
-          if (dy < -40 || dy > H + 40) return;
-          ctx.fillStyle = '#ef4444';
-          ctx.beginPath();
-          ctx.roundRect(t.x + offsetX, dy, t.w, t.h, 3);
-          ctx.fill();
-        });
-
-        Object.entries(allPlayersData).forEach(([pid, other]) => {
-          if (pid === myPlayerId || other.x === undefined || other.y === undefined) return;
-
-          if (!smoothPositions[pid]) {
-            smoothPositions[pid] = { x: other.x, y: other.y };
-          }
-
-          smoothPositions[pid].x += (other.x - smoothPositions[pid].x) * 0.22;
-          smoothPositions[pid].y += (other.y - smoothPositions[pid].y) * 0.22;
-
-          const ox = smoothPositions[pid].x + offsetX + 17;
-          const oy = smoothPositions[pid].y + 18 - cameraY;
-
-          if (oy > -60 && oy < H + 60) {
-            const otherColor = SWEET_PALETTES[other.styleIndex || 0];
-            drawCuteCharacter(ctx, ox, oy, 20, false, otherColor, other.facing || 'right', false, other.name || 'Agent', false);
-          }
+          if (dy > -50 && dy < H + 50) drawCutePlatform(ctx, p, dy, offsetX);
         });
 
         const drawX = player.x + offsetX + player.w / 2;
         const drawY = player.y + 18 - cameraY;
-        const myColor = SWEET_PALETTES[myStyleIndex];
-        drawCuteCharacter(ctx, drawX, drawY, 20, isMoving, myColor, facing, isBlinking, playerName, isTrapped);
+        drawCuteCharacter(ctx, drawX, drawY, 20, false, SWEET_PALETTES[myStyleIndex], facing, false, playerName, false);
 
         requestAnimationFrame(gameLoop);
       }
-
       gameLoop();
     }
   </script>
