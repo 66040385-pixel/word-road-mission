@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800;900&family=Chakra+Petch:wght@700;800&display=swap" rel="stylesheet">
-  <!-- Three.js CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     :root {
@@ -48,26 +47,12 @@
       white-space: nowrap;
     }
     .hud-chip { 
-      display: flex; 
-      align-items: center; 
-      gap: 8px; 
-      font-size: 0.95rem; 
-      font-weight: 700;
-      flex-shrink: 0;
+      display: flex; align-items: center; gap: 8px; font-size: 0.95rem; font-weight: 700; flex-shrink: 0;
     }
-    .hud-chip.player-chip {
-      max-width: 220px;
-      overflow: hidden;
-    }
+    .hud-chip.player-chip { max-width: 220px; overflow: hidden; }
     #hud-name {
-      display: inline-block;
-      max-width: 170px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-weight: 900;
-      color: #38bdf8;
-      letter-spacing: 0.3px;
+      display: inline-block; max-width: 170px; overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap; font-weight: 900; color: #38bdf8; letter-spacing: 0.3px;
     }
     .hud-icon { width: 18px; height: 18px; fill: #38bdf8; display: inline-block; vertical-align: middle; flex-shrink: 0; }
     .hud-pill {
@@ -107,9 +92,7 @@
       padding: 6px 22px; display: flex; align-items: baseline; gap: 6px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.6);
     }
-    .speed-num {
-      font-size: 2.3rem; font-weight: 900; color: #ef4444; font-family: 'Chakra Petch', sans-serif;
-    }
+    .speed-num { font-size: 2.3rem; font-weight: 900; color: #ef4444; font-family: 'Chakra Petch', sans-serif; }
     .speed-unit { font-size: 0.9rem; font-weight: 800; color: #94a3b8; }
     .gear-mode { font-size: 0.85rem; color: #38bdf8; font-weight: 800; margin-left: 6px; }
 
@@ -189,11 +172,7 @@
       overflow: hidden;
       animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-
-    @keyframes popIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .hero-banner {
       background: linear-gradient(135deg, #0284c7, #2563eb);
@@ -204,147 +183,64 @@
     }
 
     .game-logo-title {
-      font-size: 2.2rem;
-      font-weight: 900;
-      color: #ffffff;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-shadow: 3px 3px 0px #0369a1, 0 0 18px rgba(250, 204, 21, 0.6);
-      line-height: 1.1;
-      font-family: 'Chakra Petch', 'Kanit', sans-serif;
+      font-size: 2.2rem; font-weight: 900; color: #ffffff; text-transform: uppercase;
+      letter-spacing: 1px; text-shadow: 3px 3px 0px #0369a1, 0 0 18px rgba(250, 204, 21, 0.6);
+      line-height: 1.1; font-family: 'Chakra Petch', 'Kanit', sans-serif;
     }
 
     .game-sub-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 6px;
-      background: #facc15;
-      color: #713f12;
-      font-size: 0.85rem;
-      font-weight: 800;
-      padding: 4px 14px;
-      border-radius: 999px;
-      box-shadow: 0 3px 0 #ca8a04;
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 6px;
+      background: #facc15; color: #713f12; font-size: 0.85rem; font-weight: 800;
+      padding: 4px 14px; border-radius: 999px; box-shadow: 0 3px 0 #ca8a04;
     }
     .game-sub-badge svg { width: 16px; height: 16px; fill: #713f12; }
 
     .rule-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 14px;
-      text-align: left;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; text-align: left;
     }
-
     .rule-card {
-      background: #f0f9ff;
-      border: 2px solid #bae6fd;
-      border-radius: 16px;
-      padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+      background: #f0f9ff; border: 2px solid #bae6fd; border-radius: 16px;
+      padding: 12px 14px; display: flex; flex-direction: column; gap: 5px;
     }
-
-    .rule-card.points {
-      background: #fefce8;
-      border-color: #fde047;
-    }
-
-    .rule-header {
-      font-size: 0.9rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    .rule-card.points { background: #fefce8; border-color: #fde047; }
+    .rule-header { font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 6px; }
     .rule-card .rule-header { color: #0284c7; }
     .rule-card .rule-header svg { width: 18px; height: 18px; fill: #0284c7; flex-shrink: 0; }
-
     .rule-card.points .rule-header { color: #ca8a04; }
     .rule-card.points .rule-header svg { width: 18px; height: 18px; fill: #ca8a04; flex-shrink: 0; }
-
-    .rule-card p {
-      font-size: 0.8rem;
-      color: #475569;
-      line-height: 1.45;
-      font-weight: 500;
-    }
+    .rule-card p { font-size: 0.8rem; color: #475569; line-height: 1.45; font-weight: 500; }
 
     .rule-banner-single {
-      background: #f8fafc;
-      border: 2px dashed #cbd5e1;
-      border-radius: 14px;
-      padding: 11px 14px;
-      font-size: 0.84rem;
-      color: #334155;
-      margin-bottom: 16px;
-      text-align: left;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      line-height: 1.45;
+      background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 14px;
+      padding: 11px 14px; font-size: 0.84rem; color: #334155; margin-bottom: 16px;
+      text-align: left; display: flex; align-items: flex-start; gap: 8px; line-height: 1.45;
     }
     .rule-banner-single svg { width: 19px; height: 19px; fill: #0284c7; flex-shrink: 0; margin-top: 2px; }
 
     .start-input {
-      width: 100%;
-      padding: 14px 18px;
-      border-radius: 16px;
-      border: 3px solid #cbd5e1;
-      background: #f8fafc;
-      color: #0f172a;
-      font-size: 1.05rem;
-      font-weight: 700;
-      text-align: center;
-      outline: none;
-      transition: all 0.2s;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+      width: 100%; padding: 14px 18px; border-radius: 16px; border: 3px solid #cbd5e1;
+      background: #f8fafc; color: #0f172a; font-size: 1.05rem; font-weight: 700;
+      text-align: center; outline: none; transition: all 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
     }
-
-    .start-input:focus {
-      border-color: #0284c7;
-      background: #ffffff;
-      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25);
-    }
+    .start-input:focus { border-color: #0284c7; background: #ffffff; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25); }
 
     .start-btn {
-      width: 100%;
-      margin-top: 14px;
-      padding: 15px;
-      border-radius: 18px;
-      border: none;
-      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
-      color: #ffffff;
-      font-size: 1.25rem;
-      font-weight: 900;
-      cursor: pointer;
+      width: 100%; margin-top: 14px; padding: 15px; border-radius: 18px; border: none;
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%); color: #ffffff;
+      font-size: 1.25rem; font-weight: 900; cursor: pointer;
       box-shadow: 0 6px 0 #047857, 0 10px 18px rgba(16, 185, 129, 0.35);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      transition: transform 0.1s, box-shadow 0.1s;
+      display: flex; justify-content: center; align-items: center; gap: 10px;
     }
-
-    .start-btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 #047857;
-    }
+    .start-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #047857; }
     .start-btn svg { width: 22px; height: 22px; fill: #ffffff; }
 
     #checkpoint-modal {
-      position: fixed; inset: 0;
-      background: rgba(10, 12, 16, 0.88); backdrop-filter: blur(12px);
-      display: none; justify-content: center; align-items: center;
-      padding: 16px; z-index: 120;
+      position: fixed; inset: 0; background: rgba(10, 12, 16, 0.88); backdrop-filter: blur(12px);
+      display: none; justify-content: center; align-items: center; padding: 16px; z-index: 120;
     }
     .cp-box {
-      background: #ffffff; border: 4px solid #38bdf8;
-      border-radius: 26px; padding: 24px; max-width: 600px; width: 100%;
-      color: #1e293b; box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      background: #ffffff; border: 4px solid #38bdf8; border-radius: 26px; padding: 24px;
+      max-width: 600px; width: 100%; color: #1e293b; box-shadow: 0 20px 60px rgba(0,0,0,0.8);
       max-height: 94vh; overflow-y: auto; text-align: left;
     }
     .cp-top {
@@ -367,37 +263,6 @@
       justify-content: center; min-height: 140px; gap: 12px; margin-bottom: 14px;
     }
 
-    .match-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      width: 100%;
-    }
-    .match-col {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .match-card {
-      background: #ffffff;
-      border: 2px solid #cbd5e1;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #1e293b;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s ease;
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .match-card:hover { border-color: #38bdf8; background: #f0f9ff; }
-    .match-card.selected { border-color: #0284c7; background: #e0f2fe; color: #0284c7; font-weight: 800; }
-    .match-card.paired { border-color: #10b981; background: #ecfdf5; color: #059669; pointer-events: none; }
-
     .ribbon-bar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
     .ribbon-btn {
       padding: 10px 16px; border-radius: 10px; border: 2px solid #cbd5e1;
@@ -406,25 +271,9 @@
     }
     .ribbon-btn:hover { background: #e0f2fe; border-color: #38bdf8; }
 
-    .doc-preview-box {
-      width: 220px; height: 85px; background: #ffffff;
-      border: 2px solid #cbd5e1; border-radius: 8px; padding: 10px;
-      display: flex; flex-direction: column; justify-content: center;
-    }
-
-    .table-picker {
-      display: grid; grid-template-columns: repeat(4, 38px); grid-template-rows: repeat(3, 38px); gap: 6px;
-    }
-    .table-cell {
-      background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;
-    }
-    .table-cell.selected { background: #38bdf8; border-color: #0284c7; }
-
     #knowledge-modal {
-      position: fixed; inset: 0;
-      background: rgba(10, 12, 16, 0.92); backdrop-filter: blur(14px);
-      display: none; justify-content: center; align-items: center;
-      padding: 18px; z-index: 130;
+      position: fixed; inset: 0; background: rgba(10, 12, 16, 0.92); backdrop-filter: blur(14px);
+      display: none; justify-content: center; align-items: center; padding: 18px; z-index: 130;
     }
     .knowledge-card {
       background: #0f172a; border: 3px solid #ef4444; border-radius: 28px;
@@ -439,16 +288,14 @@
     .kn-header svg { width: 28px; height: 28px; fill: #ef4444; }
     .kn-subtitle { font-size: 0.92rem; color: #cbd5e1; margin-bottom: 16px; line-height: 1.5; }
     .kn-box {
-      background: #1e293b; border-left: 4px solid #facc15;
-      padding: 14px 16px; border-radius: 10px; margin-bottom: 18px;
+      background: #1e293b; border-left: 4px solid #facc15; padding: 14px 16px; border-radius: 10px; margin-bottom: 18px;
     }
     .kn-title { font-size: 1.05rem; font-weight: 800; color: #facc15; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
     .kn-title svg { width: 20px; height: 20px; fill: #facc15; }
     .kn-desc { font-size: 0.95rem; color: #e2e8f0; line-height: 1.6; }
     .kn-notice {
       font-size: 0.85rem; color: #f87171; background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px;
-      padding: 8px 12px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 8px 12px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
     }
     .kn-notice svg { width: 18px; height: 18px; fill: #f87171; flex-shrink: 0; }
   </style>
@@ -628,7 +475,7 @@
   </div>
 
   <script>
-    // ข้อสอบ 20 ข้อ ข้อละ 1 คะแนน รวม 20 คะแนนเต็ม สลับโจทย์ข้อความและโจทย์ภาพ
+    // ชุดคำถาม 20 ข้อ (สลับ ข้อคี่ = ข้อความ / ข้อคู่ = มีรูปภาพจำลองแถบ Ribbon ชัดเจน)
     const missions = [
       {
         id: 1, title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", pts: 1.0,
@@ -641,8 +488,27 @@
       {
         id: 2, title: "Checkpoint 2: ไอคอนสัญลักษณ์ตัวหนา", badge: "Font Styler", pts: 1.0,
         mode: "choice",
-        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#0284c7"/><text x="70" y="60" font-family="'Chakra Petch', sans-serif" font-size="46" font-weight="900" fill="#ffffff" text-anchor="middle">B</text></svg>`,
-        q: "ภารกิจ: สัญลักษณ์เครื่องมือในภาพนี้ มีหน้าที่ทำงานตรงกับคำสั่งใด:",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="76" viewBox="0 0 300 76">
+          <rect width="300" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="0" y="0" width="300" height="22" fill="#2b579a"/>
+          <text x="10" y="15" fill="#ffffff" font-size="11" font-weight="bold" font-family="'Segoe UI', sans-serif">Font - Home Tab</text>
+          <g transform="translate(18, 30)">
+            <rect x="0" y="0" width="34" height="34" rx="4" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.5"/>
+            <text x="17" y="25" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="900" fill="#0f172a" text-anchor="middle">B</text>
+            <circle cx="17" cy="17" r="18" fill="none" stroke="#ef4444" stroke-width="3"/>
+          </g>
+          <g transform="translate(62, 30)">
+            <rect x="0" y="0" width="34" height="34" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+            <text x="17" y="25" font-family="'Segoe UI', sans-serif" font-size="20" font-style="italic" font-weight="bold" fill="#334155" text-anchor="middle">I</text>
+          </g>
+          <g transform="translate(106, 30)">
+            <rect x="0" y="0" width="34" height="34" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+            <text x="17" y="24" font-family="'Segoe UI', sans-serif" font-size="18" font-weight="bold" fill="#334155" text-anchor="middle">U</text>
+            <line x1="8" y1="28" x2="26" y2="28" stroke="#334155" stroke-width="2"/>
+          </g>
+          <text x="160" y="52" font-family="'Kanit', sans-serif" font-size="13" font-weight="bold" fill="#ef4444">← ปุ่มที่วงกลมสีแดงคือปุ่มใด</text>
+        </svg>`,
+        q: "ภารกิจ: สัญลักษณ์เครื่องมือที่วงกลมสีแดงในแถบ Ribbon มีหน้าที่ตรงกับข้อใด:",
         target: "ทำตัวอักษรหนา (Bold)",
         opts: ["ทำตัวอักษรหนา (Bold)", "ทำตัวเอียง (Italic)", "ขีดเส้นใต้ (Underline)", "ใส่สีพื้นหลัง"],
         knTitle: "เครื่องมือ Bold (ตัวหนา)",
@@ -660,7 +526,17 @@
       {
         id: 4, title: "Checkpoint 4: ไอคอนคำสั่งตัดข้อความ", badge: "Clipboard Master", pts: 1.0,
         mode: "choice",
-        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><path d="M52 38a7 7 0 1 0-7-7c0 2.2 1 4.2 2.6 5.5l9.4 6.5-12 11.2a7 7 0 1 0 2.7 2.7l14.3-13.3 14.3 13.3a7 7 0 1 0 2.7-2.7l-12-11.2 9.4-6.5a7 7 0 1 0-4.4-5.5c0-1-.2-1.9-.6-2.8L62 42.5l-5-3.5c-1.3-.9-2.9-1-5-1z" fill="#e11d48"/></svg>`,
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="76" viewBox="0 0 300 76">
+          <rect width="300" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="0" y="0" width="300" height="22" fill="#2b579a"/>
+          <text x="10" y="15" fill="#ffffff" font-size="11" font-weight="bold" font-family="'Segoe UI', sans-serif">Clipboard - Ribbon</text>
+          <g transform="translate(24, 30)">
+            <rect x="0" y="0" width="36" height="36" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+            <path d="M14 14a4 4 0 1 0-4-4c0 1.2.6 2.3 1.5 3l5.5 3.8-7 6.6a4 4 0 1 0 1.5 1.5l8.5-7.8 8.5 7.8a4 4 0 1 0 1.5-1.5l-7-6.6 5.5-3.8a4 4 0 1 0-2.5-3c0-.6-.1-1.1-.3-1.6L20 16.5l-3-2.1c-.8-.5-1.7-.6-3-.6z" fill="#dc2626"/>
+            <circle cx="18" cy="18" r="20" fill="none" stroke="#ef4444" stroke-width="3"/>
+          </g>
+          <text x="80" y="52" font-family="'Kanit', sans-serif" font-size="14" font-weight="bold" fill="#0f172a">รูปกรรไกรในวงกลมแดง ทำหน้าที่อะไร?</text>
+        </svg>`,
         q: "ภารกิจ: สัญลักษณ์รูปกรรไกรในภาพ มีหน้าที่ทำงานตรงกับข้อใด:",
         target: "ตัดข้อความ (Cut)",
         opts: ["คัดลอกข้อความ (Copy)", "ตัดข้อความ (Cut)", "วางข้อความ (Paste)", "ลบหน้ากระดาษ"],
@@ -669,35 +545,65 @@
       },
       {
         id: 5, title: "Checkpoint 5: จัดตำแหน่งย่อหน้า", badge: "Paragraph Pro", pts: 1.0,
-        mode: "align",
-        q: "ภารกิจ: ทดลองกดปุ่มจัดตำแหน่งเอกสาร เพื่อวางข้อความให้อยู่ 'กึ่งกลางหน้ากระดาษ':",
-        target: "center",
-        knTitle: "การจัดแนวย่อหน้า (Paragraph Alignment)",
-        knText: "การจัดข้อความให้อยู่ตรงกลางหน้ากระดาษพอดีให้ใช้คำสั่ง <b>Center</b> (หรือกด Ctrl + E) ซึ่งเหมาะสำหรับการจัดชื่อเรื่องหรือหัวข้อรายงาน"
+        mode: "choice",
+        q: "ภารกิจ: การจัดข้อความรายงานให้อยู่ 'กึ่งกลางหน้ากระดาษ' พอดี ต้องใช้คีย์ลัดคู่ใด:",
+        target: "Ctrl + E",
+        opts: ["Ctrl + L", "Ctrl + E", "Ctrl + R", "Ctrl + J"],
+        knTitle: "คีย์ลัดจัดกึ่งกลาง (Center)",
+        knText: "คีย์ลัดจัดข้อความ: <b>Ctrl + L</b> ชิดซ้าย, <b>Ctrl + E</b> กึ่งกลาง, <b>Ctrl + R</b> ชิดขวา, และ <b>Ctrl + J</b> กระจายเต็มบรรทัด"
       },
       {
         id: 6, title: "Checkpoint 6: ไอคอนจัดกึ่งกลางข้อความ", badge: "Align Specialist", pts: 1.0,
         mode: "choice",
-        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><line x1="30" y1="28" x2="110" y2="28" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/><line x1="45" y1="42" x2="95" y2="42" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="56" x2="110" y2="56" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="70" x2="90" y2="70" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/></svg>`,
-        q: "ภารกิจ: สัญลักษณ์เส้นในภาพนี้ คือคำสั่งจัดแนวย่อหน้าแบบใด:",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="76" viewBox="0 0 300 76">
+          <rect width="300" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="0" y="0" width="300" height="22" fill="#2b579a"/>
+          <text x="10" y="15" fill="#ffffff" font-size="11" font-weight="bold" font-family="'Segoe UI', sans-serif">Paragraph - Alignment</text>
+          <g transform="translate(18, 30)">
+            <rect x="0" y="0" width="32" height="34" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+            <line x1="5" y1="8" x2="27" y2="8" stroke="#334155" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="5" y1="15" x2="20" y2="15" stroke="#334155" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="5" y1="22" x2="27" y2="22" stroke="#334155" stroke-width="2.5" stroke-linecap="round"/>
+          </g>
+          <g transform="translate(58, 30)">
+            <rect x="0" y="0" width="32" height="34" rx="4" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+            <line x1="5" y1="8" x2="27" y2="8" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="9" y1="15" x2="23" y2="15" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="5" y1="22" x2="27" y2="22" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="16" cy="17" r="18" fill="none" stroke="#ef4444" stroke-width="3"/>
+          </g>
+          <text x="110" y="52" font-family="'Kanit', sans-serif" font-size="13" font-weight="bold" fill="#ef4444">← ปุ่มที่วงกลมแดงคือคำสั่งใด</text>
+        </svg>`,
+        q: "ภารกิจ: สัญลักษณ์เส้นในวงกลมสีแดง คือคำสั่งจัดแนวย่อหน้าแบบใด:",
         target: "จัดกึ่งกลาง (Center)",
         opts: ["จัดชิดซ้าย (Align Left)", "จัดกึ่งกลาง (Center)", "จัดชิดขวา (Align Right)", "กระจายแบบไทย (Thai Distributed)"],
         knTitle: "ไอคอนจัดกึ่งกลาง (Center Alignment)",
-        knText: "สัญลักษณ์เส้นที่มีความยาวสั้นยาวสลับกันโดยตรงกลางเท่ากันคือคำสั่ง <b>Center (Ctrl + E)</b> ใช้จัดตำแหน่งให้อยู่ตรงกลางหน้ากระดาษพอดี"
+        knText: "สัญลักษณ์เส้นที่มีความยาวสลับกันโดยแกนกลางตรงกันคือคำสั่ง <b>Center (Ctrl + E)</b> ใช้จัดตำแหน่งให้อยู่ตรงกลางหน้ากระดาษพอดี"
       },
       {
         id: 7, title: "Checkpoint 7: ลำดับขั้นตอน", badge: "List Architect", pts: 1.0,
         mode: "choice",
         q: "ภารกิจ: เครื่องมือใดใช้สำหรับสร้างรายการข้อความที่มีลำดับ 1, 2, 3 ก่อนหลัง:",
         target: "Numbering",
-        opts: ["Bullets", "Numbering", "Multilevel List"],
+        opts: ["Bullets", "Numbering", "Multilevel List", "Line Spacing"],
         knTitle: "เครื่องมือลำดับเลข (Numbering)",
         knText: "เมื่อข้อความมีขั้นตอนที่ต้องทำตามลำดับก่อนหลัง ให้ใช้คำสั่ง <b>Numbering (ลำดับเลข)</b> แต่หากเป็นรายการทั่วไปที่สลับลำดับได้ ให้ใช้ <b>Bullets (สัญลักษณ์จุด)</b>"
       },
       {
         id: 8, title: "Checkpoint 8: ไอคอนคัดลอกรูปแบบ (Format Painter)", badge: "Brush Pro", pts: 1.0,
         mode: "choice",
-        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><path d="M55 24h30v14H55z" fill="#f59e0b"/><path d="M60 38v8a10 10 0 0 0 10 10v16h4V56a10 10 0 0 0 10-10v-8H60z" fill="#64748b"/></svg>`,
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="76" viewBox="0 0 300 76">
+          <rect width="300" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="0" y="0" width="300" height="22" fill="#2b579a"/>
+          <text x="10" y="15" fill="#ffffff" font-size="11" font-weight="bold" font-family="'Segoe UI', sans-serif">Tools - Home Tab</text>
+          <g transform="translate(24, 28)">
+            <rect x="0" y="0" width="38" height="38" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+            <path d="M12 8h14v8H12z" fill="#f59e0b"/>
+            <path d="M15 16v5a5 5 0 0 0 5 5v8h2v-8a5 5 0 0 0 5-5v-5H15z" fill="#475569"/>
+            <circle cx="19" cy="19" r="21" fill="none" stroke="#ef4444" stroke-width="3"/>
+          </g>
+          <text x="80" y="52" font-family="'Kanit', sans-serif" font-size="13.5" font-weight="bold" fill="#0f172a">รูปแปรงทาสีในวงกลมแดงคือคำสั่งใด?</text>
+        </svg>`,
         q: "ภารกิจ: สัญลักษณ์แปรงทาสีในแถบเครื่องมือ Microsoft Word มีประโยชน์อย่างไร:",
         target: "คัดลอกเฉพาะรูปแบบตัวอักษร (Format Painter)",
         opts: ["ระบายสีพื้นหลังตาราง", "คัดลอกเฉพาะรูปแบบตัวอักษร (Format Painter)", "ลบข้อความทั้งหมด", "วาดรูปร่างอิสระ"],
@@ -709,41 +615,85 @@
         mode: "choice",
         q: "ภารกิจ: คำสั่ง Wrap Text รูปแบบใดทำให้ข้อความไหลล้อมรอบกรอบรูปภาพอย่างอิสระ:",
         target: "Square",
-        opts: ["In Line with Text", "Square", "Behind Text"],
+        opts: ["In Line with Text", "Square", "Behind Text", "Top and Bottom"],
         knTitle: "การตัดข้อความล้อมรูปภาพ (Wrap Text)",
         knText: "การตั้งค่า <b>Wrap Text</b> เป็น <b>Square</b> จะช่วยให้ข้อความไหลล้อมรอบกรอบสี่เหลี่ยมของภาพ และทำให้สามารถเลื่อนตำแหน่งภาพได้อย่างอิสระ"
       },
       {
-        id: 10, title: "Checkpoint 10: โครงสร้างตาราง", badge: "Table Builder", pts: 1.0,
-        mode: "table_grid",
-        q: "ภารกิจ: กำหนดขนาดสร้างตารางข้อมูลจำนวน '3 คอลัมน์ x 2 แถว' ให้ถูกต้อง:",
-        targetCols: 3, targetRows: 2,
-        knTitle: "โครงสร้างตาราง (Table Dimension)",
-        knText: "การสร้างตารางใน Word จะนับตาม <b>คอลัมน์ (แนวตั้ง)</b> x <b>แถว (แนวนอน)</b> ตารางขนาด 3 x 2 จึงหมายถึง มี 3 ช่องแนวตั้ง และ 2 แถวแนวนอน"
+        id: 10, title: "Checkpoint 10: สัญลักษณ์แทรกตาราง", badge: "Table Builder", pts: 1.0,
+        mode: "choice",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="76" viewBox="0 0 300 76">
+          <rect width="300" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="0" y="0" width="300" height="22" fill="#2b579a"/>
+          <text x="10" y="15" fill="#ffffff" font-size="11" font-weight="bold" font-family="'Segoe UI', sans-serif">Insert Tab - Tables</text>
+          <g transform="translate(24, 28)">
+            <rect x="0" y="0" width="38" height="38" rx="6" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.5"/>
+            <rect x="7" y="7" width="24" height="24" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+            <line x1="15" y1="7" x2="15" y2="31" stroke="#0284c7" stroke-width="1"/>
+            <line x1="23" y1="7" x2="23" y2="31" stroke="#0284c7" stroke-width="1"/>
+            <line x1="7" y1="15" x2="31" y2="15" stroke="#0284c7" stroke-width="1"/>
+            <line x1="7" y1="23" x2="31" y2="23" stroke="#0284c7" stroke-width="1"/>
+            <circle cx="19" cy="19" r="21" fill="none" stroke="#ef4444" stroke-width="3"/>
+          </g>
+          <text x="80" y="52" font-family="'Kanit', sans-serif" font-size="14" font-weight="bold" fill="#0f172a">ไอคอนตารางช่องๆ นี้ ใช้ทำอะไร?</text>
+        </svg>`,
+        q: "ภารกิจ: สัญลักษณ์ตารางในแถบ Insert ใช้สำหรับทำหน้าที่ใด:",
+        target: "แทรกตารางข้อมูล (Insert Table)",
+        opts: ["แทรกตารางข้อมูล (Insert Table)", "แทรกรูปภาพ", "แบ่งหน้ากระดาษ", "ใส่กรอบหน้ากระดาษ"],
+        knTitle: "การแทรกตาราง (Insert Table)",
+        knText: "ไอคอนตารางช่องสี่เหลี่ยมคือคำสั่ง <b>Table</b> ในแท็บ Insert ใช้สำหรับกำหนดจำนวนคอลัมน์และแถวเพื่อสร้างตารางเก็บข้อมูลในเอกสาร"
       },
       {
-        id: 11, title: "Checkpoint 11: ไอคอนบันทึกเอกสาร (Save)", badge: "Storage Keeper", pts: 1.0,
+        id: 11, title: "Checkpoint 11: คีย์ลัดบันทึกไฟล์", badge: "Storage Keeper", pts: 1.0,
         mode: "choice",
-        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#059669"/><path d="M50 22h32l12 12v32a4 4 0 0 1-4 4H50a4 4 0 0 1-4-4V26a4 4 0 0 1 4-4zm6 0v12h20V22H56zm-4 38h36v-16H52v16z" fill="#ffffff"/></svg>`,
-        q: "ภารกิจ: สัญลักษณ์รูปแผ่นดิสก์เก็ตนี้ตรงกับคำสั่งและคีย์ลัดใด:",
-        target: "บันทึกเอกสาร (Save - Ctrl + S)",
-        opts: ["พิมพ์เอกสาร (Print - Ctrl + P)", "บันทึกเอกสาร (Save - Ctrl + S)", "เปิดไฟล์ (Open - Ctrl + O)", "ปิดหน้าต่าง (Close - Ctrl + W)"],
+        q: "ภารกิจ: หากต้องการบันทึกเอกสารที่กำลังทำอยู่อย่างรวดเร็ว เพื่อไม่ให้ข้อมูลสูญหาย ต้องกดคีย์ลัดใด:",
+        target: "Ctrl + S",
+        opts: ["Ctrl + S", "Ctrl + P", "Ctrl + C", "Ctrl + V"],
         knTitle: "คำสั่งบันทึกเอกสาร (Save)",
-        knText: "สัญลักษณ์รูปแผ่นฟลอปปีดิสก์คือปุ่ม <b>บันทึก (Save)</b> หรือคีย์ลัด <b>Ctrl + S</b> ควรหมั่นกดบ่อยๆ ระหว่างพิมพ์เพื่อป้องกันข้อมูลสูญหาย"
+        knText: "<b>Ctrl + S</b> ย่อมาจาก Save ใช้บันทึกการแก้ไขของไฟล์เอกสาร ควรหมั่นกดเป็นประจำระหว่างทำงาน"
       },
       {
-        id: 12, title: "Checkpoint 12: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 1.0,
+        id: 12, title: "Checkpoint 12: ไอคอนบันทึกเอกสาร (Save)", badge: "Save Master", pts: 1.0,
         mode: "choice",
-        q: "ภารกิจ: หากต้องการพิมพ์เอกสารที่มีตารางกว้าง ต้องตั้งค่าหน้ากระดาษแบบใดในเมนู Orientation:",
-        target: "Landscape",
-        opts: ["Portrait", "Landscape", "Columns"],
-        knTitle: "การวางแนวกระดาษ (Page Orientation)",
-        knText: "ในแท็บ <b>Layout (เค้าโครง)</b> คำสั่ง <b>Orientation</b> มี 2 แบบ: <b>Portrait (แนวตั้ง)</b> สำหรับเอกสารทั่วไป และ <b>Landscape (แนวนอน)</b> สำหรับตารางหรือรูปภาพขนาดกว้าง"
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="76" viewBox="0 0 300 76">
+          <rect width="300" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="0" y="0" width="300" height="22" fill="#2b579a"/>
+          <text x="10" y="15" fill="#ffffff" font-size="11" font-weight="bold" font-family="'Segoe UI', sans-serif">Quick Access Toolbar</text>
+          <g transform="translate(24, 28)">
+            <rect x="0" y="0" width="38" height="38" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+            <path d="M10 8h15l5 5v15a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2zm4 0v6h10V8H14zm-2 18h16v-8H12v8z" fill="#059669"/>
+            <circle cx="19" cy="19" r="21" fill="none" stroke="#ef4444" stroke-width="3"/>
+          </g>
+          <text x="80" y="52" font-family="'Kanit', sans-serif" font-size="14" font-weight="bold" fill="#0f172a">รูปแผ่นดิสก์ในวงกลมแดงคือคำสั่งใด?</text>
+        </svg>`,
+        q: "ภารกิจ: สัญลักษณ์รูปแผ่นดิสก์เก็ตในวงกลมแดง มีหน้าที่ตรงกับคำสั่งใด:",
+        target: "บันทึกเอกสาร (Save)",
+        opts: ["พิมพ์เอกสาร (Print)", "บันทึกเอกสาร (Save)", "เปิดเอกสาร (Open)", "ปิดโปรแกรม (Close)"],
+        knTitle: "ไอคอนรูปแผ่นดิสก์ (Save Icon)",
+        knText: "สัญลักษณ์รูปแผ่นดิสก์ที่อยู่มุมบนซ้ายคือปุ่ม <b>Save (บันทึก)</b> ใช้บันทึกการเปลี่ยนแปลงทั้งหมดลงในไฟล์"
       },
       {
-        id: 13, title: "Checkpoint 13: สัญลักษณ์ตรวจสอบคำผิด", badge: "Doc Inspector", pts: 1.0,
+        id: 13, title: "Checkpoint 13: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 1.0,
         mode: "choice",
-        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><text x="70" y="44" font-family="'Kanit', sans-serif" font-size="24" font-weight="bold" fill="#0f172a" text-anchor="middle">คอมพิวเตอ</text><path d="M36 54 Q42 60 48 54 T60 54 T72 54 T84 54 T96 54 T104 54" fill="none" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/></svg>`,
+        q: "ภารกิจ: การพิมพ์ตารางข้อมูลขนาดใหญ่ที่ต้องใช้พื้นที่แนวกว้าง ควรเลือก Orientation แบบใด:",
+        target: "แนวนอน (Landscape)",
+        opts: ["แนวตั้ง (Portrait)", "แนวนอน (Landscape)", "แบ่งคอลัมน์ (Columns)", "ใส่ระยะขอบแคบ (Narrow)"],
+        knTitle: "การวางแนวกระดาษ (Orientation)",
+        knText: "<b>Portrait</b> คือกระดาษแนวตั้งทั่วไป ส่วน <b>Landscape</b> คือกระดาษแนวนอน เหมาะสำหรับเอกสารที่มีตารางหรือภาพกว้างๆ"
+      },
+      {
+        id: 14, title: "Checkpoint 14: สัญลักษณ์ตรวจสอบคำผิด", badge: "Proofing Master", pts: 1.0,
+        mode: "choice",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="76" viewBox="0 0 300 76">
+          <rect width="300" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="0" y="0" width="300" height="22" fill="#2b579a"/>
+          <text x="10" y="15" fill="#ffffff" font-size="11" font-weight="bold" font-family="'Segoe UI', sans-serif">Document Text View</text>
+          <g transform="translate(18, 30)">
+            <text x="50" y="24" font-family="'Kanit', sans-serif" font-size="20" font-weight="bold" fill="#0f172a" text-anchor="middle">คอมพิวเตอ</text>
+            <path d="M10 30 Q16 34 22 30 T34 30 T46 30 T58 30 T70 30 T82 30 T90 30" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+          </g>
+          <text x="130" y="52" font-family="'Kanit', sans-serif" font-size="13" font-weight="bold" fill="#ef4444">← เส้นหยักสีแดงนี้แจ้งเตือนอะไร?</text>
+        </svg>`,
         q: "ภารกิจ: เส้นหยักสีแดงใต้ข้อความดังภาพ มีความหมายว่าอย่างไร:",
         target: "อาจมีการสะกดคำผิด (Spelling Error)",
         opts: ["อาจมีการสะกดคำผิด (Spelling Error)", "ไวยากรณ์ผิดพลาด", "ข้อความถูกใส่ไฮไลต์", "เป็นข้อความที่มีลิงก์"],
@@ -751,7 +701,7 @@
         knText: "<b>เส้นหยักสีแดง</b> หมายถึงระบบตรวจพบคำสะกดผิด ส่วน <b>เส้นหยักสีฟ้า/เขียว</b> หมายถึงการเว้นวรรคหรือหลักไวยากรณ์ที่อาจไม่ถูกต้อง"
       },
       {
-        id: 14, title: "Checkpoint 14: คีย์ลัดค้นหาคำในเอกสาร", badge: "Search Master", pts: 1.0,
+        id: 15, title: "Checkpoint 15: คีย์ลัดค้นหาคำในเอกสาร", badge: "Search Master", pts: 1.0,
         mode: "choice",
         q: "ภารกิจ: หากต้องการค้นหาคำเฉพาะบางคำในรายงานที่มีความยาว 50 หน้าอย่างรวดเร็ว ต้องใช้คีย์ลัดใด:",
         target: "Ctrl + F",
@@ -760,28 +710,51 @@
         knText: "<b>Ctrl + F (Find)</b> ใช้เปิดแถบค้นหาข้อความในเอกสาร ส่วน <b>Ctrl + H (Replace)</b> ใช้สำหรับค้นหาและแทนที่คำด้วยคำใหม่"
       },
       {
-        id: 15, title: "Checkpoint 15: ไอคอนสีตัวอักษร (Font Color)", badge: "Color Artist", pts: 1.0,
+        id: 16, title: "Checkpoint 16: ไอคอนสีตัวอักษร (Font Color)", badge: "Color Artist", pts: 1.0,
         mode: "choice",
-        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><text x="70" y="52" font-family="'Kanit', sans-serif" font-size="44" font-weight="900" fill="#1e293b" text-anchor="middle">A</text><rect x="42" y="60" width="56" height="8" rx="3" fill="#e11d48"/></svg>`,
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="76" viewBox="0 0 300 76">
+          <rect width="300" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="0" y="0" width="300" height="22" fill="#2b579a"/>
+          <text x="10" y="15" fill="#ffffff" font-size="11" font-weight="bold" font-family="'Segoe UI', sans-serif">Font - Colors</text>
+          <g transform="translate(24, 28)">
+            <rect x="0" y="0" width="38" height="38" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+            <text x="19" y="24" font-family="'Segoe UI', sans-serif" font-size="22" font-weight="900" fill="#0f172a" text-anchor="middle">A</text>
+            <rect x="7" y="28" width="24" height="5" rx="1.5" fill="#e11d48"/>
+            <circle cx="19" cy="19" r="21" fill="none" stroke="#ef4444" stroke-width="3"/>
+          </g>
+          <text x="80" y="52" font-family="'Kanit', sans-serif" font-size="13" font-weight="bold" fill="#0f172a">ตัว A มีแถบสีแดงด้านล่าง คือคำสั่งใด?</text>
+        </svg>`,
         q: "ภารกิจ: สัญลักษณ์ตัวอักษร A ที่มีแถบสีด้านล่างนี้ใช้สำหรับคำสั่งใด:",
         target: "เปลี่ยนสีตัวอักษร (Font Color)",
-        opts: ["เน้นข้อความ (Highlight)", "เปลี่ยนสีตัวอักษร (Font Color)", "ใส่เอฟเฟกต์เงาข้อความ", "เปลี่ยนฟอนต์"],
+        opts: ["เน้นข้อความ (Highlight)", "เปลี่ยนสีตัวอักษร (Font Color)", "ใส่เงาตัวอักษร", "เปลี่ยนฟอนต์"],
         knTitle: "เครื่องมือสีแบบอักษร (Font Color)",
         knText: "ปุ่มรูปตัว <b>A</b> ที่มีแถบสีอยู่ด้านล่างคือคำสั่ง <b>สีแบบอักษร (Font Color)</b> ใช้เปลี่ยนสีของข้อความที่เลือก"
       },
       {
-        id: 16, title: "Checkpoint 16: การเตรียมทำสารบัญ", badge: "Style Maestro", pts: 1.0,
+        id: 17, title: "Checkpoint 17: การเตรียมทำสารบัญ", badge: "Style Maestro", pts: 1.0,
         mode: "choice",
         q: "ภารกิจ: การเตรียมข้อความเพื่อดึงทำสารบัญอัตโนมัติ (Table of Contents) ต้องกำหนดสไตล์ใดให้กับหัวข้อหลัก:",
         target: "Heading 1",
-        opts: ["Title", "Heading 1", "Normal"],
+        opts: ["Title", "Heading 1", "Normal", "Subtitle"],
         knTitle: "การใช้ Heading สร้างสารบัญ",
         knText: "การจะให้โปรแกรม Word ดึงสารบัญอัตโนมัติได้ ผู้พิมพ์จะต้องกำหนดรูปแบบหัวข้อรายงานด้วยสไตล์ <b>Heading 1 (หัวเรื่อง 1)</b> หรือ Heading 2 ก่อนเสมอ"
       },
       {
-        id: 17, title: "Checkpoint 17: ไอคอนเครื่องมือปากกาเน้นข้อความ", badge: "Highlighter", pts: 1.0,
+        id: 18, title: "Checkpoint 18: ไอคอนปากกาเน้นข้อความ (Highlight)", badge: "Highlighter", pts: 1.0,
         mode: "choice",
-        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><rect x="36" y="32" width="68" height="26" rx="4" fill="#fef08a"/><text x="70" y="50" font-family="'Kanit', sans-serif" font-size="18" font-weight="900" fill="#854d0e" text-anchor="middle">ab</text><path d="M96 24l12 12-8 8-12-12z" fill="#0284c7"/></svg>`,
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="76" viewBox="0 0 300 76">
+          <rect width="300" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="0" y="0" width="300" height="22" fill="#2b579a"/>
+          <text x="10" y="15" fill="#ffffff" font-size="11" font-weight="bold" font-family="'Segoe UI', sans-serif">Font - Highlighter</text>
+          <g transform="translate(24, 28)">
+            <rect x="0" y="0" width="38" height="38" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+            <rect x="6" y="14" width="18" height="15" rx="3" fill="#fef08a"/>
+            <text x="15" y="26" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="900" fill="#854d0e" text-anchor="middle">ab</text>
+            <path d="M22 10l8 8-4 4-8-8z" fill="#0284c7"/>
+            <circle cx="19" cy="19" r="21" fill="none" stroke="#ef4444" stroke-width="3"/>
+          </g>
+          <text x="80" y="52" font-family="'Kanit', sans-serif" font-size="13.5" font-weight="bold" fill="#0f172a">ไอคอนปากกา ab สีเหลือง ทำหน้าที่อะไร?</text>
+        </svg>`,
         q: "ภารกิจ: สัญลักษณ์ปากกาไฮไลต์พร้อมตัวอักษร ab มีหน้าที่การทำงานตรงกับข้อใด:",
         target: "สีเน้นข้อความ (Text Highlight Color)",
         opts: ["สีเน้นข้อความ (Text Highlight Color)", "เปลี่ยนสีฟอนต์", "ล้างการจัดรูปแบบ", "แรเงาตาราง"],
@@ -789,34 +762,38 @@
         knText: "เครื่องมือ <b>Text Highlight Color</b> ทำหน้าที่เสมือนปากกาไฮไลต์เรืองแสง ใช้เน้นสีพื้นหลังเฉพาะคำหรือวลีที่สำคัญในรายงาน"
       },
       {
-        id: 18, title: "Checkpoint 18: การบันทึกส่งออกไฟล์งาน", badge: "Word Grand Master", pts: 1.0,
+        id: 19, title: "Checkpoint 19: การส่งออกไฟล์งาน", badge: "Export Pro", pts: 1.0,
         mode: "choice",
         q: "ภารกิจ: การส่งออกไฟล์เอกสารชนิดใดที่คงสภาพหน้ากระดาษและฟอนต์ได้แน่นอนที่สุดสำหรับนำไปพิมพ์งาน:",
         target: ".pdf",
-        opts: [".docx", ".txt", ".pdf"],
+        opts: [".docx", ".txt", ".pdf", ".rtf"],
         knTitle: "การส่งออกไฟล์เป็น PDF",
         knText: "ไฟล์สกุล <b>.pdf (Portable Document Format)</b> จะทำการล็อกการจัดวางหน้ากระดาษ ตำแหน่งภาพ และฟอนต์ไว้อย่างถาวร ทำให้ส่งไปเปิดเครื่องอื่นแล้วไม่เคลื่อนเพี้ยน"
       },
       {
-        id: 19, title: "Checkpoint 19: ไอคอนสร้างสัญลักษณ์หัวข้อย่อย", badge: "Bullet Master", pts: 1.0,
+        id: 20, title: "Checkpoint 20: ไอคอนสัญลักษณ์หัวข้อย่อย", badge: "Bullet Master", pts: 1.0,
         mode: "choice",
-        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><circle cx="44" cy="30" r="4" fill="#0284c7"/><line x1="56" y1="30" x2="104" y2="30" stroke="#334155" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="46" r="4" fill="#0284c7"/><line x1="56" y1="46" x2="104" y2="46" stroke="#334155" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="62" r="4" fill="#0284c7"/><line x1="56" y1="62" x2="104" y2="62" stroke="#334155" stroke-width="4" stroke-linecap="round"/></svg>`,
-        q: "ภารกิจ: สัญลักษณ์จุดวงกลมนำหน้ารายการข้อความในภาพนี้ คือคำสั่งใด:",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="76" viewBox="0 0 300 76">
+          <rect width="300" height="76" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+          <rect x="0" y="0" width="300" height="22" fill="#2b579a"/>
+          <text x="10" y="15" fill="#ffffff" font-size="11" font-weight="bold" font-family="'Segoe UI', sans-serif">Paragraph - Lists</text>
+          <g transform="translate(24, 28)">
+            <rect x="0" y="0" width="38" height="38" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+            <circle cx="10" cy="12" r="2.5" fill="#0284c7"/>
+            <line x1="16" y1="12" x2="30" y2="12" stroke="#334155" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="10" cy="19" r="2.5" fill="#0284c7"/>
+            <line x1="16" y1="19" x2="30" y2="19" stroke="#334155" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="10" cy="26" r="2.5" fill="#0284c7"/>
+            <line x1="16" y1="26" x2="30" y2="26" stroke="#334155" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="19" cy="19" r="21" fill="none" stroke="#ef4444" stroke-width="3"/>
+          </g>
+          <text x="80" y="52" font-family="'Kanit', sans-serif" font-size="13.5" font-weight="bold" fill="#0f172a">สัญลักษณ์จุดวงกลมนำหน้า คือคำสั่งใด?</text>
+        </svg>`,
+        q: "ภารกิจด่านสุดท้าย: สัญลักษณ์จุดนำหน้ารายการข้อความในวงกลมแดง คือคำสั่งใด:",
         target: "สัญลักษณ์แสดงหัวข้อย่อย (Bullets)",
         opts: ["สัญลักษณ์แสดงหัวข้อย่อย (Bullets)", "ลำดับเลข (Numbering)", "เพิ่มการเยื้อง", "แทรกรูปร่าง"],
         knTitle: "สัญลักษณ์แสดงหัวข้อย่อย (Bullets)",
         knText: "คำสั่ง <b>Bullets</b> ใช้สร้างรายการข้อความที่มีสัญลักษณ์รูปจุดหรือไอคอนนำหน้า สำหรับรายการที่ไม่จำเป็นต้องเรียงลำดับก่อนหลัง"
-      },
-      {
-        id: 20, title: "Checkpoint 20: ภารกิจจับคู่คำสั่งงานพิมพ์", badge: "Certified Word Hero", pts: 1.0,
-        mode: "matching",
-        q: "ภารกิจด่านสุดท้าย: แตะจับคู่ 'คำสั่ง' กับ 'คีย์ลัด' ให้ถูกต้องสมบูรณ์ทั้ง 2 คู่:",
-        pairs: [
-          { action: "พิมพ์เอกสาร (Print)", key: "Ctrl + P" },
-          { action: "เลือกข้อความทั้งหมด", key: "Ctrl + A" }
-        ],
-        knTitle: "คีย์ลัดคำสั่งพื้นฐาน (Print & Select All)",
-        knText: "<b>Ctrl + P</b> ใช้เปิดหน้าต่างสั่งพิมพ์เอกสารออกเครื่องพิมพ์ และ <b>Ctrl + A</b> ย่อมาจาก All ใช้คลุมดำเลือกข้อความและวัตถุทั้งหมดในเอกสารทันที"
       }
     ];
 
@@ -1354,8 +1331,6 @@
     }
 
     let activeStageIdx = 0;
-    let selectedMatchAction = null;
-    let currentPairsSolved = 0;
 
     function openCheckpointModal(idx) {
       isModalOpen = true;
@@ -1379,73 +1354,7 @@
       const stageBox = document.getElementById("cp-minigame-area");
       stageBox.innerHTML = "";
 
-      if (m.mode === "matching") {
-        selectedMatchAction = null;
-        currentPairsSolved = 0;
-
-        const container = document.createElement("div");
-        container.className = "match-container";
-
-        const colLeft = document.createElement("div");
-        colLeft.className = "match-col";
-
-        const colRight = document.createElement("div");
-        colRight.className = "match-col";
-
-        const shuffledKeys = [...m.pairs].sort(() => Math.random() - 0.5);
-
-        m.pairs.forEach(pair => {
-          const btnAction = document.createElement("div");
-          btnAction.className = "match-card";
-          btnAction.innerText = pair.action;
-          btnAction.dataset.match = pair.key;
-
-          btnAction.onclick = () => {
-            if (btnAction.classList.contains("paired")) return;
-            colLeft.querySelectorAll(".match-card").forEach(c => c.classList.remove("selected"));
-            btnAction.classList.add("selected");
-            selectedMatchAction = btnAction;
-          };
-          colLeft.appendChild(btnAction);
-        });
-
-        shuffledKeys.forEach(pair => {
-          const btnKey = document.createElement("div");
-          btnKey.className = "match-card";
-          btnKey.innerText = pair.key;
-          btnKey.dataset.key = pair.key;
-
-          btnKey.onclick = () => {
-            if (btnKey.classList.contains("paired")) return;
-            if (!selectedMatchAction) {
-              alert("กรุณาเลือกคำสั่งฝั่งซ้ายก่อนจับคู่ครับ");
-              return;
-            }
-
-            if (selectedMatchAction.dataset.match === btnKey.dataset.key) {
-              selectedMatchAction.classList.remove("selected");
-              selectedMatchAction.classList.add("paired");
-              btnKey.classList.add("paired");
-              selectedMatchAction = null;
-              currentPairsSolved++;
-
-              if (currentPairsSolved === m.pairs.length) {
-                setTimeout(() => submitCorrectTask(stageIdx), 300);
-              }
-            } else {
-              selectedMatchAction.classList.remove("selected");
-              selectedMatchAction = null;
-              submitWrongTask(stageIdx);
-            }
-          };
-          colRight.appendChild(btnKey);
-        });
-
-        container.appendChild(colLeft);
-        container.appendChild(colRight);
-        stageBox.appendChild(container);
-      }
-      else if (m.mode === "ribbon") {
+      if (m.mode === "ribbon") {
         const tabs = ["ไฟล์ (File)", "หน้าแรก (Home)", "แทรก (Insert)", "เค้าโครง (Layout)"];
         const ribbonDiv = document.createElement("div");
         ribbonDiv.className = "ribbon-bar";
@@ -1461,42 +1370,6 @@
         });
         stageBox.appendChild(ribbonDiv);
       }
-      else if (m.mode === "align") {
-        stageBox.innerHTML = `
-          <div class="doc-preview-box">
-            <div id="sample-text" style="font-size:0.92rem; font-weight:600; color:#0f172a; text-align:left;">หัวข้อรายงาน ม.1</div>
-            <div style="height:5px; background:#e2e8f0; width:100%; border-radius:4px; margin-top:6px;"></div>
-          </div>
-          <div style="display:flex; gap:8px;">
-            <button class="ribbon-btn" onclick="applyAlignment('left', ${stageIdx})">ชิดซ้าย</button>
-            <button class="ribbon-btn" style="background:#e0f2fe; border-color:#38bdf8;" onclick="applyAlignment('center', ${stageIdx})">กึ่งกลาง</button>
-            <button class="ribbon-btn" onclick="applyAlignment('right', ${stageIdx})">ชิดขวา</button>
-          </div>
-        `;
-      }
-      else if (m.mode === "table_grid") {
-        const grid = document.createElement("div");
-        grid.className = "table-picker";
-        for (let r = 1; r <= 3; r++) {
-          for (let c = 1; c <= 4; c++) {
-            const cell = document.createElement("div");
-            cell.className = "table-cell";
-            cell.dataset.r = r;
-            cell.dataset.c = c;
-            cell.onclick = () => {
-              highlightGrid(c, r);
-              if (c === m.targetCols && r === m.targetRows) {
-                setTimeout(() => submitCorrectTask(stageIdx), 200);
-              } else {
-                setTimeout(() => submitWrongTask(stageIdx), 200);
-              }
-            };
-            grid.appendChild(cell);
-          }
-        }
-        stageBox.innerHTML = `<div style="font-size:0.9rem; color:#64748b; margin-bottom:4px;">แตะช่องเพื่อระบุขนาดตารางที่โจทย์ต้องการ:</div>`;
-        stageBox.appendChild(grid);
-      }
       else if (m.mode === "choice") {
         const choiceDiv = document.createElement("div");
         choiceDiv.style.display = "flex";
@@ -1506,7 +1379,7 @@
 
         if (m.imageSvg) {
           const imgHolder = document.createElement("div");
-          imgHolder.style.marginBottom = "6px";
+          imgHolder.style.marginBottom = "8px";
           imgHolder.style.display = "flex";
           imgHolder.style.justifyContent = "center";
           imgHolder.innerHTML = m.imageSvg;
@@ -1526,24 +1399,6 @@
           choiceDiv.appendChild(btn);
         });
         stageBox.appendChild(choiceDiv);
-      }
-    }
-
-    function highlightGrid(cols, rows) {
-      document.querySelectorAll(".table-cell").forEach(cell => {
-        const c = parseInt(cell.dataset.c);
-        const r = parseInt(cell.dataset.r);
-        if (c <= cols && r <= rows) cell.classList.add("selected");
-        else cell.classList.remove("selected");
-      });
-    }
-
-    function applyAlignment(type, stageIdx) {
-      document.getElementById("sample-text").style.textAlign = type;
-      if (type === "center") {
-        setTimeout(() => submitCorrectTask(stageIdx), 250);
-      } else {
-        setTimeout(() => submitWrongTask(stageIdx), 250);
       }
     }
 
