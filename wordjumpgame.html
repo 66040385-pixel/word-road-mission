@@ -222,108 +222,83 @@
     .hidden { display: none !important; }
 
     /* ========================================================
-       สไตล์ส่วนวิธีการเล่น (โครงสร้างแบบในภาพ + โทนชมพูหวาน)
+       สไตล์ส่วนวิธีการเล่น (ดัดแปลงจาก Word Road 3D สู่โทนสีชมพูหวาน)
        ======================================================== */
-    .guide-banner-card {
-      border-radius: 22px;
-      overflow: hidden;
-      border: 2px solid #ffccd5;
-      background: #ffffff;
-      box-shadow: 0 10px 25px rgba(255, 117, 143, 0.15);
-      margin-bottom: 14px;
-    }
-    .guide-header-pink {
-      background: linear-gradient(180deg, #ff4d6d 0%, #e01e37 100%);
-      padding: 16px 12px 14px 12px;
-      color: #ffffff;
-      text-align: center;
-      border-bottom: 4px solid #ffb3c1;
-    }
-    .guide-main-title {
-      font-size: clamp(20px, 5.5vw, 25px);
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: #ffffff;
-      margin: 0;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    }
-    .guide-sub-pill {
-      background: #ffe4e6;
-      color: #b91c1c;
-      font-size: 11.5px;
-      font-weight: 900;
-      padding: 5px 14px;
-      border-radius: 20px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 8px;
-      border: 1.5px solid #ffccd5;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    }
-    .guide-content-body {
-      padding: 12px;
-      background: #fff;
-    }
-    .guide-boxes-row {
+    .rule-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 10px;
+      margin: 12px 0 10px 0;
       text-align: left;
     }
-    .guide-subbox {
-      border-radius: 16px;
-      padding: 10px 12px;
-      font-size: 11.5px;
-    }
-    .guide-subbox-pink-soft {
+    .rule-card {
       background: #fff5f7;
       border: 2px solid #ffccd5;
-    }
-    .guide-subbox-rose {
-      background: #fff1f2;
-      border: 2px solid #fecdd3;
-    }
-    .guide-box-title {
-      font-weight: 900;
-      font-size: 12px;
-      margin-bottom: 6px;
+      border-radius: 16px;
+      padding: 11px 13px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 5px;
     }
-    .guide-subbox-pink-soft .guide-box-title {
+    .rule-card.points {
+      background: #fefce8;
+      border-color: #fde047;
+    }
+    .rule-header {
+      font-size: 0.88rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rule-card .rule-header {
       color: #e01e37;
     }
-    .guide-subbox-rose .guide-box-title {
-      color: #be123c;
+    .rule-card .rule-header svg {
+      width: 18px;
+      height: 18px;
+      fill: #e01e37;
+      flex-shrink: 0;
     }
-    .guide-bullets {
-      margin: 0;
-      padding-left: 14px;
+    .rule-card.points .rule-header {
+      color: #ca8a04;
+    }
+    .rule-card.points .rule-header svg {
+      width: 18px;
+      height: 18px;
+      fill: #ca8a04;
+      flex-shrink: 0;
+    }
+    .rule-card p {
+      font-size: 0.78rem;
       color: #475569;
-      line-height: 1.55;
+      line-height: 1.45;
+      font-weight: 500;
+      margin: 0;
     }
-    .guide-bullets li {
-      margin-bottom: 2px;
-    }
-    .guide-dashed-tip {
+    .rule-banner-single {
       background: #fff5f7;
       border: 2px dashed #fda4af;
-      border-radius: 16px;
-      padding: 9px 12px;
-      font-size: 11.5px;
+      border-radius: 14px;
+      padding: 10px 13px;
+      font-size: 0.82rem;
       color: #334155;
-      line-height: 1.45;
+      margin-bottom: 14px;
       text-align: left;
       display: flex;
       align-items: flex-start;
-      gap: 7px;
+      gap: 8px;
+      line-height: 1.45;
+    }
+    .rule-banner-single svg {
+      width: 19px;
+      height: 19px;
+      fill: #e01e37;
+      flex-shrink: 0;
+      margin-top: 1px;
     }
     @media (max-width: 440px) {
-      .guide-boxes-row {
+      .rule-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -763,52 +738,31 @@
 
   <!-- 1. หน้าแรก -->
   <div id="view-mode" class="container">
-    
-    <!-- กล่องแสดงหัวเรื่องและวิธีการเล่น โทนสีชมพู ตามดีไซน์ในภาพ -->
-    <div class="guide-banner-card">
-      <div class="guide-header-pink">
-        <h1 class="guide-main-title">HUNTER CYBER MISSION</h1>
-        <div class="guide-sub-pill">
-          <svg class="svg-ic" style="width:14px; height:14px; color:#b91c1c;" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 16h2v2h-2v-2zm0-6h2v4h-2v-4z"/></svg>
-          ภารกิจกระโดดพิชิต Microsoft Word (20 ข้อ)
+    <h1>HUNTER CYBER MISSION</h1>
+    <p style="color: #64748b; font-size:14px; margin-bottom: 10px;">เกมตอบคำถามชิงความสูง (Word Master)</p>
+
+    <!-- ส่วนวิธีการเล่นที่ดึงมาจากโค้ด Word Road 3D และปรับเข้ากับเกมนี้ -->
+    <div class="rule-grid">
+      <div class="rule-card">
+        <div class="rule-header">
+          <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+          <span>วิธีการบังคับตัวละคร</span>
         </div>
+        <p>• ใช้ปุ่มลูกศร / A-D เคลื่อนที่ซ้าย-ขวา<br>• Spacebar หรือปุ่ม Jump เพื่อกระโดด</p>
       </div>
       
-      <div class="guide-content-body">
-        <div class="guide-boxes-row">
-          <!-- กล่องซ้าย: วิธีการควบคุม -->
-          <div class="guide-subbox guide-subbox-pink-soft">
-            <div class="guide-box-title">
-              <svg class="svg-ic" viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-              วิธีการเล่น & ควบคุม
-            </div>
-            <ul class="guide-bullets">
-              <li>ใช้ปุ่มลูกศร / A-D เคลื่อนที่</li>
-              <li>ปุ่ม Spacebar / W เพื่อกระโดด</li>
-              <li>กระโดด 1 ครั้ง ใช้พลังงาน 1 หน่วย</li>
-            </ul>
-          </div>
-
-          <!-- กล่องขวา: ระบบคะแนนและพลังงาน -->
-          <div class="guide-subbox guide-subbox-rose">
-            <div class="guide-box-title">
-              <svg class="svg-ic" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
-              ระบบคิดคะแนน (20 ข้อ)
-            </div>
-            <ul class="guide-bullets">
-              <li>รวม 20 ข้อ วัดความรู้ Microsoft Word</li>
-              <li>ตอบถูกรับพลังงาน +5 ต่อข้อ</li>
-              <li>ชิงอันดับความสูงสูงสุดตามเวลา</li>
-            </ul>
-          </div>
+      <div class="rule-card points">
+        <div class="rule-header">
+          <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+          <span>ระบบคิดคะแนน & พลังงาน</span>
         </div>
-
-        <!-- แถบด้านล่างเส้นประ -->
-        <div class="guide-dashed-tip">
-          <svg class="svg-ic" style="color: #e01e37; margin-top: 1px;" viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A5.006 5.006 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-          <div><b>วิธีเอาตัวรอด:</b> ระวังกับดักสีแดงและแท่นเปราะบาง! หากพลังงานหมดหรือติดกับดัก สามารถกดปุ่มตอบคำถามเพื่อชาร์จตัวละครได้ทันที!</div>
-        </div>
+        <p>• มีทั้งหมด 20 ข้อ หมวด Microsoft Word<br>• ตอบถูกรับพลังงาน <b>+5</b> ต่อข้อเพื่อกระโดดต่อ</p>
       </div>
+    </div>
+
+    <div class="rule-banner-single">
+      <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A5.006 5.006 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
+      <div><b>เคล็ดลับเอาชนะ:</b> ระวังกับดักสีแดงและแท่นเปราะบาง! หากพลังงานหมดหรือติดกับดัก สามารถกดปุ่มตอบคำถามเพื่อชาร์จตัวละครได้ทันที</div>
     </div>
 
     <button class="btn" id="btn-mode-join" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); margin-bottom: 8px;" onclick="switchScreen('view-join')">
