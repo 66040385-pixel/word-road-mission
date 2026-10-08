@@ -36,7 +36,6 @@
       width: 100% !important; height: 100% !important; display: block;
     }
 
-    /* ปรับแต่ง Top HUD แก้ชื่อเบียดและทับซ้อน */
     #top-hud {
       position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
       background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(14px);
@@ -469,7 +468,7 @@
     </div>
     <div class="hud-chip">
       <svg class="hud-icon" viewBox="0 0 24 24"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>
-      <span class="hud-pill" id="hud-stage">ด่าน 1 / 12</span>
+      <span class="hud-pill" id="hud-stage">ด่าน 1 / 20</span>
     </div>
     <div class="hud-chip">
       <svg class="hud-icon" style="fill:#10b981;" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
@@ -479,7 +478,7 @@
 
   <div id="minimap-card">
     <canvas id="minimapCanvas" width="165" height="165"></canvas>
-    <div class="map-tag">GPS MAP (1-12)</div>
+    <div class="map-tag">GPS MAP (1-20)</div>
   </div>
 
   <div id="speedometer-box">
@@ -515,12 +514,11 @@
 
   <div id="start-screen" class="overlay-screen">
     <div class="start-modal">
-      
       <div class="hero-banner">
         <div class="game-logo-title">WORD ROAD 3D</div>
         <div class="game-sub-badge">
           <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
-          <span>ภารกิจขับรถซิ่ง พิชิต Microsoft Word ม.1</span>
+          <span>ภารกิจขับรถซิ่ง พิชิต Microsoft Word ม.1 (20 ข้อ 20 คะแนน)</span>
         </div>
       </div>
 
@@ -538,13 +536,13 @@
             <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
             <span>ระบบคิดคะแนน</span>
           </div>
-          <p>• ตอบถูกครั้งแรก รับคะแนนทันที (เต็ม 20)<br>• ตอบผิด จะต้องเปิด <b>ใบความรู้</b> เพื่อทำข้อแก้ตัว</p>
+          <p>• มีทั้งหมด 20 ด่าน ด่านละ 1 คะแนน (เต็ม 20)<br>• ตอบผิด จะต้องเปิด <b>ใบความรู้</b> เพื่อทำข้อแก้ตัว</p>
         </div>
       </div>
 
       <div class="rule-banner-single">
         <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-        <div><b>วิธีปลดม่านเลเซอร์:</b> ขับรถชนม่านพลังงานแต่ละด่าน ทำภารกิจจับคู่และตอบคำถามให้ถูกต้องเพื่อเปิดทางไปต่อ!</div>
+        <div><b>วิธีปลดม่านเลเซอร์:</b> ขับรถชนม่านพลังงานแต่ละด่าน พิชิตโจทย์คำถามและภาพสัญลักษณ์เพื่อเปิดทางไปต่อ!</div>
       </div>
 
       <input type="text" id="player-input" class="start-input" placeholder="พิมพ์ชื่อ - นามสกุล หรือ เลขที่..." autocomplete="off" />
@@ -553,7 +551,6 @@
         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         เข้าสู่สนามแข่ง (START MISSION)
       </button>
-
     </div>
   </div>
 
@@ -610,7 +607,7 @@
   <div id="finish-screen" class="overlay-screen" style="display:none;">
     <div class="modal-card">
       <div class="game-h1" style="-webkit-text-fill-color: #4ade80;">VICTORY LAP!</div>
-      <p style="color: #cbd5e1; font-size: 0.95rem;">คุณพิชิตเส้นทาง Word Road ครบถ้วนทั้ง 12 สถานี</p>
+      <p style="color: #cbd5e1; font-size: 0.95rem;">คุณพิชิตเส้นทาง Word Road ครบถ้วนทั้ง 20 สถานี</p>
 
       <div style="background: #030712; border: 2px dashed #facc15; border-radius: 18px; padding: 20px; margin: 18px 0;">
         <div style="font-size: 0.85rem; color: #94a3b8;">คะแนนรวมทั้งสิ้น</div>
@@ -631,6 +628,7 @@
   </div>
 
   <script>
+    // ข้อสอบ 20 ข้อ ข้อละ 1 คะแนน รวม 20 คะแนนเต็ม สลับโจทย์ข้อความและโจทย์ภาพ
     const missions = [
       {
         id: 1, title: "Checkpoint 1: แถบ Ribbon", badge: "Word Beginner", pts: 1.0,
@@ -641,15 +639,14 @@
         knText: "แถบ <b>หน้าแรก (Home)</b> เป็นศูนย์รวมคำสั่งพื้นฐานที่ใช้บ่อยที่สุด ได้แก่ การเปลี่ยนฟอนต์, ปรับขนาดอักษร, ทำตัวหนา/เอียง/ขีดเส้นใต้, และการจัดตำแหน่งย่อหน้า"
       },
       {
-        id: 2, title: "Checkpoint 2: ภารกิจจับคู่คีย์ลัดงานเอกสาร", badge: "Shortcut Master", pts: 1.0,
-        mode: "matching",
-        q: "ภารกิจ: แตะจับคู่ 'คำสั่งจัดการเอกสาร' กับ 'คีย์ลัด' ให้ถูกต้องทั้ง 2 คู่:",
-        pairs: [
-          { action: "บันทึกเอกสาร", key: "Ctrl + S" },
-          { action: "สร้างเอกสารใหม่", key: "Ctrl + N" }
-        ],
-        knTitle: "คีย์ลัดการจัดการไฟล์เอกสาร",
-        knText: "<b>Ctrl + S</b> ใช้บันทึกเอกสารด่วนเพื่อกันข้อมูลสูญหาย และ <b>Ctrl + N</b> ใช้สร้างหน้าต่างเอกสารเปล่าแผ่นใหม่"
+        id: 2, title: "Checkpoint 2: ไอคอนสัญลักษณ์ตัวหนา", badge: "Font Styler", pts: 1.0,
+        mode: "choice",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#0284c7"/><text x="70" y="60" font-family="'Chakra Petch', sans-serif" font-size="46" font-weight="900" fill="#ffffff" text-anchor="middle">B</text></svg>`,
+        q: "ภารกิจ: สัญลักษณ์เครื่องมือในภาพนี้ มีหน้าที่ทำงานตรงกับคำสั่งใด:",
+        target: "ทำตัวอักษรหนา (Bold)",
+        opts: ["ทำตัวอักษรหนา (Bold)", "ทำตัวเอียง (Italic)", "ขีดเส้นใต้ (Underline)", "ใส่สีพื้นหลัง"],
+        knTitle: "เครื่องมือ Bold (ตัวหนา)",
+        knText: "ปุ่มสัญลักษณ์ <b>B (Bold)</b> หรือคีย์ลัด Ctrl + B ใช้ทำตัวอักษรให้หนาขึ้นเพื่อเน้นข้อความสำคัญหรือหัวข้อรายงาน"
       },
       {
         id: 3, title: "Checkpoint 3: กู้คืนข้อความผิดพลาด", badge: "Text Specialist", pts: 1.0,
@@ -661,18 +658,17 @@
         knText: "เมื่อทำงานพลาดหรือเผลอลบข้อความ ให้ใช้คีย์ลัด <b>Ctrl + Z</b> เพื่อดึงข้อมูลเดิมกลับคืนมาทันที แต่หากต้องการทำซ้ำคำสั่งให้กด <b>Ctrl + Y (Redo)</b>"
       },
       {
-        id: 4, title: "Checkpoint 4: ภารกิจจับคู่สไตล์ตัวอักษร", badge: "Font Styler", pts: 1.0,
-        mode: "matching",
-        q: "ภารกิจ: แตะจับคู่ 'รูปแบบตัวอักษร' กับ 'คีย์ลัดคำสั่ง' ให้ถูกต้องครบทั้ง 2 คู่:",
-        pairs: [
-          { action: "ตัวหนา", key: "Ctrl + B" },
-          { action: "ตัวเอียง", key: "Ctrl + I" }
-        ],
-        knTitle: "คีย์ลัดปรับแต่งลักษณะตัวอักษร",
-        knText: "<b>Ctrl + B</b> ย่อมาจาก Bold ใช้ทำตัวหนาเพื่อเน้นหัวข้อ และ <b>Ctrl + I</b> ย่อมาจาก Italic ใช้ทำตัวเอียงสำหรับคำศัพท์เฉพาะ"
+        id: 4, title: "Checkpoint 4: ไอคอนคำสั่งตัดข้อความ", badge: "Clipboard Master", pts: 1.0,
+        mode: "choice",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><path d="M52 38a7 7 0 1 0-7-7c0 2.2 1 4.2 2.6 5.5l9.4 6.5-12 11.2a7 7 0 1 0 2.7 2.7l14.3-13.3 14.3 13.3a7 7 0 1 0 2.7-2.7l-12-11.2 9.4-6.5a7 7 0 1 0-4.4-5.5c0-1-.2-1.9-.6-2.8L62 42.5l-5-3.5c-1.3-.9-2.9-1-5-1z" fill="#e11d48"/></svg>`,
+        q: "ภารกิจ: สัญลักษณ์รูปกรรไกรในภาพ มีหน้าที่ทำงานตรงกับข้อใด:",
+        target: "ตัดข้อความ (Cut)",
+        opts: ["คัดลอกข้อความ (Copy)", "ตัดข้อความ (Cut)", "วางข้อความ (Paste)", "ลบหน้ากระดาษ"],
+        knTitle: "เครื่องมือตัด (Cut)",
+        knText: "รูปกรรไกรคือคำสั่ง <b>ตัด (Cut)</b> หรือคีย์ลัด <b>Ctrl + X</b> ใช้ย้ายข้อความออกจากตำแหน่งเดิมไปไว้ในคลิปบอร์ดเพื่อเตรียมวางในที่ใหม่"
       },
       {
-        id: 5, title: "Checkpoint 5: จัดตำแหน่งย่อหน้า", badge: "Paragraph Pro", pts: 1.5,
+        id: 5, title: "Checkpoint 5: จัดตำแหน่งย่อหน้า", badge: "Paragraph Pro", pts: 1.0,
         mode: "align",
         q: "ภารกิจ: ทดลองกดปุ่มจัดตำแหน่งเอกสาร เพื่อวางข้อความให้อยู่ 'กึ่งกลางหน้ากระดาษ':",
         target: "center",
@@ -680,7 +676,17 @@
         knText: "การจัดข้อความให้อยู่ตรงกลางหน้ากระดาษพอดีให้ใช้คำสั่ง <b>Center</b> (หรือกด Ctrl + E) ซึ่งเหมาะสำหรับการจัดชื่อเรื่องหรือหัวข้อรายงาน"
       },
       {
-        id: 6, title: "Checkpoint 6: ลำดับขั้นตอน", badge: "List Architect", pts: 1.5,
+        id: 6, title: "Checkpoint 6: ไอคอนจัดกึ่งกลางข้อความ", badge: "Align Specialist", pts: 1.0,
+        mode: "choice",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><line x1="30" y1="28" x2="110" y2="28" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/><line x1="45" y1="42" x2="95" y2="42" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/><line x1="30" y1="56" x2="110" y2="56" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="70" x2="90" y2="70" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/></svg>`,
+        q: "ภารกิจ: สัญลักษณ์เส้นในภาพนี้ คือคำสั่งจัดแนวย่อหน้าแบบใด:",
+        target: "จัดกึ่งกลาง (Center)",
+        opts: ["จัดชิดซ้าย (Align Left)", "จัดกึ่งกลาง (Center)", "จัดชิดขวา (Align Right)", "กระจายแบบไทย (Thai Distributed)"],
+        knTitle: "ไอคอนจัดกึ่งกลาง (Center Alignment)",
+        knText: "สัญลักษณ์เส้นที่มีความยาวสั้นยาวสลับกันโดยตรงกลางเท่ากันคือคำสั่ง <b>Center (Ctrl + E)</b> ใช้จัดตำแหน่งให้อยู่ตรงกลางหน้ากระดาษพอดี"
+      },
+      {
+        id: 7, title: "Checkpoint 7: ลำดับขั้นตอน", badge: "List Architect", pts: 1.0,
         mode: "choice",
         q: "ภารกิจ: เครื่องมือใดใช้สำหรับสร้างรายการข้อความที่มีลำดับ 1, 2, 3 ก่อนหลัง:",
         target: "Numbering",
@@ -689,7 +695,17 @@
         knText: "เมื่อข้อความมีขั้นตอนที่ต้องทำตามลำดับก่อนหลัง ให้ใช้คำสั่ง <b>Numbering (ลำดับเลข)</b> แต่หากเป็นรายการทั่วไปที่สลับลำดับได้ ให้ใช้ <b>Bullets (สัญลักษณ์จุด)</b>"
       },
       {
-        id: 7, title: "Checkpoint 7: การตัดข้อความรูปภาพ", badge: "Media Specialist", pts: 1.5,
+        id: 8, title: "Checkpoint 8: ไอคอนคัดลอกรูปแบบ (Format Painter)", badge: "Brush Pro", pts: 1.0,
+        mode: "choice",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><path d="M55 24h30v14H55z" fill="#f59e0b"/><path d="M60 38v8a10 10 0 0 0 10 10v16h4V56a10 10 0 0 0 10-10v-8H60z" fill="#64748b"/></svg>`,
+        q: "ภารกิจ: สัญลักษณ์แปรงทาสีในแถบเครื่องมือ Microsoft Word มีประโยชน์อย่างไร:",
+        target: "คัดลอกเฉพาะรูปแบบตัวอักษร (Format Painter)",
+        opts: ["ระบายสีพื้นหลังตาราง", "คัดลอกเฉพาะรูปแบบตัวอักษร (Format Painter)", "ลบข้อความทั้งหมด", "วาดรูปร่างอิสระ"],
+        knTitle: "ตัวคัดวางรูปแบบ (Format Painter)",
+        knText: "เครื่องมือแปรงทาสีคือ <b>Format Painter</b> ใช้สำหรับคัดลอกแบบอักษร สี และขนาดจากข้อความต้นฉบับไปป้ายใส่ข้อความอื่นทันทีโดยไม่ต้องตั้งค่าใหม่"
+      },
+      {
+        id: 9, title: "Checkpoint 9: การตัดข้อความรูปภาพ", badge: "Media Specialist", pts: 1.0,
         mode: "choice",
         q: "ภารกิจ: คำสั่ง Wrap Text รูปแบบใดทำให้ข้อความไหลล้อมรอบกรอบรูปภาพอย่างอิสระ:",
         target: "Square",
@@ -698,7 +714,7 @@
         knText: "การตั้งค่า <b>Wrap Text</b> เป็น <b>Square</b> จะช่วยให้ข้อความไหลล้อมรอบกรอบสี่เหลี่ยมของภาพ และทำให้สามารถเลื่อนตำแหน่งภาพได้อย่างอิสระ"
       },
       {
-        id: 8, title: "Checkpoint 8: โครงสร้างตาราง", badge: "Table Builder", pts: 1.5,
+        id: 10, title: "Checkpoint 10: โครงสร้างตาราง", badge: "Table Builder", pts: 1.0,
         mode: "table_grid",
         q: "ภารกิจ: กำหนดขนาดสร้างตารางข้อมูลจำนวน '3 คอลัมน์ x 2 แถว' ให้ถูกต้อง:",
         targetCols: 3, targetRows: 2,
@@ -706,7 +722,17 @@
         knText: "การสร้างตารางใน Word จะนับตาม <b>คอลัมน์ (แนวตั้ง)</b> x <b>แถว (แนวนอน)</b> ตารางขนาด 3 x 2 จึงหมายถึง มี 3 ช่องแนวตั้ง และ 2 แถวแนวนอน"
       },
       {
-        id: 9, title: "Checkpoint 9: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 2.5,
+        id: 11, title: "Checkpoint 11: ไอคอนบันทึกเอกสาร (Save)", badge: "Storage Keeper", pts: 1.0,
+        mode: "choice",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#059669"/><path d="M50 22h32l12 12v32a4 4 0 0 1-4 4H50a4 4 0 0 1-4-4V26a4 4 0 0 1 4-4zm6 0v12h20V22H56zm-4 38h36v-16H52v16z" fill="#ffffff"/></svg>`,
+        q: "ภารกิจ: สัญลักษณ์รูปแผ่นดิสก์เก็ตนี้ตรงกับคำสั่งและคีย์ลัดใด:",
+        target: "บันทึกเอกสาร (Save - Ctrl + S)",
+        opts: ["พิมพ์เอกสาร (Print - Ctrl + P)", "บันทึกเอกสาร (Save - Ctrl + S)", "เปิดไฟล์ (Open - Ctrl + O)", "ปิดหน้าต่าง (Close - Ctrl + W)"],
+        knTitle: "คำสั่งบันทึกเอกสาร (Save)",
+        knText: "สัญลักษณ์รูปแผ่นฟลอปปีดิสก์คือปุ่ม <b>บันทึก (Save)</b> หรือคีย์ลัด <b>Ctrl + S</b> ควรหมั่นกดบ่อยๆ ระหว่างพิมพ์เพื่อป้องกันข้อมูลสูญหาย"
+      },
+      {
+        id: 12, title: "Checkpoint 12: การวางแนวกระดาษ", badge: "Layout Pilot", pts: 1.0,
         mode: "choice",
         q: "ภารกิจ: หากต้องการพิมพ์เอกสารที่มีตารางกว้าง ต้องตั้งค่าหน้ากระดาษแบบใดในเมนู Orientation:",
         target: "Landscape",
@@ -715,31 +741,82 @@
         knText: "ในแท็บ <b>Layout (เค้าโครง)</b> คำสั่ง <b>Orientation</b> มี 2 แบบ: <b>Portrait (แนวตั้ง)</b> สำหรับเอกสารทั่วไป และ <b>Landscape (แนวนอน)</b> สำหรับตารางหรือรูปภาพขนาดกว้าง"
       },
       {
-        id: 10, title: "Checkpoint 10: สัญลักษณ์ตรวจคำผิด", badge: "Doc Inspector", pts: 2.5,
+        id: 13, title: "Checkpoint 13: สัญลักษณ์ตรวจสอบคำผิด", badge: "Doc Inspector", pts: 1.0,
         mode: "choice",
-        q: "ภารกิจ: ในโปรแกรม Word การตรวจพบคำที่อาจสะกดผิดจะแจ้งเตือนด้วยสัญลักษณ์ใดใต้คำ:",
-        target: "เส้นใต้หยักสีแดง",
-        opts: ["เส้นใต้ขีดทึบสีดำ", "เส้นใต้หยักสีแดง", "เส้นใต้เส้นคู่สีเขียว"],
-        knTitle: "การตรวจสอบคำสะกดผิด (Proofing)",
-        knText: "ใน Microsoft Word เส้นหยักใต้ข้อความมีความหมายเฉพาะ: <b>เส้นหยักสีแดง</b> หมายถึงสะกดคำผิด ส่วน <b>เส้นหยักสีฟ้า</b> หมายถึงไวยากรณ์หรือการเว้นวรรคผิดพลาด"
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><text x="70" y="44" font-family="'Kanit', sans-serif" font-size="24" font-weight="bold" fill="#0f172a" text-anchor="middle">คอมพิวเตอ</text><path d="M36 54 Q42 60 48 54 T60 54 T72 54 T84 54 T96 54 T104 54" fill="none" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/></svg>`,
+        q: "ภารกิจ: เส้นหยักสีแดงใต้ข้อความดังภาพ มีความหมายว่าอย่างไร:",
+        target: "อาจมีการสะกดคำผิด (Spelling Error)",
+        opts: ["อาจมีการสะกดคำผิด (Spelling Error)", "ไวยากรณ์ผิดพลาด", "ข้อความถูกใส่ไฮไลต์", "เป็นข้อความที่มีลิงก์"],
+        knTitle: "เส้นใต้แจ้งเตือนคำผิด (Proofing)",
+        knText: "<b>เส้นหยักสีแดง</b> หมายถึงระบบตรวจพบคำสะกดผิด ส่วน <b>เส้นหยักสีฟ้า/เขียว</b> หมายถึงการเว้นวรรคหรือหลักไวยากรณ์ที่อาจไม่ถูกต้อง"
       },
       {
-        id: 11, title: "Checkpoint 11: การทำสารบัญ", badge: "Style Maestro", pts: 2.5,
+        id: 14, title: "Checkpoint 14: คีย์ลัดค้นหาคำในเอกสาร", badge: "Search Master", pts: 1.0,
+        mode: "choice",
+        q: "ภารกิจ: หากต้องการค้นหาคำเฉพาะบางคำในรายงานที่มีความยาว 50 หน้าอย่างรวดเร็ว ต้องใช้คีย์ลัดใด:",
+        target: "Ctrl + F",
+        opts: ["Ctrl + F", "Ctrl + H", "Ctrl + K", "Ctrl + G"],
+        knTitle: "คีย์ลัดค้นหาข้อความ (Find)",
+        knText: "<b>Ctrl + F (Find)</b> ใช้เปิดแถบค้นหาข้อความในเอกสาร ส่วน <b>Ctrl + H (Replace)</b> ใช้สำหรับค้นหาและแทนที่คำด้วยคำใหม่"
+      },
+      {
+        id: 15, title: "Checkpoint 15: ไอคอนสีตัวอักษร (Font Color)", badge: "Color Artist", pts: 1.0,
+        mode: "choice",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><text x="70" y="52" font-family="'Kanit', sans-serif" font-size="44" font-weight="900" fill="#1e293b" text-anchor="middle">A</text><rect x="42" y="60" width="56" height="8" rx="3" fill="#e11d48"/></svg>`,
+        q: "ภารกิจ: สัญลักษณ์ตัวอักษร A ที่มีแถบสีด้านล่างนี้ใช้สำหรับคำสั่งใด:",
+        target: "เปลี่ยนสีตัวอักษร (Font Color)",
+        opts: ["เน้นข้อความ (Highlight)", "เปลี่ยนสีตัวอักษร (Font Color)", "ใส่เอฟเฟกต์เงาข้อความ", "เปลี่ยนฟอนต์"],
+        knTitle: "เครื่องมือสีแบบอักษร (Font Color)",
+        knText: "ปุ่มรูปตัว <b>A</b> ที่มีแถบสีอยู่ด้านล่างคือคำสั่ง <b>สีแบบอักษร (Font Color)</b> ใช้เปลี่ยนสีของข้อความที่เลือก"
+      },
+      {
+        id: 16, title: "Checkpoint 16: การเตรียมทำสารบัญ", badge: "Style Maestro", pts: 1.0,
         mode: "choice",
         q: "ภารกิจ: การเตรียมข้อความเพื่อดึงทำสารบัญอัตโนมัติ (Table of Contents) ต้องกำหนดสไตล์ใดให้กับหัวข้อหลัก:",
         target: "Heading 1",
         opts: ["Title", "Heading 1", "Normal"],
-        knTitle: "การใช้ Heading สร้างสารบัญ (Table of Contents)",
+        knTitle: "การใช้ Heading สร้างสารบัญ",
         knText: "การจะให้โปรแกรม Word ดึงสารบัญอัตโนมัติได้ ผู้พิมพ์จะต้องกำหนดรูปแบบหัวข้อรายงานด้วยสไตล์ <b>Heading 1 (หัวเรื่อง 1)</b> หรือ Heading 2 ก่อนเสมอ"
       },
       {
-        id: 12, title: "Checkpoint 12: การบันทึกส่งออกไฟล์", badge: "Word Grand Master", pts: 2.5,
+        id: 17, title: "Checkpoint 17: ไอคอนเครื่องมือปากกาเน้นข้อความ", badge: "Highlighter", pts: 1.0,
+        mode: "choice",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><rect x="36" y="32" width="68" height="26" rx="4" fill="#fef08a"/><text x="70" y="50" font-family="'Kanit', sans-serif" font-size="18" font-weight="900" fill="#854d0e" text-anchor="middle">ab</text><path d="M96 24l12 12-8 8-12-12z" fill="#0284c7"/></svg>`,
+        q: "ภารกิจ: สัญลักษณ์ปากกาไฮไลต์พร้อมตัวอักษร ab มีหน้าที่การทำงานตรงกับข้อใด:",
+        target: "สีเน้นข้อความ (Text Highlight Color)",
+        opts: ["สีเน้นข้อความ (Text Highlight Color)", "เปลี่ยนสีฟอนต์", "ล้างการจัดรูปแบบ", "แรเงาตาราง"],
+        knTitle: "สีเน้นข้อความ (Text Highlight Color)",
+        knText: "เครื่องมือ <b>Text Highlight Color</b> ทำหน้าที่เสมือนปากกาไฮไลต์เรืองแสง ใช้เน้นสีพื้นหลังเฉพาะคำหรือวลีที่สำคัญในรายงาน"
+      },
+      {
+        id: 18, title: "Checkpoint 18: การบันทึกส่งออกไฟล์งาน", badge: "Word Grand Master", pts: 1.0,
         mode: "choice",
         q: "ภารกิจ: การส่งออกไฟล์เอกสารชนิดใดที่คงสภาพหน้ากระดาษและฟอนต์ได้แน่นอนที่สุดสำหรับนำไปพิมพ์งาน:",
         target: ".pdf",
         opts: [".docx", ".txt", ".pdf"],
         knTitle: "การส่งออกไฟล์เป็น PDF",
         knText: "ไฟล์สกุล <b>.pdf (Portable Document Format)</b> จะทำการล็อกการจัดวางหน้ากระดาษ ตำแหน่งภาพ และฟอนต์ไว้อย่างถาวร ทำให้ส่งไปเปิดเครื่องอื่นแล้วไม่เคลื่อนเพี้ยน"
+      },
+      {
+        id: 19, title: "Checkpoint 19: ไอคอนสร้างสัญลักษณ์หัวข้อย่อย", badge: "Bullet Master", pts: 1.0,
+        mode: "choice",
+        imageSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="90" viewBox="0 0 140 90"><rect width="140" height="90" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><circle cx="44" cy="30" r="4" fill="#0284c7"/><line x1="56" y1="30" x2="104" y2="30" stroke="#334155" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="46" r="4" fill="#0284c7"/><line x1="56" y1="46" x2="104" y2="46" stroke="#334155" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="62" r="4" fill="#0284c7"/><line x1="56" y1="62" x2="104" y2="62" stroke="#334155" stroke-width="4" stroke-linecap="round"/></svg>`,
+        q: "ภารกิจ: สัญลักษณ์จุดวงกลมนำหน้ารายการข้อความในภาพนี้ คือคำสั่งใด:",
+        target: "สัญลักษณ์แสดงหัวข้อย่อย (Bullets)",
+        opts: ["สัญลักษณ์แสดงหัวข้อย่อย (Bullets)", "ลำดับเลข (Numbering)", "เพิ่มการเยื้อง", "แทรกรูปร่าง"],
+        knTitle: "สัญลักษณ์แสดงหัวข้อย่อย (Bullets)",
+        knText: "คำสั่ง <b>Bullets</b> ใช้สร้างรายการข้อความที่มีสัญลักษณ์รูปจุดหรือไอคอนนำหน้า สำหรับรายการที่ไม่จำเป็นต้องเรียงลำดับก่อนหลัง"
+      },
+      {
+        id: 20, title: "Checkpoint 20: ภารกิจจับคู่คำสั่งงานพิมพ์", badge: "Certified Word Hero", pts: 1.0,
+        mode: "matching",
+        q: "ภารกิจด่านสุดท้าย: แตะจับคู่ 'คำสั่ง' กับ 'คีย์ลัด' ให้ถูกต้องสมบูรณ์ทั้ง 2 คู่:",
+        pairs: [
+          { action: "พิมพ์เอกสาร (Print)", key: "Ctrl + P" },
+          { action: "เลือกข้อความทั้งหมด", key: "Ctrl + A" }
+        ],
+        knTitle: "คีย์ลัดคำสั่งพื้นฐาน (Print & Select All)",
+        knText: "<b>Ctrl + P</b> ใช้เปิดหน้าต่างสั่งพิมพ์เอกสารออกเครื่องพิมพ์ และ <b>Ctrl + A</b> ย่อมาจาก All ใช้คลุมดำเลือกข้อความและวัตถุทั้งหมดในเอกสารทันที"
       }
     ];
 
@@ -892,20 +969,12 @@
       spinTimer: 0
     };
 
-    const waypoints = [
-      { x: 0, z: -150, stage: 1 },
-      { x: 0, z: -350, stage: 2 },
-      { x: 0, z: -550, stage: 3 },
-      { x: 0, z: -750, stage: 4 },
-      { x: 0, z: -950, stage: 5 },
-      { x: 0, z: -1150, stage: 6 },
-      { x: 0, z: -1350, stage: 7 },
-      { x: 0, z: -1550, stage: 8 },
-      { x: 0, z: -1750, stage: 9 },
-      { x: 0, z: -1950, stage: 10 },
-      { x: 0, z: -2150, stage: 11 },
-      { x: 0, z: -2350, stage: 12 }
-    ];
+    // กำหนดพิกัด Waypoints 20 จุด (ระยะห่างจุดละ 200 เมตร)
+    const waypoints = Array.from({ length: 20 }, (_, i) => ({
+      x: 0,
+      z: -150 - (i * 200),
+      stage: i + 1
+    }));
 
     function startGame() {
       const nameVal = document.getElementById("player-input").value.trim();
@@ -957,22 +1026,25 @@
     }
 
     function buildWorldEnvironment() {
-      const groundGeo = new THREE.PlaneGeometry(800, 3200);
+      const totalRoadLength = 4800;
+      const centerZ = -totalRoadLength / 2;
+
+      const groundGeo = new THREE.PlaneGeometry(800, totalRoadLength + 500);
       const groundMat = new THREE.MeshLambertMaterial({ color: 0x4ade80 });
       const ground = new THREE.Mesh(groundGeo, groundMat);
       ground.rotation.x = -Math.PI / 2;
-      ground.position.z = -1200;
+      ground.position.z = centerZ;
       scene.add(ground);
 
-      const roadGeo = new THREE.PlaneGeometry(32, 3000);
+      const roadGeo = new THREE.PlaneGeometry(32, totalRoadLength);
       const roadMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
       const road = new THREE.Mesh(roadGeo, roadMat);
       road.rotation.x = -Math.PI / 2;
       road.position.y = 0.05;
-      road.position.z = -1200;
+      road.position.z = centerZ;
       scene.add(road);
 
-      for (let z = 50; z > -2600; z -= 14) {
+      for (let z = 50; z > -totalRoadLength; z -= 14) {
         const lineGeo = new THREE.PlaneGeometry(0.35, 8);
         const lineMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
         const leftYellow = new THREE.Mesh(lineGeo, lineMat);
@@ -985,7 +1057,7 @@
         scene.add(rightYellow);
       }
 
-      for (let z = 50; z > -2600; z -= 16) {
+      for (let z = 50; z > -totalRoadLength; z -= 16) {
         const dashGeo = new THREE.PlaneGeometry(0.4, 6);
         const dashMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
         const leftDash = new THREE.Mesh(dashGeo, dashMat);
@@ -998,18 +1070,18 @@
         scene.add(rightDash);
       }
 
-      const curbGeo = new THREE.BoxGeometry(4, 0.5, 3000);
+      const curbGeo = new THREE.BoxGeometry(4, 0.5, totalRoadLength);
       const curbMat = new THREE.MeshLambertMaterial({ color: 0xe2e8f0 });
       const leftCurb = new THREE.Mesh(curbGeo, curbMat);
-      leftCurb.position.set(-18, 0.25, -1200);
+      leftCurb.position.set(-18, 0.25, centerZ);
       scene.add(leftCurb);
 
       const rightCurb = new THREE.Mesh(curbGeo, curbMat);
-      rightCurb.position.set(18, 0.25, -1200);
+      rightCurb.position.set(18, 0.25, centerZ);
       scene.add(rightCurb);
 
       const colors = [0xef4444, 0x3b82f6, 0xf59e0b, 0x10b981, 0x8b5cf6, 0xec4899, 0x06b6d4, 0xf97316];
-      for (let z = 20; z > -2500; z -= 38) {
+      for (let z = 20; z > -totalRoadLength; z -= 38) {
         const bH1 = 28 + Math.random() * 40;
         const bW1 = 20 + Math.random() * 8;
         const bGeo1 = new THREE.BoxGeometry(bW1, bH1, 28);
@@ -1094,6 +1166,7 @@
     }
 
     function buildCheckpointsAndBarriers() {
+      checkpoints = [];
       waypoints.forEach((wp, idx) => {
         const gate = new THREE.Group();
         gate.position.set(wp.x, 0, wp.z);
@@ -1138,7 +1211,8 @@
 
     function buildObstacles() {
       obstacles = [];
-      for (let z = -50; z > -2400; z -= 32) {
+      const endLimitZ = waypoints[waypoints.length - 1].z - 100;
+      for (let z = -50; z > endLimitZ; z -= 32) {
         const nearGate = waypoints.some(wp => Math.abs(wp.z - z) < 16);
         if (nearGate) continue;
 
@@ -1430,6 +1504,15 @@
         choiceDiv.style.gap = "10px";
         choiceDiv.style.width = "100%";
 
+        if (m.imageSvg) {
+          const imgHolder = document.createElement("div");
+          imgHolder.style.marginBottom = "6px";
+          imgHolder.style.display = "flex";
+          imgHolder.style.justifyContent = "center";
+          imgHolder.innerHTML = m.imageSvg;
+          choiceDiv.appendChild(imgHolder);
+        }
+
         m.opts.forEach(opt => {
           const btn = document.createElement("button");
           btn.className = "ribbon-btn";
@@ -1477,14 +1560,14 @@
       checkpoints[stageIdx].laser.material.opacity = 0.15;
 
       currentStage = stageIdx + 1;
-      document.getElementById("hud-stage").innerText = `ด่าน ${Math.min(currentStage + 1, 12)} / 12`;
+      document.getElementById("hud-stage").innerText = `ด่าน ${Math.min(currentStage + 1, 20)} / 20`;
       document.getElementById("hud-score").innerText = `${Number(score.toFixed(1))} / 20`;
       document.getElementById("checkpoint-modal").style.display = "none";
       isModalOpen = false;
 
       carPhysics.z -= 4.5;
 
-      if (currentStage >= 12) {
+      if (currentStage >= 20) {
         finishGame();
       }
     }
@@ -1535,7 +1618,7 @@
 
       waypoints.forEach((wp, i) => {
         const relZ = wp.z - carPhysics.z;
-        const mapY = mh / 2 + (relZ / 400) * (mh / 2);
+        const mapY = mh / 2 + (relZ / 500) * (mh / 2);
 
         if (mapY >= -10 && mapY <= mh + 10) {
           const isPassed = checkpoints[i] ? checkpoints[i].passed : false;
@@ -1587,7 +1670,6 @@
       const code = `WR3D-${btoa(encodeURIComponent(playerName)).slice(0, 5).toUpperCase()}-${displayScore}PTS-${Date.now().toString().slice(-4)}`;
       document.getElementById("cert-code").innerText = `รหัสยืนยันผลการขับขี่: ${code}`;
 
-      // บันทึกคะแนน
       const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScDqf_3sbr3G8XbgR4atsdlcKscqiL_snt7iXLfACcwBjGj1g/formResponse";
       const formData = new FormData();
       formData.append("entry.1063080801", playerName);
