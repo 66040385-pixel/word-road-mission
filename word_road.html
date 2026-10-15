@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Word Studio 3D: Roblox Learning Edition</title>
+  <title>Word Studio 3D: ห้องปฏิบัติการเรียนรู้ Microsoft Word</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800;900&family=Chakra+Petch:wght@700;800&display=swap" rel="stylesheet">
@@ -21,16 +21,17 @@
     }
     * {
       box-sizing: border-box; margin: 0; padding: 0;
-      user-select: none; -webkit-user-select: none;
+      font-family: 'Kanit', sans-serif;
     }
     html, body {
       width: 100vw; height: 100vh; overflow: hidden;
       background: #7dd3fc; position: fixed; inset: 0;
-      font-family: 'Kanit', sans-serif;
     }
 
+    /* ฉากหลัง 3D */
     #three-container {
       position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 1;
+      pointer-events: none; /* ห้ามฉาก 3D แย่งการคลิก */
     }
     #three-container canvas {
       width: 100% !important; height: 100% !important; display: block;
@@ -57,7 +58,6 @@
       background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3);
       color: #fff; padding: 5px 14px; border-radius: 999px; font-size: 0.84rem;
       font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;
-      transition: all 0.15s;
     }
     .hud-btn-menu:hover { background: #0284c7; border-color: #38bdf8; }
     .hud-pill {
@@ -118,9 +118,7 @@
       border: 2px solid rgba(255, 255, 255, 0.35); backdrop-filter: blur(8px);
       display: flex; justify-content: center; align-items: center;
       box-shadow: 0 10px 24px rgba(0,0,0,0.5); cursor: pointer;
-      transition: transform 0.08s;
     }
-    .v-btn:active { transform: scale(0.92); border-color: #facc15; background: rgba(250, 204, 21, 0.35); }
     .v-btn svg { width: 34px; height: 34px; fill: #ffffff; }
 
     #audio-toggle {
@@ -133,47 +131,36 @@
     }
     #audio-toggle svg { width: 22px; height: 22px; fill: #38bdf8; }
 
-    .overlay-screen {
-      position: fixed; inset: 0;
-      display: flex; justify-content: center; align-items: center; padding: 18px;
-      z-index: 100;
-    }
+    /* หน้าต่าง Overlay สำหรับ UI */
     .modal-card {
       background: var(--surface); border: 3px solid #00a2ff; border-radius: 28px;
       padding: 32px 28px; max-width: 520px; width: 100%; text-align: center; color: #fff;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 35px rgba(0, 162, 255, 0.3);
-      animation: zoomIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
     }
-    @keyframes zoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .rbx-green-btn {
       width: 100%; padding: 16px; border-radius: 18px; border: none;
       background: linear-gradient(180deg, #10b981 0%, #059669 100%);
       color: #fff; font-size: 1.2rem; font-weight: 900; cursor: pointer;
       box-shadow: 0 5px 0 #047857; display: flex; justify-content: center; align-items: center; gap: 8px;
-      transition: transform 0.08s;
     }
     .rbx-green-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #047857; }
 
-    /* ปลดล็อกการคลิกหน้าแรกแบบเด็ดขาด */
+    /* หน้าแรก: ตั้ง z-index สูงสุดและบังคับรับการคลิก */
     #start-screen {
-      z-index: 99999 !important;
-      pointer-events: auto !important;
-    }
-    #start-screen .modal-card,
-    #player-input,
-    #start-screen button {
-      pointer-events: auto !important;
-      user-select: auto !important;
-      -webkit-user-select: auto !important;
-      touch-action: auto !important;
+      position: fixed; inset: 0; z-index: 999999;
+      display: flex; justify-content: center; align-items: center; padding: 18px;
+      background: radial-gradient(circle at 50% 40%, rgba(14, 165, 233, 0.85) 0%, rgba(15, 23, 42, 0.98) 80%);
+      pointer-events: auto;
     }
 
     /* CHAPTER HUB */
     #hub-screen {
-      background: radial-gradient(circle at 50% 30%, rgba(14, 165, 233, 0.45) 0%, rgba(15, 23, 42, 0.96) 80%);
+      position: fixed; inset: 0; z-index: 80000; display: none;
+      background: radial-gradient(circle at 50% 30%, rgba(14, 165, 233, 0.7) 0%, rgba(15, 23, 42, 0.98) 80%);
       backdrop-filter: blur(14px);
-      z-index: 150; overflow-y: auto; padding: 30px 14px; align-items: flex-start;
+      overflow-y: auto; padding: 30px 14px;
+      pointer-events: auto;
     }
     .hub-container {
       background: #ffffff; border: 4px solid #38bdf8; border-radius: 30px;
@@ -199,12 +186,13 @@
     }
     .chapter-card.mastered { border-color: #10b981; background: #f0fdf4; }
 
-    /* INTERACTIVE STUDIO WORKSHOP MODAL */
+    /* STUDIO MODAL */
     #studio-modal {
       position: fixed; inset: 0;
       background: rgba(10, 12, 16, 0.92); backdrop-filter: blur(14px);
       display: none; justify-content: center; align-items: center;
-      padding: 16px; z-index: 120;
+      padding: 16px; z-index: 85000;
+      pointer-events: auto;
     }
     .studio-box {
       background: #f8fafc; border: 4px solid #38bdf8; border-radius: 26px;
@@ -226,7 +214,7 @@
       padding: 16px; display: flex; flex-direction: column; gap: 12px;
     }
     .step-tracker { display: flex; gap: 6px; }
-    .step-dot { flex: 1; height: 6px; border-radius: 4px; background: #e2e8f0; transition: all 0.3s; }
+    .step-dot { flex: 1; height: 6px; border-radius: 4px; background: #e2e8f0; }
     .step-dot.active { background: #0284c7; }
     .step-dot.done { background: #10b981; }
 
@@ -246,19 +234,17 @@
       display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-height: 50px;
     }
     .tool-btn {
-      padding: 7px 14px; background: #fff; border: 1.5px solid #cbd5e1; border-radius: 8px;
+      padding: 7px 13px; background: #fff; border: 1.5px solid #cbd5e1; border-radius: 8px;
       font-size: 0.86rem; font-weight: 700; color: #334155; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
+      display: inline-flex; align-items: center; gap: 6px;
     }
     .tool-btn:hover { background: #e0f2fe; border-color: #38bdf8; color: #0284c7; }
-    .tool-btn.active { background: #0284c7; color: #fff; border-color: #0369a1; }
 
     .doc-page {
       background: #fff; min-height: 250px; padding: 24px; position: relative;
-      user-select: text; -webkit-user-select: text;
       display: flex; flex-direction: column; justify-content: center;
     }
-    .doc-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; transition: all 0.2s ease; }
+    .doc-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
     .doc-p { font-size: 0.95rem; color: #334155; line-height: 1.6; }
 
     .studio-footer {
@@ -266,30 +252,22 @@
       display: flex; justify-content: space-between; align-items: center;
     }
 
-    /* MODAL ใบความรู้เมื่อเลือกผิด */
+    /* Modal ใบความรู้เมื่อเลือกผิด */
     #hint-modal {
       position: fixed; inset: 0;
       background: rgba(10, 12, 16, 0.92); backdrop-filter: blur(14px);
       display: none; justify-content: center; align-items: center;
-      padding: 18px; z-index: 140;
+      padding: 18px; z-index: 90000;
+      pointer-events: auto;
     }
     .hint-card {
       background: #0f172a; border: 3px solid #38bdf8; border-radius: 28px;
-      padding: 26px; max-width: 520px; width: 100%; color: #fff;
-      box-shadow: 0 20px 60px rgba(2, 132, 199, 0.4); text-align: left;
-      animation: zoomIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .hint-header {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
-      color: #38bdf8; font-size: 1.25rem; font-weight: 800;
+      padding: 26px; max-width: 520px; width: 100%; color: #fff; text-align: left;
     }
     .hint-box {
       background: #1e293b; border-left: 5px solid #facc15;
       padding: 16px 18px; border-radius: 12px; margin-bottom: 18px;
     }
-    .hint-title { font-size: 1.05rem; font-weight: 800; color: #facc15; margin-bottom: 8px; }
-    .hint-desc { font-size: 0.95rem; color: #e2e8f0; line-height: 1.65; }
-    .hint-desc mark { background: #fde047; color: #0f172a; font-weight: 800; padding: 2px 7px; border-radius: 6px; }
   </style>
 </head>
 <body>
@@ -303,11 +281,11 @@
   <div id="top-hud">
     <button class="hud-btn-menu" onclick="returnToHub()">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="#fff"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-      เลือก 12 บทเรียน
+      เลือกบทเรียน
     </button>
     <div class="hud-chip player-chip">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="#38bdf8"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span id="hud-name">-</span>
+      <span id="hud-name">ผู้เรียน</span>
     </div>
     <div class="hud-chip">
       <span class="hud-pill" id="hud-stage">สัปดาห์ที่ 4 : ศิลปะตกแต่งฟอนต์</span>
@@ -345,35 +323,36 @@
     </div>
   </div>
 
-  <!-- หน้าลงทะเบียน -->
-  <div id="start-screen" class="overlay-screen" style="background: radial-gradient(circle at 50% 40%, rgba(14, 165, 233, 0.45) 0%, rgba(15, 23, 42, 0.95) 80%);">
-    <div class="modal-card" style="background: #fff; color: #0f172a; border-color: #38bdf8;">
+  <!-- หน้าแรก (ไม่มีเงื่อนไขขวางการคลิก) -->
+  <div id="start-screen">
+    <div class="modal-card" style="background: #ffffff; color: #0f172a; border-color: #38bdf8;">
       <div style="font-size: 2.2rem; font-weight: 900; color: #0284c7; font-family: 'Chakra Petch';">WORD STUDIO 3D</div>
       <p style="color: #64748b; font-size: 0.92rem; margin-bottom: 20px;">ห้องปฏิบัติการจำลองการพิมพ์งาน Microsoft Word ประจำภาคเรียน (12 สัปดาห์)</p>
       
-      <input type="text" id="player-input" style="width:100%; padding:14px; border-radius:14px; border:2px solid #cbd5e1; font-size:1.05rem; font-weight:700; text-align:center; outline:none; margin-bottom:14px;" placeholder="พิมพ์ชื่อ - สกุล หรือ เลขที่ของผู้เรียน (เว้นว่างได้)..." />
+      <input type="text" id="player-input" style="width:100%; padding:14px; border-radius:14px; border:2px solid #cbd5e1; font-size:1.05rem; font-weight:700; text-align:center; outline:none; margin-bottom:16px;" placeholder="พิมพ์ชื่อผู้เรียน (หรือกดเข้าห้องเรียนได้เลย)..." />
 
-      <button type="button" class="rbx-green-btn" onclick="goToHubNow()">
+      <!-- ปุ่มเข้าสู่ห้องเรียน -->
+      <button type="button" class="rbx-green-btn" id="btn-enter" onclick="handleStartBtn()">
         เข้าสู่ห้องเรียน (ENTER STUDIO)[cite: 2]
       </button>
     </div>
   </div>
 
-  <!-- CHAPTER HUB (หน้าเลือกบท 12 สัปดาห์) -->
-  <div id="hub-screen" class="overlay-screen" style="display:none;">
+  <!-- CHAPTER HUB -->
+  <div id="hub-screen">
     <div class="hub-container">
       <div class="hub-header">
         <div style="text-align:left;">
           <div style="font-size:1.6rem; font-weight:900; font-family:'Chakra Petch';">แผนผังการเรียนรู้ 12 สัปดาห์</div>
           <div style="font-size:0.88rem; color:#bae6fd;">เลือกบทเรียนเพื่อเริ่มขับรถเข้าสู่ห้องปฏิบัติการจำลอง</div>
         </div>
-        <div id="hub-username" style="font-weight:800; background:rgba(255,255,255,0.2); padding:6px 16px; border-radius:999px;">-</div>
+        <div id="hub-username" style="font-weight:800; background:rgba(255,255,255,0.2); padding:6px 16px; border-radius:999px;">ผู้เรียน</div>
       </div>
       <div class="chapters-grid" id="chapters-grid"></div>
     </div>
   </div>
 
-  <!-- STUDIO WORKSHOP MODAL (Interactive Sandbox พร้อมระบบตัวเลือกถูก/ผิด + ใบความรู้) -->
+  <!-- STUDIO WORKSHOP MODAL -->
   <div id="studio-modal">
     <div class="studio-box">
       <div class="studio-header">
@@ -382,7 +361,6 @@
       </div>
 
       <div class="studio-body">
-        <!-- ฝั่งคู่มือ & สถานะความก้าวหน้า -->
         <div class="guide-card">
           <div class="step-tracker">
             <div class="step-dot active" id="dot-1"></div>
@@ -401,7 +379,6 @@
           </div>
         </div>
 
-        <!-- ฝั่งหน้าต่าง Microsoft Word จำลอง -->
         <div class="word-sim-window">
           <div class="ribbon-ui" id="sim-ribbon-tools"></div>
 
@@ -423,16 +400,16 @@
     </div>
   </div>
 
-  <!-- MODAL ใบความรู้เมื่อเลือกผิด (LEARNING HINT) -->
+  <!-- MODAL ใบความรู้เมื่อเลือกผิด -->
   <div id="hint-modal">
     <div class="hint-card">
-      <div class="hint-header">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; color:#38bdf8; font-size:1.25rem; font-weight:800;">
         <svg viewBox="0 0 24 24" width="28" height="28" fill="#38bdf8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
         <span>ยังไม่ตรงเป้าหมาย! มาดูใบความรู้ช่วยจำ</span>
       </div>
       <div class="hint-box">
-        <div class="hint-title" id="hint-title">เทคนิคสำคัญ</div>
-        <div class="hint-desc" id="hint-desc">คำอธิบาย...</div>
+        <div style="font-size:1.05rem; font-weight:800; color:#facc15; margin-bottom:8px;" id="hint-title">เทคนิคสำคัญ</div>
+        <div style="font-size:0.95rem; color:#e2e8f0; line-height:1.65;" id="hint-desc">คำอธิบาย...</div>
       </div>
       <button class="rbx-green-btn" onclick="closeHintModal()">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
@@ -442,23 +419,23 @@
   </div>
 
   <script>
-    // ข้อมูลหลักสูตร 12 สัปดาห์
+    // 12 สัปดาห์
     const chaptersMeta = [
-      { id: 1, title: "สัปดาห์ที่ 1: ก้าวแรกสู่นักพิมพ์", desc: "สำรวจหน้าต่างโปรแกรม เมนู Ribbon และเปลี่ยนฟอนต์"[cite: 3] },
-      { id: 2, title: "สัปดาห์ที่ 2: มือใหม่หัดเซฟไฟล์", desc: "การสร้าง, เปิด และคีย์ลัดบันทึกงานด่วน (Ctrl+S)"[cite: 3] },
-      { id: 3, title: "สัปดาห์ที่ 3: ปุ่มวิเศษย้อนเวลา", desc: "การแก้ไขข้อผิดพลาดด้วย Undo & Redo (Ctrl+Z, Ctrl+Y)"[cite: 3] },
-      { id: 4, title: "สัปดาห์ที่ 4: ศิลปะตกแต่งฟอนต์", desc: "ตัวหนา ตัวเอียง จัดกึ่งกลาง และแปรงคัดลอกสไตล์"[cite: 3] },
-      { id: 5, title: "สัปดาห์ที่ 5: จัดแนวย่อหน้าสมดุล", desc: "การจัดชิดซ้าย กึ่งกลาง ชิดขวา และระยะห่างบรรทัด"[cite: 3] },
-      { id: 6, title: "สัปดาห์ที่ 6: จดบันทึกเป็นระเบียบ", desc: "การใช้สัญลักษณ์จุด (Bullets) และลำดับเลข (Numbering)"[cite: 3] },
-      { id: 7, title: "สัปดาห์ที่ 7: นักจัดวางรูปภาพ", desc: "การตัดข้อความล้อมรูปภาพ (Wrap Text: Square, Behind Text)"[cite: 3] },
-      { id: 8, title: "สัปดาห์ที่ 8: สร้างสรรค์ตารางข้อมูล", desc: "คอลัมน์ (แนวตั้ง) x แถว (แนวนอน) และการผสานเซลล์"[cite: 3] },
-      { id: 9, title: "สัปดาห์ที่ 9: วางผังหน้ากระดาษ", desc: "ปรับแนวนอน/แนวตั้ง (Orientation) และระยะขอบ (Margins)"[cite: 3] },
-      { id: 10, title: "สัปดาห์ที่ 10: นักตรวจทานภาษา", desc: "เส้นหยักสีแดง (สะกดผิด) vs เส้นหยักสีฟ้า (วรรคเกิน)"[cite: 3] },
-      { id: 11, title: "สัปดาห์ที่ 11: โครงสร้างเล่มรายงาน", desc: "การใช้ Heading 1 และ 2 ปูทางสู่สารบัญอัตโนมัติ"[cite: 3] },
-      { id: 12, title: "สัปดาห์ที่ 12: พร้อมเผยแพร่งาน", desc: "การส่งออกเอกสารเป็น PDF ไม่ให้ฟอนต์เลื่อนเพี้ยน"[cite: 3] }
+      { id: 1, title: "สัปดาห์ที่ 1: ก้าวแรกสู่นักพิมพ์", desc: "สำรวจหน้าต่างโปรแกรม เมนู Ribbon และเปลี่ยนฟอนต์"[cite: 3]},
+      { id: 2, title: "สัปดาห์ที่ 2: มือใหม่หัดเซฟไฟล์", desc: "การสร้าง, เปิด และคีย์ลัดบันทึกงานด่วน (Ctrl+S)"[cite: 3]},
+      { id: 3, title: "สัปดาห์ที่ 3: ปุ่มวิเศษย้อนเวลา", desc: "การแก้ไขข้อผิดพลาดด้วย Undo & Redo (Ctrl+Z, Ctrl+Y)"[cite: 3]},
+      { id: 4, title: "สัปดาห์ที่ 4: ศิลปะตกแต่งฟอนต์", desc: "ตัวหนา ตัวเอียง จัดกึ่งกลาง และแปรงคัดลอกสไตล์"[cite: 3]},
+      { id: 5, title: "สัปดาห์ที่ 5: จัดแนวย่อหน้าสมดุล", desc: "การจัดชิดซ้าย กึ่งกลาง ชิดขวา และระยะห่างบรรทัด"[cite: 3]},
+      { id: 6, title: "สัปดาห์ที่ 6: จดบันทึกเป็นระเบียบ", desc: "การใช้สัญลักษณ์จุด (Bullets) และลำดับเลข (Numbering)"[cite: 3]},
+      { id: 7, title: "สัปดาห์ที่ 7: นักจัดวางรูปภาพ", desc: "การตัดข้อความล้อมรูปภาพ (Wrap Text: Square, Behind Text)"[cite: 3]},
+      { id: 8, title: "สัปดาห์ที่ 8: สร้างสรรค์ตารางข้อมูล", desc: "คอลัมน์ (แนวตั้ง) x แถว (แนวนอน) และการผสานเซลล์"[cite: 3]},
+      { id: 9, title: "สัปดาห์ที่ 9: วางผังหน้ากระดาษ", desc: "ปรับแนวนอน/แนวตั้ง (Orientation) และระยะขอบ (Margins)"[cite: 3]},
+      { id: 10, title: "สัปดาห์ที่ 10: นักตรวจทานภาษา", desc: "เส้นหยักสีแดง (สะกดผิด) vs เส้นหยักสีฟ้า (วรรคเกิน)"[cite: 3]},
+      { id: 11, title: "สัปดาห์ที่ 11: โครงสร้างเล่มรายงาน", desc: "การใช้ Heading 1 และ 2 ปูทางสู่สารบัญอัตโนมัติ"[cite: 3]},
+      { id: 12, title: "สัปดาห์ที่ 12: พร้อมเผยแพร่งาน", desc: "การส่งออกเอกสารเป็น PDF ไม่ให้ฟอนต์เลื่อนเพี้ยน"[cite: 3]}
     ];
 
-    // ข้อมูลภารกิจย่อยในแต่ละสัปดาห์
+    // ข้อมูลขั้นตอนย่อยในเวิร์กช็อป
     const workshopCurriculum = {
       4: [
         {
@@ -469,7 +446,7 @@
           targetAction: "bold",
           hotkey: "b",
           hintTitle: "เครื่องมือตกแต่งตัวอักษร (Font Styling)",
-          hintText: "• <mark>B (Bold)</mark> หรือคีย์ลัด <b>Ctrl + B</b> ใช้ทำตัวหนาเพื่อเน้นความเด่นชัด<br>• ปุ่ม <i>I</i> คือตัวเอียง และปุ่ม <u>U</u> คือขีดเส้นใต้[cite: 3]",
+          hintText: "• <b>B (Bold)</b> หรือคีย์ลัด <b>Ctrl + B</b> ใช้ทำตัวหนาเพื่อเน้นความเด่นชัด<br>• ปุ่ม I คือตัวเอียง และปุ่ม U คือขีดเส้นใต้[cite: 3]",
           buttons: [
             { id: "italic", label: "<i>I</i> ตัวเอียง" },
             { id: "bold", label: "<b>B</b> ตัวหนา" },
@@ -485,7 +462,7 @@
           targetAction: "center",
           hotkey: "e",
           hintTitle: "การจัดแนวย่อหน้า (Paragraph Alignment)",
-          hintText: "• <mark>กึ่งกลาง (Center)</mark> หรือคีย์ลัด <b>Ctrl + E</b> ใช้วางข้อความตรงกลางกระดาษ<br>• ระวังจำสับสน: Ctrl + C คือ Copy (คัดลอก) ดังนั้นกึ่งกลางจึงใช้ Ctrl + E[cite: 3]",
+          hintText: "• <b>กึ่งกลาง (Center)</b> หรือคีย์ลัด <b>Ctrl + E</b> ใช้วางข้อความตรงกลางกระดาษ<br>• ระวังจำสับสน: Ctrl + C คือ Copy (คัดลอก) ดังนั้นกึ่งกลางจึงใช้ Ctrl + E[cite: 3]",
           buttons: [
             { id: "left", label: "ชิดซ้าย (Ctrl+L)" },
             { id: "right", label: "ชิดขวา (Ctrl+R)" },
@@ -501,7 +478,7 @@
           targetAction: "painter",
           hotkey: null,
           hintTitle: "ตัวคัดวางรูปแบบ (Format Painter)",
-          hintText: "ไอคอนรูป <mark>แปรงทาสี (Format Painter)</mark> ทำหน้าที่ดูดสไตล์สี ขนาด และฟอนต์ต้นแบบ ไปป้ายทับข้อความอื่นได้ทันทีโดยไม่ต้องตั้งค่าใหม่[cite: 3]",
+          hintText: "ไอคอนรูป <b>แปรงทาสี (Format Painter)</b> ทำหน้าที่ดูดสไตล์สี ขนาด และฟอนต์ต้นแบบ ไปป้ายทับข้อความอื่นได้ทันทีโดยไม่ต้องตั้งค่าใหม่[cite: 3]",
           buttons: [
             { id: "copy", label: "📋 คัดลอก (Copy)" },
             { id: "cut", label: "✂️ ตัด (Cut)" },
@@ -512,7 +489,520 @@
       ]
     };
 
-    // Web Audio API
+    let playerName = "ผู้เรียน";
+    let masteredChapters = [];
+    let selectedChapterId = 4;
+    let scene = null, camera = null, renderer = null, carGroup = null;
+    let checkpoints = [], obstacles = [];
+    let isModalOpen = false, isGameRunning = false;
+    let keys = { up: false, down: false, left: false, right: false };
+
+    let carPhysics = {
+      x: 0, z: 0, angle: 0, speed: 0,
+      maxSpeed: 1.25, accel: 0.028, friction: 0.018,
+      turnSpeed: 0.032, angularDamping: 0.92, spinTimer: 0
+    };
+
+    // ฟังก์ชันเข้าสู่ห้องเรียน: ปิดหน้าแรกและเปิดหน้าเลือกบทเรียนทันที[cite: 2]
+    function handleStartBtn() {
+      const input = document.getElementById("player-input");
+      if (input && input.value.trim() !== "") {
+        playerName = input.value.trim();
+      } else {
+        playerName = "ผู้เรียน";
+      }
+
+      // 1. ซ่อนหน้าเริ่มต้นทันที
+      document.getElementById("start-screen").style.display = "none";
+      
+      // 2. อัปเดตชื่อผู้เรียน
+      document.getElementById("hub-username").innerText = playerName;
+      document.getElementById("hud-name").innerText = playerName;
+
+      // 3. แสดงหน้าเลือก 12 สัปดาห์
+      renderChaptersGrid();
+      document.getElementById("hub-screen").style.display = "block";
+
+      // 4. เริ่มระบบเสียง
+      initAudio();
+    }
+
+    function renderChaptersGrid() {
+      const grid = document.getElementById("chapters-grid");
+      if (!grid) return;
+      grid.innerHTML = "";
+
+      chaptersMeta.forEach((ch) => {
+        const isMastered = masteredChapters.includes(ch.id);
+        const card = document.createElement("div");
+        card.className = `chapter-card ${isMastered ? 'mastered' : ''}`;
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.8rem; font-weight:800; background:#e2e8f0; padding:2px 8px; border-radius:6px;">สัปดาห์ที่ ${ch.id}</span>
+            <span style="font-size:0.8rem; font-weight:800; color:${isMastered ? '#10b981' : '#0284c7'};">${isMastered ? '⭐ สำเร็จแล้ว' : '▶ เริ่มเวิร์กช็อป'}</span>
+          </div>
+          <div style="font-size:1.05rem; font-weight:800; color:#0f172a; margin-top:4px;">${ch.title.split(': ')[1] || ch.title}</div>
+          <div style="font-size:0.82rem; color:#64748b; line-height:1.4;">${ch.desc}</div>
+        `;
+        card.onclick = () => startChapterSession(ch.id);
+        grid.appendChild(card);
+      });
+
+      const prog = document.getElementById("hud-progress");
+      if (prog) prog.innerText = `ผ่าน ${masteredChapters.length} / 12 บท`;
+    }
+
+    function returnToHub() {
+      document.getElementById("studio-modal").style.display = "none";
+      document.getElementById("hint-modal").style.display = "none";
+      document.getElementById("hub-screen").style.display = "block";
+      isGameRunning = false;
+    }
+
+    function startChapterSession(chapterId) {
+      selectedChapterId = chapterId;
+      document.getElementById("hub-screen").style.display = "none";
+      
+      const chData = chaptersMeta.find(c => c.id === chapterId);
+      document.getElementById("hud-stage").innerText = chData.title;
+
+      if (!scene) {
+        init3DWorld();
+        setupInputListeners();
+      }
+
+      resetRoadTrack(chapterId);
+      isGameRunning = true;
+      isModalOpen = false;
+      animate();
+    }
+
+    function resetRoadTrack(chapterId) {
+      carPhysics.x = 0; carPhysics.z = 0; carPhysics.angle = 0; carPhysics.speed = 0;
+
+      checkpoints.forEach(cp => scene.remove(cp.group));
+      checkpoints = [];
+
+      const gateZ = -135;
+      const gate = new THREE.Group();
+      gate.position.set(0, 0, gateZ);
+
+      const pGeo = new THREE.BoxGeometry(2, 16, 2);
+      const pMat = new THREE.MeshLambertMaterial({ color: 0x334155 });
+      const pL = new THREE.Mesh(pGeo, pMat); pL.position.set(-17, 8, 0); gate.add(pL);
+      const pR = pL.clone(); pR.position.x = 17; gate.add(pR);
+
+      const barGeo = new THREE.BoxGeometry(36, 2.2, 2.2);
+      const barMat = new THREE.MeshLambertMaterial({ color: 0xfacc15 });
+      const bar = new THREE.Mesh(barGeo, barMat); bar.position.set(0, 15, 0); gate.add(bar);
+
+      const laserGeo = new THREE.PlaneGeometry(32, 14);
+      const laserMat = new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.55, side: THREE.DoubleSide });
+      const laser = new THREE.Mesh(laserGeo, laserMat); laser.position.set(0, 7, 0); gate.add(laser);
+
+      scene.add(gate);
+      checkpoints.push({ group: gate, laser: laser, z: gateZ, chapterId: chapterId, passed: false });
+    }
+
+    // 3D Scene Initialization
+    function init3DWorld() {
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x7dd3fc);
+      scene.fog = new THREE.Fog(0x7dd3fc, 80, 500);
+
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      document.getElementById("three-container").appendChild(renderer.domElement);
+
+      window.addEventListener("resize", () => {
+        if (!camera || !renderer) return;
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.85);
+      scene.add(hemiLight);
+
+      const dirLight = new THREE.DirectionalLight(0xfff7ed, 0.9);
+      dirLight.position.set(60, 120, 60);
+      scene.add(dirLight);
+
+      buildWorldEnvironment();
+      buildSportsCar();
+      buildObstacles();
+    }
+
+    function buildWorldEnvironment() {
+      const groundGeo = new THREE.PlaneGeometry(800, 3200);
+      const groundMat = new THREE.MeshLambertMaterial({ color: 0x4ade80 });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI / 2; ground.position.z = -1200;
+      scene.add(ground);
+
+      const roadGeo = new THREE.PlaneGeometry(32, 3000);
+      const roadMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
+      const road = new THREE.Mesh(roadGeo, roadMat);
+      road.rotation.x = -Math.PI / 2; road.position.y = 0.05; road.position.z = -1200;
+      scene.add(road);
+
+      for (let z = 50; z > -2600; z -= 14) {
+        const lineGeo = new THREE.PlaneGeometry(0.35, 8);
+        const lineMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+        const leftYellow = new THREE.Mesh(lineGeo, lineMat);
+        leftYellow.rotation.x = -Math.PI / 2; leftYellow.position.set(-0.4, 0.08, z);
+        scene.add(leftYellow);
+
+        const rightYellow = leftYellow.clone(); rightYellow.position.x = 0.4;
+        scene.add(rightYellow);
+      }
+
+      const curbGeo = new THREE.BoxGeometry(4, 0.5, 3000);
+      const curbMat = new THREE.MeshLambertMaterial({ color: 0xe2e8f0 });
+      const leftCurb = new THREE.Mesh(curbGeo, curbMat);
+      leftCurb.position.set(-18, 0.25, -1200);
+      scene.add(leftCurb);
+
+      const rightCurb = new THREE.Mesh(curbGeo, curbMat);
+      rightCurb.position.set(18, 0.25, -1200);
+      scene.add(rightCurb);
+
+      const colors = [0xef4444, 0x3b82f6, 0xf59e0b, 0x10b981, 0x8b5cf6, 0xec4899, 0x06b6d4];
+      for (let z = 20; z > -2500; z -= 38) {
+        const bH = 28 + Math.random() * 35;
+        const bW = 20;
+        const bGeo = new THREE.BoxGeometry(bW, bH, 26);
+        const bMat = new THREE.MeshLambertMaterial({ color: colors[Math.floor(Math.random() * colors.length)] });
+        
+        const b1 = new THREE.Mesh(bGeo, bMat);
+        b1.position.set(-32 - bW / 2, bH / 2, z);
+        scene.add(b1);
+
+        const b2 = new THREE.Mesh(bGeo, bMat);
+        b2.position.set(32 + bW / 2, bH / 2, z);
+        scene.add(b2);
+
+        if (z % 76 === 0) {
+          createTree(-21, z);
+          createTree(21, z);
+        }
+      }
+    }
+
+    function createTree(x, z) {
+      const trunkGeo = new THREE.CylinderGeometry(0.5, 0.6, 6);
+      const trunkMat = new THREE.MeshLambertMaterial({ color: 0x78350f });
+      const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+      trunk.position.set(x, 3, z);
+      scene.add(trunk);
+
+      const leavesGeo = new THREE.ConeGeometry(3.5, 8, 8);
+      const leavesMat = new THREE.MeshLambertMaterial({ color: 0x15803d });
+      const leaves = new THREE.Mesh(leavesGeo, leavesMat);
+      leaves.position.set(x, 8, z);
+      scene.add(leaves);
+    }
+
+    function buildSportsCar() {
+      carGroup = new THREE.Group();
+
+      const bodyGeo = new THREE.BoxGeometry(3.8, 1.35, 7.2);
+      const bodyMat = new THREE.MeshLambertMaterial({ color: 0x1e3a8a });
+      const carBody = new THREE.Mesh(bodyGeo, bodyMat);
+      carBody.position.y = 1.0;
+      carGroup.add(carBody);
+
+      const cabinGeo = new THREE.BoxGeometry(3.2, 1.2, 3.8);
+      const cabinMat = new THREE.MeshLambertMaterial({ color: 0x0f172a });
+      const cabin = new THREE.Mesh(cabinGeo, cabinMat);
+      cabin.position.set(0, 2.0, -0.4);
+      carGroup.add(cabin);
+
+      const glassGeo = new THREE.BoxGeometry(3.1, 1.0, 3.6);
+      const glassMat = new THREE.MeshLambertMaterial({ color: 0x38bdf8 });
+      const glass = new THREE.Mesh(glassGeo, glassMat);
+      glass.position.set(0, 2.05, -0.4);
+      carGroup.add(glass);
+
+      const taxiGeo = new THREE.BoxGeometry(1.4, 0.4, 0.65);
+      const taxiMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+      const taxi = new THREE.Mesh(taxiGeo, taxiMat);
+      taxi.position.set(0, 2.8, -0.3);
+      carGroup.add(taxi);
+
+      const wheelGeo = new THREE.CylinderGeometry(0.8, 0.8, 0.6, 16);
+      const wheelMat = new THREE.MeshLambertMaterial({ color: 0x111827 });
+      const wheelPositions = [
+        [-1.9, 0.8, 2.2], [1.9, 0.8, 2.2],
+        [-1.9, 0.8, -2.2], [1.9, 0.8, -2.2]
+      ];
+      wheelPositions.forEach(pos => {
+        const w = new THREE.Mesh(wheelGeo, wheelMat);
+        w.rotation.z = Math.PI / 2;
+        w.position.set(...pos);
+        carGroup.add(w);
+      });
+
+      scene.add(carGroup);
+    }
+
+    function buildObstacles() {
+      obstacles = [];
+      for (let z = -30; z > -2200; z -= 38) {
+        const laneX = (Math.random() - 0.5) * 20;
+        const coneGeo = new THREE.ConeGeometry(0.85, 2.3, 8);
+        const coneMat = new THREE.MeshLambertMaterial({ color: 0xea580c });
+        const cone = new THREE.Mesh(coneGeo, coneMat);
+        cone.position.set(laneX, 1.2, z);
+        scene.add(cone);
+        obstacles.push({ mesh: cone, x: laneX, z: z, radius: 1.7 });
+      }
+    }
+
+    function setupInputListeners() {
+      window.addEventListener("keydown", e => {
+        if (isModalOpen) return;
+        const k = e.key.toLowerCase();
+        if (k === "arrowup" || k === "w") keys.up = true;
+        if (k === "arrowdown" || k === "s") keys.down = true;
+        if (k === "arrowleft" || k === "a") keys.left = true;
+        if (k === "arrowright" || k === "d") keys.right = true;
+      });
+
+      window.addEventListener("keyup", e => {
+        const k = e.key.toLowerCase();
+        if (k === "arrowup" || k === "w") keys.up = false;
+        if (k === "arrowdown" || k === "s") keys.down = false;
+        if (k === "arrowleft" || k === "a") keys.left = false;
+        if (k === "arrowright" || k === "d") keys.right = false;
+      });
+
+      const bindTouch = (id, action) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("touchstart", (e) => { e.preventDefault(); keys[action] = true; });
+        el.addEventListener("touchend", () => keys[action] = false);
+      };
+      bindTouch("btn-up", "up"); bindTouch("btn-down", "down");
+      bindTouch("btn-left", "left"); bindTouch("btn-right", "right");
+    }
+
+    function updateGamePhysics() {
+      if (isModalOpen || !isGameRunning) return;
+
+      if (keys.up) carPhysics.speed += carPhysics.accel;
+      else if (keys.down) carPhysics.speed -= carPhysics.accel * 1.4;
+      else {
+        if (carPhysics.speed > 0) carPhysics.speed = Math.max(0, carPhysics.speed - carPhysics.friction);
+        if (carPhysics.speed < 0) carPhysics.speed = Math.min(0, carPhysics.speed + carPhysics.friction);
+      }
+      carPhysics.speed = Math.max(-0.45, Math.min(carPhysics.speed, carPhysics.maxSpeed));
+
+      if (carPhysics.speed !== 0) {
+        const dir = carPhysics.speed > 0 ? 1 : -1;
+        if (keys.left) carPhysics.angle += carPhysics.turnSpeed * dir;
+        else if (keys.right) carPhysics.angle -= carPhysics.turnSpeed * dir;
+        else carPhysics.angle *= carPhysics.angularDamping;
+      }
+
+      updateEngineSound(carPhysics.speed / carPhysics.maxSpeed);
+
+      const nextX = carPhysics.x - Math.sin(carPhysics.angle) * carPhysics.speed;
+      const nextZ = carPhysics.z - Math.cos(carPhysics.angle) * carPhysics.speed;
+      carPhysics.x = Math.max(-13.5, Math.min(13.5, nextX));
+
+      let laserBlocked = false;
+      checkpoints.forEach((cp) => {
+        if (!cp.passed && carPhysics.z > cp.z && nextZ <= cp.z + 1.5) {
+          laserBlocked = true;
+          carPhysics.speed = 0;
+          openHandsOnStudio(cp.chapterId);
+        }
+      });
+
+      if (!laserBlocked) carPhysics.z = nextZ;
+
+      if (carGroup) {
+        carGroup.position.set(carPhysics.x, 0, carPhysics.z);
+        carGroup.rotation.y = carPhysics.angle;
+      }
+
+      if (camera) {
+        const idealCam = new THREE.Vector3(0, 5.6, 13.8);
+        idealCam.applyAxisAngle(new THREE.Vector3(0, 1, 0), carPhysics.angle * 0.7);
+        camera.position.x += (carPhysics.x + idealCam.x - camera.position.x) * 0.12;
+        camera.position.y += (5.6 - camera.position.y) * 0.12;
+        camera.position.z += (carPhysics.z + idealCam.z - camera.position.z) * 0.12;
+
+        const lookAhead = new THREE.Vector3(carPhysics.x - Math.sin(carPhysics.angle * 0.7) * 9, 1.8, carPhysics.z - Math.cos(carPhysics.angle * 0.7) * 9);
+        camera.lookAt(lookAhead);
+      }
+
+      const mph = Math.round(Math.abs(carPhysics.speed) * 52);
+      const spd = document.getElementById("speed-val");
+      const gr = document.getElementById("gear-val");
+      if (spd) spd.innerText = mph;
+      if (gr) gr.innerText = carPhysics.speed > 0.05 ? 'D' : (carPhysics.speed < -0.05 ? 'R' : 'N');
+
+      renderMinimap();
+    }
+
+    // MULTI-STEP WORKSHOP LOGIC (เลือกถูก/ผิด + เด้งกลับ Hub)
+    let currentStepIndex = 1;
+    let currentWeekSteps = [];
+    let currentTaskData = null;
+
+    function openHandsOnStudio(chId) {
+      isModalOpen = true;
+      const chData = chaptersMeta.find(c => c.id === chId);
+      document.getElementById("studio-week-title").innerText = chData.title;
+      
+      currentWeekSteps = workshopCurriculum[chId] || workshopCurriculum[4];
+      
+      document.getElementById("sim-title").style.fontWeight = "400";
+      document.getElementById("sim-title").style.textAlign = "left";
+      document.getElementById("sim-p2").style.fontWeight = "400";
+      document.getElementById("sim-p2").style.color = "#64748b";
+
+      document.getElementById("studio-modal").style.display = "flex";
+      loadStep(1);
+    }
+
+    function loadStep(stepNumber) {
+      currentStepIndex = stepNumber;
+      currentTaskData = currentWeekSteps.find(s => s.step === stepNumber);
+
+      document.getElementById("mission-step-indicator").innerText = `ภารกิจ ${stepNumber} / ${currentWeekSteps.length}`;
+
+      for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (dot) {
+          dot.className = "step-dot" + (i < stepNumber ? " done" : (i === stepNumber ? " active" : ""));
+        }
+      }
+
+      document.getElementById("task-title").innerText = currentTaskData.title;
+      document.getElementById("task-desc").innerText = currentTaskData.desc;
+      document.getElementById("task-action-box").innerHTML = currentTaskData.task;
+      document.getElementById("lab-feedback").innerText = "💡 ทดลองคลิกเครื่องมือที่เหมาะสมบนแถบ Ribbon หรือกดคีย์ลัดจริงได้เลย";
+
+      // เรนเดอร์ปุ่มตัวเลือก
+      const ribbon = document.getElementById("sim-ribbon-tools");
+      ribbon.innerHTML = "";
+      currentTaskData.buttons.forEach(btn => {
+        const b = document.createElement("button");
+        b.className = "tool-btn";
+        b.innerHTML = btn.label;
+        b.onclick = () => handleUserToolSelect(btn.id);
+        ribbon.appendChild(b);
+      });
+    }
+
+    function handleUserToolSelect(actionId) {
+      if (actionId === currentTaskData.targetAction) {
+        playSuccessSound();
+        applyVisualEffect(actionId);
+        document.getElementById("lab-feedback").innerText = "✔ ยอดเยี่ยมมาก! การจัดรูปแบบถูกต้อง";
+
+        setTimeout(() => {
+          if (currentStepIndex < currentWeekSteps.length) {
+            loadStep(currentStepIndex + 1);
+          } else {
+            // สำเร็จครบทุกภารกิจย่อยในบทนี้ -> พากลับหน้าเลือกบทเรียนทันที
+            completeChapterAndReturnHub();
+          }
+        }, 800);
+      } else {
+        // เลือกผิด: แสดงใบความรู้
+        playCrashSound();
+        showHintModal(currentTaskData.hintTitle, currentTaskData.hintText);
+      }
+    }
+
+    function applyVisualEffect(actionId) {
+      if (actionId === "bold") {
+        document.getElementById("sim-title").style.fontWeight = "900";
+      } else if (actionId === "center") {
+        document.getElementById("sim-title").style.textAlign = "center";
+      } else if (actionId === "painter") {
+        const sub = document.getElementById("sim-p2");
+        sub.style.fontWeight = "900";
+        sub.style.color = "#0284c7";
+      }
+    }
+
+    function showHintModal(title, text) {
+      document.getElementById("hint-title").innerText = title;
+      document.getElementById("hint-desc").innerHTML = text;
+      document.getElementById("hint-modal").style.display = "flex";
+    }
+
+    function closeHintModal() {
+      document.getElementById("hint-modal").style.display = "none";
+    }
+
+    // รองรับการกดคีย์ลัดจริง
+    window.addEventListener("keydown", (e) => {
+      if (isModalOpen && currentTaskData && currentTaskData.hotkey) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === currentTaskData.hotkey) {
+          e.preventDefault();
+          handleUserToolSelect(currentTaskData.targetAction);
+        }
+      }
+    });
+
+    // เมื่อสำเร็จทุกภารกิจ: พากลับหน้าเลือกบทเรียนทันที
+    function completeChapterAndReturnHub() {
+      document.getElementById("studio-modal").style.display = "none";
+      isModalOpen = false;
+
+      if (!masteredChapters.includes(selectedChapterId)) {
+        masteredChapters.push(selectedChapterId);
+      }
+
+      checkpoints.forEach(cp => {
+        if (cp.chapterId === selectedChapterId) {
+          cp.passed = true;
+          cp.laser.material.color.setHex(0x10b981);
+          cp.laser.material.opacity = 0.15;
+        }
+      });
+
+      alert("🎉 ยอดเยี่ยมมาก! คุณผ่านภารกิจสัปดาห์นี้ครบถ้วนแล้ว ระบบกำลังพาคุณกลับสู่หน้าเลือกบทเรียน");
+      returnToHub();
+    }
+
+    function renderMinimap() {
+      const mCanvas = document.getElementById("minimapCanvas");
+      if (!mCanvas) return;
+      const mCtx = mCanvas.getContext("2d");
+      mCtx.clearRect(0, 0, 155, 155);
+
+      mCtx.fillStyle = "#15803d"; mCtx.fillRect(0, 0, 155, 155);
+      mCtx.fillStyle = "#1e293b"; mCtx.fillRect(155 / 2 - 18, 0, 36, 155);
+      mCtx.fillStyle = "#ef4444"; mCtx.fillRect(155 / 2 - 18, 30, 36, 6);
+
+      mCtx.save();
+      mCtx.translate(155 / 2 + (carPhysics.x / 14) * 14, 110);
+      mCtx.rotate(-carPhysics.angle);
+      mCtx.fillStyle = "#38bdf8";
+      mCtx.beginPath(); mCtx.moveTo(0, -8); mCtx.lineTo(6, 6); mCtx.lineTo(-6, 6); mCtx.closePath();
+      mCtx.fill();
+      mCtx.restore();
+    }
+
+    function animate() {
+      if (!isGameRunning) return;
+      requestAnimationFrame(animate);
+      updateGamePhysics();
+      if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+      }
+    }
+
+    // Audio Web API
     let audioCtx = null, isMuted = false, engineOsc = null, engineSubOsc = null, engineFilter = null, engineGain = null, bgmInterval = null;
 
     function initAudio() {
@@ -608,555 +1098,6 @@
       isMuted = !isMuted;
       if (engineGain && audioCtx) engineGain.gain.setValueAtTime(isMuted ? 0 : 0.04, audioCtx.currentTime);
       document.getElementById("audio-icon").style.fill = isMuted ? "#94a3b8" : "#38bdf8";
-    }
-
-    // STATE & PROGRESSION
-    let playerName = "";
-    let masteredChapters = [];
-    try {
-      playerName = localStorage.getItem("wr3d_hands_name") || "";
-      masteredChapters = JSON.parse(localStorage.getItem("wr3d_hands_mastered") || "[]");
-    } catch(e) {}
-    let selectedChapterId = 4;
-
-    let scene = null, camera = null, renderer = null, carGroup = null;
-    let checkpoints = [], obstacles = [];
-    let isModalOpen = false, isGameRunning = false;
-    let keys = { up: false, down: false, left: false, right: false };
-
-    let carPhysics = {
-      x: 0, z: 0, angle: 0, speed: 0,
-      maxSpeed: 1.25, accel: 0.028, friction: 0.018,
-      turnSpeed: 0.032, angularDamping: 0.92, spinTimer: 0
-    };
-
-    // ฟังก์ชันเข้าสู่ห้องเรียน: ปิดหน้าแรกและเปิดหน้าเลือกบทเรียนทันที
-    function goToHubNow() {
-      const input = document.getElementById("player-input");
-      playerName = (input && input.value.trim()) ? input.value.trim() : "ผู้เรียน";
-      
-      try {
-        localStorage.setItem("wr3d_hands_name", playerName);
-      } catch(e) {}
-
-      // 1. ซ่อนหน้าแรก
-      const startScreen = document.getElementById("start-screen");
-      if (startScreen) {
-        startScreen.style.display = "none";
-      }
-
-      // 2. อัปเดตชื่อผู้เรียน
-      const userLabel = document.getElementById("hub-username");
-      const hudName = document.getElementById("hud-name");
-      if (userLabel) userLabel.innerText = playerName;
-      if (hudName) hudName.innerText = playerName;
-
-      // 3. แสดงหน้าเลือก 12 บทเรียน
-      renderChaptersGrid();
-      const hubScreen = document.getElementById("hub-screen");
-      if (hubScreen) {
-        hubScreen.style.display = "flex";
-      }
-
-      // เปิดระบบเสียง
-      initAudio();
-    }
-
-    function renderChaptersGrid() {
-      const grid = document.getElementById("chapters-grid");
-      if (!grid) return;
-      grid.innerHTML = "";
-
-      chaptersMeta.forEach((ch) => {
-        const isMastered = masteredChapters.includes(ch.id);
-        const card = document.createElement("div");
-        card.className = `chapter-card ${isMastered ? 'mastered' : ''}`;
-        card.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:0.8rem; font-weight:800; background:#e2e8f0; padding:2px 8px; border-radius:6px;">สัปดาห์ที่ ${ch.id}</span>
-            <span style="font-size:0.8rem; font-weight:800; color:${isMastered ? '#10b981' : '#0284c7'};">${isMastered ? '⭐ สำเร็จแล้ว' : '▶ เริ่มเวิร์กช็อป'}</span>
-          </div>
-          <div style="font-size:1.05rem; font-weight:800; color:#0f172a; margin-top:4px;">${ch.title.split(': ')[1] || ch.title}</div>
-          <div style="font-size:0.82rem; color:#64748b; line-height:1.4;">${ch.desc}</div>
-        `;
-        card.onclick = () => startChapterSession(ch.id);
-        grid.appendChild(card);
-      });
-
-      const prog = document.getElementById("hud-progress");
-      if (prog) prog.innerText = `ผ่าน ${masteredChapters.length} / 12 บท`;
-    }
-
-    function returnToHub() {
-      document.getElementById("studio-modal").style.display = "none";
-      document.getElementById("hint-modal").style.display = "none";
-      document.getElementById("hub-screen").style.display = "flex";
-      isGameRunning = false;
-    }
-
-    function startChapterSession(chapterId) {
-      selectedChapterId = chapterId;
-      document.getElementById("hub-screen").style.display = "none";
-      
-      const chData = chaptersMeta.find(c => c.id === chapterId);
-      document.getElementById("hud-stage").innerText = chData.title;
-
-      if (!scene) {
-        init3DWorld();
-        setupInputListeners();
-      }
-
-      resetRoadTrack(chapterId);
-      isGameRunning = true;
-      isModalOpen = false;
-      animate();
-    }
-
-    function resetRoadTrack(chapterId) {
-      carPhysics.x = 0; carPhysics.z = 0; carPhysics.angle = 0; carPhysics.speed = 0;
-
-      checkpoints.forEach(cp => scene.remove(cp.group));
-      checkpoints = [];
-
-      const gateZ = -135;
-      const gate = new THREE.Group();
-      gate.position.set(0, 0, gateZ);
-
-      const pGeo = new THREE.BoxGeometry(2, 16, 2);
-      const pMat = new THREE.MeshLambertMaterial({ color: 0x334155 });
-      const pL = new THREE.Mesh(pGeo, pMat); pL.position.set(-17, 8, 0); gate.add(pL);
-      const pR = pL.clone(); pR.position.x = 17; gate.add(pR);
-
-      const barGeo = new THREE.BoxGeometry(36, 2.2, 2.2);
-      const barMat = new THREE.MeshLambertMaterial({ color: 0xfacc15 });
-      const bar = new THREE.Mesh(barGeo, barMat); bar.position.set(0, 15, 0); gate.add(bar);
-
-      const laserGeo = new THREE.PlaneGeometry(32, 14);
-      const laserMat = new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.55, side: THREE.DoubleSide });
-      const laser = new THREE.Mesh(laserGeo, laserMat); laser.position.set(0, 7, 0); gate.add(laser);
-
-      scene.add(gate);
-      checkpoints.push({ group: gate, laser: laser, z: gateZ, chapterId: chapterId, passed: false });
-    }
-
-    // 3D Scene Initialization
-    function init3DWorld() {
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x7dd3fc);
-      scene.fog = new THREE.Fog(0x7dd3fc, 80, 500);
-
-      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.shadowMap.enabled = true;
-      document.getElementById("three-container").appendChild(renderer.domElement);
-
-      window.addEventListener("resize", () => {
-        if (!camera || !renderer) return;
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.85);
-      scene.add(hemiLight);
-
-      const dirLight = new THREE.DirectionalLight(0xfff7ed, 0.9);
-      dirLight.position.set(60, 120, 60);
-      dirLight.castShadow = true;
-      scene.add(dirLight);
-
-      buildWorldEnvironment();
-      buildSportsCar();
-      buildObstacles();
-    }
-
-    function buildWorldEnvironment() {
-      const groundGeo = new THREE.PlaneGeometry(800, 3200);
-      const groundMat = new THREE.MeshLambertMaterial({ color: 0x4ade80 });
-      const ground = new THREE.Mesh(groundGeo, groundMat);
-      ground.rotation.x = -Math.PI / 2; ground.position.z = -1200;
-      scene.add(ground);
-
-      const roadGeo = new THREE.PlaneGeometry(32, 3000);
-      const roadMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
-      const road = new THREE.Mesh(roadGeo, roadMat);
-      road.rotation.x = -Math.PI / 2; road.position.y = 0.05; road.position.z = -1200;
-      scene.add(road);
-
-      // เส้นประกลางถนน
-      for (let z = 50; z > -2600; z -= 14) {
-        const lineGeo = new THREE.PlaneGeometry(0.35, 8);
-        const lineMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
-        const leftYellow = new THREE.Mesh(lineGeo, lineMat);
-        leftYellow.rotation.x = -Math.PI / 2; leftYellow.position.set(-0.4, 0.08, z);
-        scene.add(leftYellow);
-
-        const rightYellow = leftYellow.clone(); rightYellow.position.x = 0.4;
-        scene.add(rightYellow);
-      }
-
-      // ขอบฟุตบาท
-      const curbGeo = new THREE.BoxGeometry(4, 0.5, 3000);
-      const curbMat = new THREE.MeshLambertMaterial({ color: 0xe2e8f0 });
-      const leftCurb = new THREE.Mesh(curbGeo, curbMat);
-      leftCurb.position.set(-18, 0.25, -1200);
-      scene.add(leftCurb);
-
-      const rightCurb = new THREE.Mesh(curbGeo, curbMat);
-      rightCurb.position.set(18, 0.25, -1200);
-      scene.add(rightCurb);
-
-      // ตึกอาคารริมทาง
-      const colors = [0xef4444, 0x3b82f6, 0xf59e0b, 0x10b981, 0x8b5cf6, 0xec4899, 0x06b6d4];
-      for (let z = 20; z > -2500; z -= 38) {
-        const bH = 28 + Math.random() * 35;
-        const bW = 20;
-        const bGeo = new THREE.BoxGeometry(bW, bH, 26);
-        const bMat = new THREE.MeshLambertMaterial({ color: colors[Math.floor(Math.random() * colors.length)] });
-        
-        const b1 = new THREE.Mesh(bGeo, bMat);
-        b1.position.set(-32 - bW / 2, bH / 2, z);
-        scene.add(b1);
-
-        const b2 = new THREE.Mesh(bGeo, bMat);
-        b2.position.set(32 + bW / 2, bH / 2, z);
-        scene.add(b2);
-
-        if (z % 76 === 0) {
-          createTree(-21, z);
-          createTree(21, z);
-        }
-      }
-    }
-
-    function createTree(x, z) {
-      const trunkGeo = new THREE.CylinderGeometry(0.5, 0.6, 6);
-      const trunkMat = new THREE.MeshLambertMaterial({ color: 0x78350f });
-      const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-      trunk.position.set(x, 3, z);
-      scene.add(trunk);
-
-      const leavesGeo = new THREE.ConeGeometry(3.5, 8, 8);
-      const leavesMat = new THREE.MeshLambertMaterial({ color: 0x15803d });
-      const leaves = new THREE.Mesh(leavesGeo, leavesMat);
-      leaves.position.set(x, 8, z);
-      scene.add(leaves);
-    }
-
-    function buildSportsCar() {
-      carGroup = new THREE.Group();
-
-      const bodyGeo = new THREE.BoxGeometry(3.8, 1.35, 7.2);
-      const bodyMat = new THREE.MeshLambertMaterial({ color: 0x1e3a8a });
-      const carBody = new THREE.Mesh(bodyGeo, bodyMat);
-      carBody.position.y = 1.0;
-      carGroup.add(carBody);
-
-      const cabinGeo = new THREE.BoxGeometry(3.2, 1.2, 3.8);
-      const cabinMat = new THREE.MeshLambertMaterial({ color: 0x0f172a });
-      const cabin = new THREE.Mesh(cabinGeo, cabinMat);
-      cabin.position.set(0, 2.0, -0.4);
-      carGroup.add(cabin);
-
-      const glassGeo = new THREE.BoxGeometry(3.1, 1.0, 3.6);
-      const glassMat = new THREE.MeshLambertMaterial({ color: 0x38bdf8 });
-      const glass = new THREE.Mesh(glassGeo, glassMat);
-      glass.position.set(0, 2.05, -0.4);
-      carGroup.add(glass);
-
-      const taxiGeo = new THREE.BoxGeometry(1.4, 0.4, 0.65);
-      const taxiMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
-      const taxi = new THREE.Mesh(taxiGeo, taxiMat);
-      taxi.position.set(0, 2.8, -0.3);
-      carGroup.add(taxi);
-
-      const wheelGeo = new THREE.CylinderGeometry(0.8, 0.8, 0.6, 16);
-      const wheelMat = new THREE.MeshLambertMaterial({ color: 0x111827 });
-      const wheelPositions = [
-        [-1.9, 0.8, 2.2], [1.9, 0.8, 2.2],
-        [-1.9, 0.8, -2.2], [1.9, 0.8, -2.2]
-      ];
-      wheelPositions.forEach(pos => {
-        const w = new THREE.Mesh(wheelGeo, wheelMat);
-        w.rotation.z = Math.PI / 2;
-        w.position.set(...pos);
-        carGroup.add(w);
-      });
-
-      scene.add(carGroup);
-    }
-
-    function buildObstacles() {
-      obstacles = [];
-      for (let z = -30; z > -2200; z -= 38) {
-        const laneX = (Math.random() - 0.5) * 20;
-        const coneGeo = new THREE.ConeGeometry(0.85, 2.3, 8);
-        const coneMat = new THREE.MeshLambertMaterial({ color: 0xea580c });
-        const cone = new THREE.Mesh(coneGeo, coneMat);
-        cone.position.set(laneX, 1.2, z);
-        scene.add(cone);
-        obstacles.push({ mesh: cone, x: laneX, z: z, radius: 1.7, hit: false });
-      }
-    }
-
-    function setupInputListeners() {
-      window.addEventListener("keydown", e => {
-        if (isModalOpen) return;
-        const k = e.key.toLowerCase();
-        if (k === "arrowup" || k === "w") keys.up = true;
-        if (k === "arrowdown" || k === "s") keys.down = true;
-        if (k === "arrowleft" || k === "a") keys.left = true;
-        if (k === "arrowright" || k === "d") keys.right = true;
-      });
-
-      window.addEventListener("keyup", e => {
-        const k = e.key.toLowerCase();
-        if (k === "arrowup" || k === "w") keys.up = false;
-        if (k === "arrowdown" || k === "s") keys.down = false;
-        if (k === "arrowleft" || k === "a") keys.left = false;
-        if (k === "arrowright" || k === "d") keys.right = false;
-      });
-
-      const bindTouch = (id, action) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener("touchstart", (e) => { e.preventDefault(); keys[action] = true; });
-        el.addEventListener("touchend", () => keys[action] = false);
-      };
-      bindTouch("btn-up", "up"); bindTouch("btn-down", "down");
-      bindTouch("btn-left", "left"); bindTouch("btn-right", "right");
-    }
-
-    function updateGamePhysics() {
-      if (isModalOpen || !isGameRunning) return;
-
-      if (carPhysics.spinTimer > 0) {
-        carPhysics.spinTimer--;
-        carPhysics.angle += 0.22;
-        carPhysics.speed *= 0.94;
-      } else {
-        if (keys.up) carPhysics.speed += carPhysics.accel;
-        else if (keys.down) carPhysics.speed -= carPhysics.accel * 1.4;
-        else {
-          if (carPhysics.speed > 0) carPhysics.speed = Math.max(0, carPhysics.speed - carPhysics.friction);
-          if (carPhysics.speed < 0) carPhysics.speed = Math.min(0, carPhysics.speed + carPhysics.friction);
-        }
-        carPhysics.speed = Math.max(-0.45, Math.min(carPhysics.speed, carPhysics.maxSpeed));
-
-        if (carPhysics.speed !== 0) {
-          const dir = carPhysics.speed > 0 ? 1 : -1;
-          if (keys.left) carPhysics.angle += carPhysics.turnSpeed * dir;
-          else if (keys.right) carPhysics.angle -= carPhysics.turnSpeed * dir;
-          else carPhysics.angle *= carPhysics.angularDamping;
-        }
-      }
-
-      updateEngineSound(carPhysics.speed / carPhysics.maxSpeed);
-
-      const nextX = carPhysics.x - Math.sin(carPhysics.angle) * carPhysics.speed;
-      const nextZ = carPhysics.z - Math.cos(carPhysics.angle) * carPhysics.speed;
-      carPhysics.x = Math.max(-13.5, Math.min(13.5, nextX));
-
-      obstacles.forEach(ob => {
-        if (!ob.hit) {
-          const dist = Math.hypot(carPhysics.x - ob.x, carPhysics.z - ob.z);
-          if (dist < ob.radius + 1.8) {
-            ob.hit = true;
-            carPhysics.spinTimer = 22;
-            carPhysics.speed *= 0.35;
-            playCrashSound();
-          }
-        }
-      });
-
-      let laserBlocked = false;
-      checkpoints.forEach((cp) => {
-        if (!cp.passed && carPhysics.z > cp.z && nextZ <= cp.z + 1.5) {
-          laserBlocked = true;
-          carPhysics.speed = 0;
-          openHandsOnStudio(cp.chapterId);
-        }
-      });
-
-      if (!laserBlocked) carPhysics.z = nextZ;
-
-      if (carGroup) {
-        carGroup.position.set(carPhysics.x, 0, carPhysics.z);
-        carGroup.rotation.y = carPhysics.angle;
-      }
-
-      if (camera) {
-        const idealCam = new THREE.Vector3(0, 5.6, 13.8);
-        idealCam.applyAxisAngle(new THREE.Vector3(0, 1, 0), carPhysics.angle * 0.7);
-        camera.position.x += (carPhysics.x + idealCam.x - camera.position.x) * 0.12;
-        camera.position.y += (5.6 - camera.position.y) * 0.12;
-        camera.position.z += (carPhysics.z + idealCam.z - camera.position.z) * 0.12;
-
-        const lookAhead = new THREE.Vector3(carPhysics.x - Math.sin(carPhysics.angle * 0.7) * 9, 1.8, carPhysics.z - Math.cos(carPhysics.angle * 0.7) * 9);
-        camera.lookAt(lookAhead);
-      }
-
-      const mph = Math.round(Math.abs(carPhysics.speed) * 52);
-      const spd = document.getElementById("speed-val");
-      const gr = document.getElementById("gear-val");
-      if (spd) spd.innerText = mph;
-      if (gr) gr.innerText = carPhysics.speed > 0.05 ? 'D' : (carPhysics.speed < -0.05 ? 'R' : 'N');
-
-      renderMinimap();
-    }
-
-    // MULTI-STEP WORKSHOP WITH BRANCHING
-    let currentStepIndex = 1;
-    let currentWeekSteps = [];
-    let currentTaskData = null;
-
-    function openHandsOnStudio(chId) {
-      isModalOpen = true;
-      const chData = chaptersMeta.find(c => c.id === chId);
-      document.getElementById("studio-week-title").innerText = chData.title;
-      
-      currentWeekSteps = workshopCurriculum[chId] || workshopCurriculum[4];
-      
-      document.getElementById("sim-title").style.fontWeight = "400";
-      document.getElementById("sim-title").style.textAlign = "left";
-      document.getElementById("sim-p2").style.fontWeight = "400";
-      document.getElementById("sim-p2").style.color = "#64748b";
-
-      document.getElementById("studio-modal").style.display = "flex";
-      loadStep(1);
-    }
-
-    function loadStep(stepNumber) {
-      currentStepIndex = stepNumber;
-      currentTaskData = currentWeekSteps.find(s => s.step === stepNumber);
-
-      document.getElementById("mission-step-indicator").innerText = `ภารกิจ ${stepNumber} / ${currentWeekSteps.length}`;
-
-      for (let i = 1; i <= 3; i++) {
-        const dot = document.getElementById(`dot-${i}`);
-        if (dot) {
-          dot.className = "step-dot" + (i < stepNumber ? " done" : (i === stepNumber ? " active" : ""));
-        }
-      }
-
-      document.getElementById("task-title").innerText = currentTaskData.title;
-      document.getElementById("task-desc").innerText = currentTaskData.desc;
-      document.getElementById("task-action-box").innerHTML = currentTaskData.task;
-      document.getElementById("lab-feedback").innerText = "💡 ทดลองคลิกเครื่องมือที่เหมาะสมบนแถบ Ribbon หรือกดคีย์ลัดจริงได้เลย";
-
-      const ribbon = document.getElementById("sim-ribbon-tools");
-      ribbon.innerHTML = "";
-      currentTaskData.buttons.forEach(btn => {
-        const b = document.createElement("button");
-        b.className = "tool-btn";
-        b.innerHTML = btn.label;
-        b.onclick = () => handleUserToolSelect(btn.id);
-        ribbon.appendChild(b);
-      });
-    }
-
-    function handleUserToolSelect(actionId) {
-      if (actionId === currentTaskData.targetAction) {
-        playSuccessSound();
-        applyVisualEffect(actionId);
-        document.getElementById("lab-feedback").innerText = "✔ ยอดเยี่ยมมาก! การจัดรูปแบบถูกต้อง";
-
-        setTimeout(() => {
-          if (currentStepIndex < currentWeekSteps.length) {
-            loadStep(currentStepIndex + 1);
-          } else {
-            completeChapterAndReturnHub();
-          }
-        }, 800);
-      } else {
-        playCrashSound();
-        showHintModal(currentTaskData.hintTitle, currentTaskData.hintText);
-      }
-    }
-
-    function applyVisualEffect(actionId) {
-      if (actionId === "bold") {
-        document.getElementById("sim-title").style.fontWeight = "900";
-      } else if (actionId === "center") {
-        document.getElementById("sim-title").style.textAlign = "center";
-      } else if (actionId === "painter") {
-        const sub = document.getElementById("sim-p2");
-        sub.style.fontWeight = "900";
-        sub.style.color = "#0284c7";
-      }
-    }
-
-    function showHintModal(title, text) {
-      document.getElementById("hint-title").innerText = title;
-      document.getElementById("hint-desc").innerHTML = text;
-      document.getElementById("hint-modal").style.display = "flex";
-    }
-
-    function closeHintModal() {
-      document.getElementById("hint-modal").style.display = "none";
-    }
-
-    window.addEventListener("keydown", (e) => {
-      if (isModalOpen && currentTaskData && currentTaskData.hotkey) {
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === currentTaskData.hotkey) {
-          e.preventDefault();
-          handleUserToolSelect(currentTaskData.targetAction);
-        }
-      }
-    });
-
-    // เมื่อสำเร็จทุกภารกิจ: พากลับหน้าเลือก 12 บทเรียนทันที
-    function completeChapterAndReturnHub() {
-      document.getElementById("studio-modal").style.display = "none";
-      isModalOpen = false;
-
-      if (!masteredChapters.includes(selectedChapterId)) {
-        masteredChapters.push(selectedChapterId);
-        try {
-          localStorage.setItem("wr3d_hands_mastered", JSON.stringify(masteredChapters));
-        } catch(e) {}
-      }
-
-      checkpoints.forEach(cp => {
-        if (cp.chapterId === selectedChapterId) {
-          cp.passed = true;
-          cp.laser.material.color.setHex(0x10b981);
-          cp.laser.material.opacity = 0.15;
-        }
-      });
-
-      alert("🎉 ยอดเยี่ยมมาก! คุณผ่านภารกิจสัปดาห์นี้ครบถ้วนแล้ว ระบบกำลังพาคุณกลับสู่หน้าเลือกบทเรียน");
-      returnToHub();
-    }
-
-    function renderMinimap() {
-      const mCanvas = document.getElementById("minimapCanvas");
-      if (!mCanvas) return;
-      const mCtx = mCanvas.getContext("2d");
-      mCtx.clearRect(0, 0, 155, 155);
-
-      mCtx.fillStyle = "#15803d"; mCtx.fillRect(0, 0, 155, 155);
-      mCtx.fillStyle = "#1e293b"; mCtx.fillRect(155 / 2 - 18, 0, 36, 155);
-      mCtx.fillStyle = "#ef4444"; mCtx.fillRect(155 / 2 - 18, 30, 36, 6);
-
-      mCtx.save();
-      mCtx.translate(155 / 2 + (carPhysics.x / 14) * 14, 110);
-      mCtx.rotate(-carPhysics.angle);
-      mCtx.fillStyle = "#38bdf8";
-      mCtx.beginPath(); mCtx.moveTo(0, -8); mCtx.lineTo(6, 6); mCtx.lineTo(-6, 6); mCtx.closePath();
-      mCtx.fill();
-      mCtx.restore();
-    }
-
-    function animate() {
-      if (!isGameRunning) return;
-      requestAnimationFrame(animate);
-      updateGamePhysics();
-      if (renderer && scene && camera) {
-        renderer.render(scene, camera);
-      }
     }
   </script>
 </body>
