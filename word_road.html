@@ -234,17 +234,16 @@
       display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-height: 50px;
     }
     .tool-btn {
-      padding: 7px 14px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px;
+      padding: 7px 14px; background: #fff; border: 1.5px solid #cbd5e1; border-radius: 8px;
       font-size: 0.86rem; font-weight: 700; color: #334155; cursor: pointer;
       display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
     }
     .tool-btn:hover { background: #e0f2fe; border-color: #38bdf8; color: #0284c7; }
     .tool-btn.active { background: #0284c7; color: #fff; border-color: #0369a1; }
-    .tool-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
     .doc-page {
       background: #fff; min-height: 250px; padding: 24px; position: relative;
-      user-select: text; -webkit-user-select: text; /* ให้เด็กลากคลุมข้อความได้จริง */
+      user-select: text; -webkit-user-select: text;
       display: flex; flex-direction: column; justify-content: center;
     }
     .doc-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; transition: all 0.2s ease; }
@@ -254,12 +253,31 @@
       background: #fff; border-top: 2px solid #e2e8f0; padding: 12px 20px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    .btn-next-step {
-      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
-      color: #fff; border: none; padding: 10px 22px; border-radius: 12px;
-      font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px;
+
+    /* MODAL ใบความรู้เมื่อเลือกผิด */
+    #hint-modal {
+      position: fixed; inset: 0;
+      background: rgba(10, 12, 16, 0.92); backdrop-filter: blur(14px);
+      display: none; justify-content: center; align-items: center;
+      padding: 18px; z-index: 140;
     }
-    .btn-next-step:disabled { background: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
+    .hint-card {
+      background: #0f172a; border: 3px solid #38bdf8; border-radius: 28px;
+      padding: 26px; max-width: 520px; width: 100%; color: #fff;
+      box-shadow: 0 20px 60px rgba(2, 132, 199, 0.4); text-align: left;
+      animation: zoomIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .hint-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+      color: #38bdf8; font-size: 1.25rem; font-weight: 800;
+    }
+    .hint-box {
+      background: #1e293b; border-left: 5px solid #facc15;
+      padding: 16px 18px; border-radius: 12px; margin-bottom: 18px;
+    }
+    .hint-title { font-size: 1.05rem; font-weight: 800; color: #facc15; margin-bottom: 8px; }
+    .hint-desc { font-size: 0.95rem; color: #e2e8f0; line-height: 1.65; }
+    .hint-desc mark { background: #fde047; color: #0f172a; font-weight: 800; padding: 2px 7px; border-radius: 6px; }
   </style>
 </head>
 <body>
@@ -324,7 +342,7 @@
       <input type="text" id="player-input" style="width:100%; padding:14px; border-radius:14px; border:2px solid #cbd5e1; font-size:1.05rem; font-weight:700; text-align:center; outline:none; margin-bottom:14px;" placeholder="พิมพ์ชื่อ - สกุล หรือ เลขที่ของผู้เรียน..." />
 
       <button class="rbx-green-btn" onclick="submitPlayerName()">
-        เข้าสู่ห้องเรียน (ENTER STUDIO)
+        เข้าสู่ห้องเรียน (ENTER STUDIO)[cite: 2]
       </button>
     </div>
   </div>
@@ -343,7 +361,7 @@
     </div>
   </div>
 
-  <!-- STUDIO WORKSHOP MODAL (Interactive Sandbox พร้อมระบบหลายภารกิจย่อย) -->
+  <!-- STUDIO WORKSHOP MODAL (Interactive Sandbox พร้อมระบบตัวเลือกถูก/ผิด + ใบความรู้) -->
   <div id="studio-modal">
     <div class="studio-box">
       <div class="studio-header">
@@ -360,29 +378,21 @@
             <div class="step-dot" id="dot-3"></div>
           </div>
           <div style="font-size: 1.1rem; font-weight: 800; color: #0f172a;" id="task-title">ภารกิจที่ 1: การเน้นหัวข้อหลัก</div>
-          <div style="font-size: 0.88rem; color: #475569; line-height: 1.6;" id="task-desc">
-            ในรายงานวิชาการ ข้อความหัวข้อควรมีความเด่นชัดกว่าเนื้อหาทั่วไป เพื่อให้ผู้อ่านแยกแยะโครงสร้างได้ทันที
-          </div>
+          <div style="font-size: 0.88rem; color: #475569; line-height: 1.6;" id="task-desc">คำอธิบายภารกิจ...</div>
 
           <div class="guide-task-box">
             <div class="task-label">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="#166534"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
               สิ่งที่ต้องทำ:
             </div>
-            <div class="task-text" id="task-action-box">
-              กดปุ่ม <b>Ctrl + B</b> บนคีย์บอร์ดจริง หรือคลิกปุ่ม <b>B (ตัวหนา)</b> บนแถบเครื่องมือ
-            </div>
+            <div class="task-text" id="task-action-box">คำสั่ง...</div>
           </div>
         </div>
 
         <!-- ฝั่งหน้าต่าง Microsoft Word จำลอง -->
         <div class="word-sim-window">
-          <div class="ribbon-ui" id="sim-ribbon-tools">
-            <button class="tool-btn" id="btn-bold" onclick="actionToggleBold()"><b>B</b> ตัวหนา</button>
-            <button class="tool-btn" id="btn-italic" onclick="actionToggleItalic()"><i>I</i> ตัวเอียง</button>
-            <button class="tool-btn" id="btn-center" onclick="actionToggleCenter()">กึ่งกลาง (Center)</button>
-            <button class="tool-btn" id="btn-format-painter" onclick="actionFormatPainter()">🖌️ ตัวคัดวางรูปแบบ</button>
-          </div>
+          <!-- แถบ Ribbon แสดงปุ่มตัวเลือกหลากหลาย (มีตัวเลือกผิด/ถูก) -->
+          <div class="ribbon-ui" id="sim-ribbon-tools"></div>
 
           <div class="doc-page" id="sim-doc-canvas">
             <div class="doc-title" id="sim-title">การศึกษาความหลากหลายทางชีวภาพ ม.1</div>
@@ -397,31 +407,99 @@
       </div>
 
       <div class="studio-footer">
-        <span style="font-size: 0.85rem; color: #64748b;" id="lab-feedback">💡 กดปุ่มคีย์บอร์ดจริง หรือคลิกเครื่องมือบน Ribbon ได้เลย</span>
-        <button class="btn-next-step" id="btn-next-task" disabled onclick="nextSubTask()">
-          ภารกิจถัดไป
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-        </button>
+        <span style="font-size: 0.86rem; color: #64748b;" id="lab-feedback">💡 ทดลองคลิกเครื่องมือที่เหมาะสมบนแถบ Ribbon หรือกดคีย์ลัดจริงได้เลย</span>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL ใบความรู้เมื่อเลือกผิด (LEARNING HINT) -->
+  <div id="hint-modal">
+    <div class="hint-card">
+      <div class="hint-header">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="#38bdf8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span>ยังไม่ตรงเป้าหมาย! มาดูใบความรู้ช่วยจำ</span>
+      </div>
+      <div class="hint-box">
+        <div class="hint-title" id="hint-title">เทคนิคสำคัญ</div>
+        <div class="hint-desc" id="hint-desc">คำอธิบาย...</div>
+      </div>
+      <button class="rbx-green-btn" onclick="closeHintModal()">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+        เข้าใจแล้ว ลองใหม่อีกครั้ง!
+      </button>
     </div>
   </div>
 
   <script>
     // ข้อมูลหลักสูตร 12 สัปดาห์
     const chaptersMeta = [
-      { id: 1, title: "สัปดาห์ที่ 1: ก้าวแรกสู่นักพิมพ์", desc: "สำรวจหน้าต่างโปรแกรม เมนู Ribbon และเปลี่ยนฟอนต์" },
-      { id: 2, title: "สัปดาห์ที่ 2: มือใหม่หัดเซฟไฟล์", desc: "การสร้าง, เปิด และคีย์ลัดบันทึกงานด่วน (Ctrl+S)" },
-      { id: 3, title: "สัปดาห์ที่ 3: ปุ่มวิเศษย้อนเวลา", desc: "การแก้ไขข้อผิดพลาดด้วย Undo & Redo (Ctrl+Z, Ctrl+Y)" },
-      { id: 4, title: "สัปดาห์ที่ 4: ศิลปะตกแต่งฟอนต์", desc: "ตัวหนา ตัวเอียง จัดกึ่งกลาง และแปรงคัดลอกสไตล์" },
-      { id: 5, title: "สัปดาห์ที่ 5: จัดแนวย่อหน้าสมดุล", desc: "การจัดชิดซ้าย กึ่งกลาง ชิดขวา และระยะห่างบรรทัด" },
-      { id: 6, title: "สัปดาห์ที่ 6: จดบันทึกเป็นระเบียบ", desc: "การใช้สัญลักษณ์จุด (Bullets) และลำดับเลข (Numbering)" },
-      { id: 7, title: "สัปดาห์ที่ 7: นักจัดวางรูปภาพ", desc: "การตัดข้อความล้อมรูปภาพ (Wrap Text: Square, Behind Text)" },
-      { id: 8, title: "สัปดาห์ที่ 8: สร้างสรรค์ตารางข้อมูล", desc: "คอลัมน์ (แนวตั้ง) x แถว (แนวนอน) และการผสานเซลล์" },
-      { id: 9, title: "สัปดาห์ที่ 9: วางผังหน้ากระดาษ", desc: "ปรับแนวนอน/แนวตั้ง (Orientation) และระยะขอบ (Margins)" },
-      { id: 10, title: "สัปดาห์ที่ 10: นักตรวจทานภาษา", desc: "เส้นหยักสีแดง (สะกดผิด) vs เส้นหยักสีฟ้า (วรรคเกิน)" },
-      { id: 11, title: "สัปดาห์ที่ 11: โครงสร้างเล่มรายงาน", desc: "การใช้ Heading 1 และ 2 ปูทางสู่สารบัญอัตโนมัติ" },
-      { id: 12, title: "สัปดาห์ที่ 12: พร้อมเผยแพร่งาน", desc: "การส่งออกเอกสารเป็น PDF ไม่ให้ฟอนต์เลื่อนเพี้ยน" }
+      { id: 1, title: "สัปดาห์ที่ 1: ก้าวแรกสู่นักพิมพ์", desc: "สำรวจหน้าต่างโปรแกรม เมนู Ribbon และเปลี่ยนฟอนต์"[cite: 3]},
+      { id: 2, title: "สัปดาห์ที่ 2: มือใหม่หัดเซฟไฟล์", desc: "การสร้าง, เปิด และคีย์ลัดบันทึกงานด่วน (Ctrl+S)"[cite: 3]},
+      { id: 3, title: "สัปดาห์ที่ 3: ปุ่มวิเศษย้อนเวลา", desc: "การแก้ไขข้อผิดพลาดด้วย Undo & Redo (Ctrl+Z, Ctrl+Y)"[cite: 3]},
+      { id: 4, title: "สัปดาห์ที่ 4: ศิลปะตกแต่งฟอนต์", desc: "ตัวหนา ตัวเอียง จัดกึ่งกลาง และแปรงคัดลอกสไตล์"[cite: 3]},
+      { id: 5, title: "สัปดาห์ที่ 5: จัดแนวย่อหน้าสมดุล", desc: "การจัดชิดซ้าย กึ่งกลาง ชิดขวา และระยะห่างบรรทัด"[cite: 3]},
+      { id: 6, title: "สัปดาห์ที่ 6: จดบันทึกเป็นระเบียบ", desc: "การใช้สัญลักษณ์จุด (Bullets) และลำดับเลข (Numbering)"[cite: 3]},
+      { id: 7, title: "สัปดาห์ที่ 7: นักจัดวางรูปภาพ", desc: "การตัดข้อความล้อมรูปภาพ (Wrap Text: Square, Behind Text)"[cite: 3]},
+      { id: 8, title: "สัปดาห์ที่ 8: สร้างสรรค์ตารางข้อมูล", desc: "คอลัมน์ (แนวตั้ง) x แถว (แนวนอน) และการผสานเซลล์"[cite: 3]},
+      { id: 9, title: "สัปดาห์ที่ 9: วางผังหน้ากระดาษ", desc: "ปรับแนวนอน/แนวตั้ง (Orientation) และระยะขอบ (Margins)"[cite: 3]},
+      { id: 10, title: "สัปดาห์ที่ 10: นักตรวจทานภาษา", desc: "เส้นหยักสีแดง (สะกดผิด) vs เส้นหยักสีฟ้า (วรรคเกิน)"[cite: 3]},
+      { id: 11, title: "สัปดาห์ที่ 11: โครงสร้างเล่มรายงาน", desc: "การใช้ Heading 1 และ 2 ปูทางสู่สารบัญอัตโนมัติ"[cite: 3]},
+      { id: 12, title: "สัปดาห์ที่ 12: พร้อมเผยแพร่งาน", desc: "การส่งออกเอกสารเป็น PDF ไม่ให้ฟอนต์เลื่อนเพี้ยน"[cite: 3]}
     ];
+
+    // ข้อมูลภารกิจย่อยในแต่ละสัปดาห์ (มีตัวเลือกหลอก + คีย์ลัด + ใบความรู้เมื่อผิด)
+    const workshopCurriculum = {
+      4: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: การเน้นหัวข้อหลักให้เด่นชัด",
+          desc: "ในรายงานวิชาการ ข้อความหัวข้อควรมีความเด่นชัดกว่าเนื้อหาทั่วไป เพื่อให้ผู้อ่านแยกแยะโครงสร้างได้ทันที",
+          task: "เลือกคลิกเครื่องมือบน Ribbon หรือกดคีย์ลัดเพื่อเปลี่ยนหัวข้อให้เป็น 'ตัวหนา (Bold)'",
+          targetAction: "bold",
+          hotkey: "b",
+          hintTitle: "เครื่องมือตกแต่งตัวอักษร (Font Styling)",
+          hintText: "• <mark>B (Bold)</mark> หรือคีย์ลัด <b>Ctrl + B</b> ใช้ทำตัวหนาเพื่อเน้นความเด่นชัด<br>• ปุ่ม <i>I</i> คือตัวเอียง และปุ่ม <u>U</u> คือขีดเส้นใต้[cite: 3]",
+          buttons: [
+            { id: "italic", label: "<i>I</i> ตัวเอียง" },
+            { id: "bold", label: "<b>B</b> ตัวหนา" },
+            { id: "underline", label: "<u>U</u> ขีดเส้นใต้" },
+            { id: "color", label: "🎨 สีข้อความ" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: จัดวางตำแหน่งกึ่งกลาง (Center)",
+          desc: "การวางหัวข้อไว้ตรงกลางหน้ากระดาษ ช่วยสร้างความสมดุลและความเป็นทางการของรายงาน",
+          task: "เลือกคลิกเครื่องมือเพื่อวางหัวข้อให้อยู่ 'กึ่งกลางหน้ากระดาษ (Center)'",
+          targetAction: "center",
+          hotkey: "e",
+          hintTitle: "การจัดแนวย่อหน้า (Paragraph Alignment)",
+          hintText: "• <mark>กึ่งกลาง (Center)</mark> หรือคีย์ลัด <b>Ctrl + E</b> ใช้วางข้อความตรงกลางกระดาษ<br>• ระวังจำสับสน: Ctrl + C คือ Copy (คัดลอก) ดังนั้นกึ่งกลางจึงใช้ Ctrl + E[cite: 3]",
+          buttons: [
+            { id: "left", label: "ชิดซ้าย (Ctrl+L)" },
+            { id: "right", label: "ชิดขวา (Ctrl+R)" },
+            { id: "center", label: "กึ่งกลาง (Ctrl+E)" },
+            { id: "justify", label: "กระจายเท่ากัน" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: ใช้แปรงคัดลอกสไตล์ (Format Painter)",
+          desc: "ไม่ต้องเสียเวลาจัดรูปแบบหัวข้อย่อยใหม่! ใช้แปรง Format Painter คัดลอกสไตล์จากหัวข้อแรกไปป้ายทับได้ทันที",
+          task: "คลิกเลือกเครื่องมือ 'ตัวคัดวางรูปแบบ (Format Painter)' เพื่อนำสไตล์ตัวหนาไปใส่หัวข้อย่อย",
+          targetAction: "painter",
+          hotkey: null,
+          hintTitle: "ตัวคัดวางรูปแบบ (Format Painter)",
+          hintText: "ไอคอนรูป <mark>แปรงทาสี (Format Painter)</mark> ทำหน้าที่ดูดสไตล์สี ขนาด และฟอนต์ต้นแบบ ไปป้ายทับข้อความอื่นได้ทันทีโดยไม่ต้องตั้งค่าใหม่[cite: 3]",
+          buttons: [
+            { id: "copy", label: "📋 คัดลอก (Copy)" },
+            { id: "cut", label: "✂️ ตัด (Cut)" },
+            { id: "painter", label: "🖌️ แปรงคัดลอกสไตล์" },
+            { id: "clear", label: "🧹 ล้างการจัดรูปแบบ" }
+          ]
+        }
+      ]
+    };
 
     // Web Audio API ระบบเสียงเต็มชุด
     let audioCtx = null, isMuted = false, engineOsc = null, engineSubOsc = null, engineFilter = null, engineGain = null, bgmInterval = null;
@@ -519,10 +597,10 @@
       document.getElementById("audio-icon").style.fill = isMuted ? "#94a3b8" : "#38bdf8";
     }
 
-    // STATE & PROGRESSION (LocalStorage)
+    // STATE & PROGRESSION
     let playerName = localStorage.getItem("wr3d_hands_name") || "";
     let masteredChapters = JSON.parse(localStorage.getItem("wr3d_hands_mastered") || "[]");
-    let selectedChapterId = 4; // เริ่มต้นที่บทที่ 4 ซึ่งมี Hands-on ครบ 3 สเต็ป
+    let selectedChapterId = 4;
 
     let scene, camera, renderer, carGroup;
     let checkpoints = [], obstacles = [];
@@ -544,8 +622,7 @@
 
     function submitPlayerName() {
       const input = document.getElementById("player-input").value.trim();
-      if (!input) { alert("กรุณาพิมพ์ชื่อหรือเลขที่ผู้เรียนก่อนเริ่มต้นครับ"); return; }
-      playerName = input;
+      playerName = input ? input : "ผู้เรียน";
       localStorage.setItem("wr3d_hands_name", playerName);
       showHubScreen();
     }
@@ -584,6 +661,7 @@
 
     function returnToHub() {
       document.getElementById("studio-modal").style.display = "none";
+      document.getElementById("hint-modal").style.display = "none";
       showHubScreen();
     }
 
@@ -893,119 +971,137 @@
       renderMinimap();
     }
 
-    // MULTI-STEP HANDS-ON WORKSHOP SYSTEM
+    // MULTI-STEP WORKSHOP WITH BRANCHING (ตัวเลือกถูก/ผิด + ใบความรู้ + เด้งกลับ Hub)
     let currentStepIndex = 1;
-    let stepFlags = { bold: false, center: false, painter: false };
+    let currentWeekSteps = [];
+    let currentTaskData = null;
 
     function openHandsOnStudio(chId) {
       isModalOpen = true;
       const chData = chaptersMeta.find(c => c.id === chId);
       document.getElementById("studio-week-title").innerText = chData.title;
+      
+      // ดึงภารกิจของสัปดาห์นั้นๆ (ใช้ของบทที่ 4 เป็นต้นแบบหลัก)
+      currentWeekSteps = workshopCurriculum[chId] || workshopCurriculum[4];
+      
+      // รีเซ็ตหน้ากระดาษก่อนเริ่ม
+      document.getElementById("sim-title").style.fontWeight = "400";
+      document.getElementById("sim-title").style.textAlign = "left";
+      document.getElementById("sim-p2").style.fontWeight = "400";
+      document.getElementById("sim-p2").style.color = "#64748b";
+
       document.getElementById("studio-modal").style.display = "flex";
-      loadSubTaskStep(1);
+      loadStep(1);
     }
 
-    function loadSubTaskStep(step) {
-      currentStepIndex = step;
-      document.getElementById("mission-step-indicator").innerText = `ภารกิจ ${step} / 3`;
-      document.getElementById("btn-next-task").disabled = true;
+    function loadStep(stepNumber) {
+      currentStepIndex = stepNumber;
+      currentTaskData = currentWeekSteps.find(s => s.step === stepNumber);
 
+      document.getElementById("mission-step-indicator").innerText = `ภารกิจ ${stepNumber} / ${currentWeekSteps.length}`;
+
+      // อัปเดตจุดสถานะภารกิจ
       for (let i = 1; i <= 3; i++) {
         const dot = document.getElementById(`dot-${i}`);
-        dot.className = "step-dot" + (i < step ? " done" : (i === step ? " active" : ""));
+        if (dot) {
+          dot.className = "step-dot" + (i < stepNumber ? " done" : (i === stepNumber ? " active" : ""));
+        }
       }
 
-      if (step === 1) {
-        document.getElementById("task-title").innerText = "ภารกิจที่ 1: การเน้นหัวข้อหลัก";
-        document.getElementById("task-desc").innerText = "หัวข้อหลักของเอกสารควรมีน้ำหนักสายตาชัดเจน เพื่อให้ผู้อ่านแยกแยะโครงสร้างได้ทันที คีย์ลัดยอดนิยมคือ Ctrl + B";
-        document.getElementById("task-action-box").innerHTML = "👉 <b>สิ่งที่ต้องทำ:</b> กดปุ่ม <b>Ctrl + B</b> บนคีย์บอร์ดจริง หรือคลิกปุ่ม <b>B</b> บนแถบเครื่องมือ";
-      } else if (step === 2) {
-        document.getElementById("task-title").innerText = "ภารกิจที่ 2: จัดตำแหน่งกึ่งกลาง (Center)";
-        document.getElementById("task-desc").innerText = "การวางหัวข้อไว้ตรงกลางหน้ากระดาษ ช่วยสร้างความสมดุลและความเป็นทางการของรายงาน คีย์ลัดคือ Ctrl + E";
-        document.getElementById("task-action-box").innerHTML = "👉 <b>สิ่งที่ต้องทำ:</b> คลิกปุ่ม <b>กึ่งกลาง (Center)</b> เพื่อจัดให้หัวข้ออยู่ตรงกลางหน้ากระดาษ";
-      } else if (step === 3) {
-        document.getElementById("task-title").innerText = "ภารกิจที่ 3: ใช้แปรงคัดลอกสไตล์ (Format Painter)";
-        document.getElementById("task-desc").innerText = "ไม่ต้องเสียเวลาจัดรูปแบบหัวข้อย่อยใหม่! ใช้แปรง Format Painter คัดลอกสไตล์จากหัวข้อแรกไปป้ายทับ";
-        document.getElementById("task-action-box").innerHTML = "👉 <b>สิ่งที่ต้องทำ:</b> คลิกปุ่ม <b>แปรงทาสี</b> เพื่อดูดสไตล์ตัวหนาไปใส่หัวข้อย่อยด้านล่าง";
-      }
+      document.getElementById("task-title").innerText = currentTaskData.title;
+      document.getElementById("task-desc").innerText = currentTaskData.desc;
+      document.getElementById("task-action-box").innerHTML = currentTaskData.task;
+      document.getElementById("lab-feedback").innerText = "💡 ทดลองคลิกเครื่องมือที่เหมาะสมบนแถบ Ribbon หรือกดคีย์ลัดจริงได้เลย";
+
+      // เรนเดอร์ปุ่มตัวเลือกหลากหลายบน Ribbon
+      const ribbon = document.getElementById("sim-ribbon-tools");
+      ribbon.innerHTML = "";
+      currentTaskData.buttons.forEach(btn => {
+        const b = document.createElement("button");
+        b.className = "tool-btn";
+        b.innerHTML = btn.label;
+        b.onclick = () => handleUserToolSelect(btn.id);
+        ribbon.appendChild(b);
+      });
     }
 
-    function actionToggleBold() {
-      stepFlags.bold = !stepFlags.bold;
-      document.getElementById("sim-title").style.fontWeight = stepFlags.bold ? "900" : "400";
-      document.getElementById("btn-bold").classList.toggle("active", stepFlags.bold);
-
-      if (currentStepIndex === 1 && stepFlags.bold) {
-        document.getElementById("lab-feedback").innerText = "✔ เยี่ยมมาก! หัวข้อกลายเป็นตัวหนาแล้ว สังเกตว่าเด่นชัดขึ้นทันที";
-        document.getElementById("btn-next-task").disabled = false;
+    function handleUserToolSelect(actionId) {
+      if (actionId === currentTaskData.targetAction) {
+        // ตอบถูก: แสดงผลแบบ Real-time และไปต่อภารกิจถัดไป
         playSuccessSound();
+        applyVisualEffect(actionId);
+        document.getElementById("lab-feedback").innerText = "✔ ยอดเยี่ยมมาก! การจัดรูปแบบถูกต้อง";
+
+        setTimeout(() => {
+          if (currentStepIndex < currentWeekSteps.length) {
+            // ไปภารกิจย่อยถัดไป
+            loadStep(currentStepIndex + 1);
+          } else {
+            // สำเร็จครบทุกภารกิจในบทเรียนนี้ -> พากลับหน้าเลือกบทเรียนทันที
+            completeChapterAndReturnHub();
+          }
+        }, 800);
+      } else {
+        // ตอบผิด: ขึ้นใบความรู้แนะแนวทาง
+        playCrashSound();
+        showHintModal(currentTaskData.hintTitle, currentTaskData.hintText);
       }
     }
 
-    function actionToggleCenter() {
-      stepFlags.center = !stepFlags.center;
-      document.getElementById("sim-title").style.textAlign = stepFlags.center ? "center" : "left";
-      document.getElementById("btn-center").classList.toggle("active", stepFlags.center);
-
-      if (currentStepIndex === 2 && stepFlags.center) {
-        document.getElementById("lab-feedback").innerText = "✔ สวยงาม! ชื่อเรื่องอยู่กึ่งกลางหน้ากระดาษเรียบร้อย";
-        document.getElementById("btn-next-task").disabled = false;
-        playSuccessSound();
-      }
-    }
-
-    function actionFormatPainter() {
-      if (currentStepIndex === 3) {
+    function applyVisualEffect(actionId) {
+      if (actionId === "bold") {
+        document.getElementById("sim-title").style.fontWeight = "900";
+      } else if (actionId === "center") {
+        document.getElementById("sim-title").style.textAlign = "center";
+      } else if (actionId === "painter") {
         const sub = document.getElementById("sim-p2");
         sub.style.fontWeight = "900";
         sub.style.color = "#0284c7";
-        document.getElementById("btn-format-painter").classList.add("active");
-        document.getElementById("lab-feedback").innerText = "✔ แปรงทาสีทำงานแล้ว! สไตล์ถูกคัดลอกมายังหัวข้อย่อยอัตโนมัติ";
-        document.getElementById("btn-next-task").disabled = false;
-        document.getElementById("btn-next-task").innerText = "สำเร็จสัปดาห์นี้! ปลดม่านพลัง ➔";
-        playSuccessSound();
       }
     }
 
-    function actionToggleItalic() {
-      const p1 = document.getElementById("sim-p1");
-      p1.style.fontStyle = p1.style.fontStyle === "italic" ? "normal" : "italic";
-      document.getElementById("btn-italic").classList.toggle("active");
+    function showHintModal(title, text) {
+      document.getElementById("hint-title").innerText = title;
+      document.getElementById("hint-desc").innerHTML = text;
+      document.getElementById("hint-modal").style.display = "flex";
     }
 
-    // Hotkey Listener สำหรับเด็กที่ชอบกดแป้นพิมพ์จริง
+    function closeHintModal() {
+      document.getElementById("hint-modal").style.display = "none";
+    }
+
+    // รองรับการกดคีย์ลัดบนแป้นพิมพ์จริง
     window.addEventListener("keydown", (e) => {
-      if (isModalOpen && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
-        e.preventDefault();
-        actionToggleBold();
+      if (isModalOpen && currentTaskData && currentTaskData.hotkey) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === currentTaskData.hotkey) {
+          e.preventDefault();
+          handleUserToolSelect(currentTaskData.targetAction);
+        }
       }
     });
 
-    function nextSubTask() {
-      if (currentStepIndex < 3) {
-        loadSubTaskStep(currentStepIndex + 1);
-      } else {
-        // เสร็จสิ้นทั้ง 3 สเต็ป
-        document.getElementById("studio-modal").style.display = "none";
-        isModalOpen = false;
+    // เมื่อสำเร็จทุกภารกิจ: บันทึกข้อมูลและพากลับสู่หน้าเลือกบทเรียนทันที
+    function completeChapterAndReturnHub() {
+      document.getElementById("studio-modal").style.display = "none";
+      isModalOpen = false;
 
-        if (!masteredChapters.includes(selectedChapterId)) {
-          masteredChapters.push(selectedChapterId);
-          localStorage.setItem("wr3d_hands_mastered", JSON.stringify(masteredChapters));
-        }
-
-        checkpoints.forEach(cp => {
-          if (cp.chapterId === selectedChapterId) {
-            cp.passed = true;
-            cp.laser.material.color.setHex(0x10b981);
-            cp.laser.material.opacity = 0.15;
-          }
-        });
-
-        carPhysics.z -= 6;
-        document.getElementById("hud-progress").innerText = `ผ่าน ${masteredChapters.length} / 12 บท`;
-        alert("🎉 ยอดเยี่ยมมาก! คุณผ่านการฝึกฝนครบทั้ง 3 ภารกิจย่อยแล้ว ม่านพลังเปิดทางให้ขับรถเดินทางต่อไปได้!");
+      // บันทึกความเชี่ยวชาญลง LocalStorage
+      if (!masteredChapters.includes(selectedChapterId)) {
+        masteredChapters.push(selectedChapterId);
+        localStorage.setItem("wr3d_hands_mastered", JSON.stringify(masteredChapters));
       }
+
+      checkpoints.forEach(cp => {
+        if (cp.chapterId === selectedChapterId) {
+          cp.passed = true;
+          cp.laser.material.color.setHex(0x10b981);
+          cp.laser.material.opacity = 0.15;
+        }
+      });
+
+      // แจ้งเตือนความสำเร็จและสลับไปหน้าเลือกบทเรียน
+      alert("🎉 ยอดเยี่ยมมาก! คุณผ่านภารกิจสัปดาห์นี้ครบถ้วนแล้ว ระบบกำลังพาคุณกลับสู่หน้าเลือกบทเรียน");
+      showHubScreen();
     }
 
     function renderMinimap() {
