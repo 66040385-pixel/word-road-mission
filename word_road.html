@@ -30,6 +30,7 @@
 
     #three-container {
       position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 1;
+      pointer-events: none;
     }
     #three-container canvas {
       width: 100% !important; height: 100% !important; display: block;
@@ -84,6 +85,11 @@
       display: flex; flex-direction: column; align-items: center; z-index: 50;
       pointer-events: none;
     }
+    .star-badge {
+      background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 8px; padding: 3px 12px; font-size: 0.8rem; font-weight: 800;
+      color: #facc15; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
+    }
     .speed-dial {
       background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px);
       border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 18px;
@@ -119,7 +125,7 @@
     }
     #audio-toggle svg { width: 22px; height: 22px; fill: #38bdf8; }
 
-    /* CHAPTER HUB (เปิดมาเจอหน้านี้ทันที) */
+    /* CHAPTER HUB */
     #hub-screen {
       position: fixed; inset: 0; z-index: 1000; display: flex;
       justify-content: center; align-items: flex-start;
@@ -128,7 +134,7 @@
     }
     .hub-container {
       background: #ffffff; border: 4px solid #38bdf8; border-radius: 30px;
-      padding: 24px 20px; max-width: 900px; width: 100%; text-align: center;
+      padding: 24px 20px; max-width: 920px; width: 100%; text-align: center;
       box-shadow: 0 25px 60px rgba(2, 132, 199, 0.4); margin: auto;
     }
     .hub-header {
@@ -138,7 +144,7 @@
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
     }
     .chapters-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin-bottom: 20px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-bottom: 20px;
     }
     .chapter-card {
       background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 18px;
@@ -159,7 +165,7 @@
     }
     .studio-box {
       background: #f8fafc; border: 4px solid #38bdf8; border-radius: 26px;
-      max-width: 900px; width: 100%; max-height: 94vh; overflow: hidden;
+      max-width: 920px; width: 100%; max-height: 94vh; overflow: hidden;
       display: flex; flex-direction: column; box-shadow: 0 25px 70px rgba(0,0,0,0.85);
     }
     .studio-header {
@@ -252,7 +258,7 @@
       เลือกบทเรียน
     </button>
     <div class="hud-chip">
-      <span class="hud-pill" id="hud-stage">สัปดาห์ที่ 4 : ศิลปะตกแต่งฟอนต์</span>
+      <span class="hud-pill" id="hud-stage">สัปดาห์ที่ 1 : ก้าวแรกสู่นักพิมพ์</span>
     </div>
     <div class="hud-chip">
       <span class="hud-progress-pill" id="hud-progress">ผ่าน 0 / 12 บท</span>
@@ -301,7 +307,7 @@
   <div id="studio-modal">
     <div class="studio-box">
       <div class="studio-header">
-        <span style="font-weight: 800;" id="studio-week-title">สัปดาห์ที่ 4: เวิร์กช็อปตกแต่งตัวอักษรและย่อหน้า</span>
+        <span style="font-weight: 800;" id="studio-week-title">สัปดาห์ที่ 1: เวิร์กช็อป</span>
         <span style="font-size: 0.85rem; background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 12px;" id="mission-step-indicator">ภารกิจ 1 / 3</span>
       </div>
 
@@ -312,7 +318,7 @@
             <div class="step-dot" id="dot-2"></div>
             <div class="step-dot" id="dot-3"></div>
           </div>
-          <div style="font-size: 1.1rem; font-weight: 800; color: #0f172a;" id="task-title">ภารกิจที่ 1: การเน้นหัวข้อหลัก</div>
+          <div style="font-size: 1.1rem; font-weight: 800; color: #0f172a;" id="task-title">ภารกิจ</div>
           <div style="font-size: 0.88rem; color: #475569; line-height: 1.6;" id="task-desc">คำอธิบายภารกิจ...</div>
 
           <div class="guide-task-box">
@@ -328,13 +334,9 @@
           <div class="ribbon-ui" id="sim-ribbon-tools"></div>
 
           <div class="doc-page" id="sim-doc-canvas">
-            <div class="doc-title" id="sim-title">การศึกษาความหลากหลายทางชีวภาพ ม.1</div>
-            <div class="doc-p" id="sim-p1">
-              สิ่งมีชีวิตในระบบนิเวศมีความสัมพันธ์กันอย่างซับซ้อน ทั้งในด้านการถ่ายทอดพลังงานและห่วงโซ่อาหาร
-            </div>
-            <div class="doc-p" id="sim-p2" style="margin-top: 14px; color: #64748b;">
-              หัวข้อย่อย: ประเภทของสิ่งมีชีวิตในแหล่งน้ำจืด
-            </div>
+            <div class="doc-title" id="sim-title">หัวข้อเอกสาร</div>
+            <div class="doc-p" id="sim-p1">เนื้อหาตัวอย่างเอกสาร</div>
+            <div class="doc-p" id="sim-p2" style="margin-top: 14px; color: #64748b;">หัวข้อย่อยหรือส่วนเสริม</div>
           </div>
         </div>
       </div>
@@ -363,34 +365,168 @@
   </div>
 
   <script>
-    // ข้อมูล 12 สัปดาห์
+    // ข้อมูลหลักสูตร 12 สัปดาห์
     const chaptersMeta = [
-      { id: 1, title: "สัปดาห์ที่ 1: ก้าวแรกสู่นักพิมพ์", desc: "สำรวจหน้าต่างโปรแกรม เมนู Ribbon และเปลี่ยนฟอนต์" },
-      { id: 2, title: "สัปดาห์ที่ 2: มือใหม่หัดเซฟไฟล์", desc: "การสร้าง, เปิด และคีย์ลัดบันทึกงานด่วน (Ctrl+S)" },
-      { id: 3, title: "สัปดาห์ที่ 3: ปุ่มวิเศษย้อนเวลา", desc: "การแก้ไขข้อผิดพลาดด้วย Undo & Redo (Ctrl+Z, Ctrl+Y)" },
-      { id: 4, title: "สัปดาห์ที่ 4: ศิลปะตกแต่งฟอนต์", desc: "ตัวหนา ตัวเอียง จัดกึ่งกลาง และแปรงคัดลอกสไตล์" },
-      { id: 5, title: "สัปดาห์ที่ 5: จัดแนวย่อหน้าสมดุล", desc: "การจัดชิดซ้าย กึ่งกลาง ชิดขวา และระยะห่างบรรทัด" },
-      { id: 6, title: "สัปดาห์ที่ 6: จดบันทึกเป็นระเบียบ", desc: "การใช้สัญลักษณ์จุด (Bullets) และลำดับเลข (Numbering)" },
-      { id: 7, title: "สัปดาห์ที่ 7: นักจัดวางรูปภาพ", desc: "การตัดข้อความล้อมรูปภาพ (Wrap Text: Square, Behind Text)" },
-      { id: 8, title: "สัปดาห์ที่ 8: สร้างสรรค์ตารางข้อมูล", desc: "คอลัมน์ (แนวตั้ง) x แถว (แนวนอน) และการผสานเซลล์" },
-      { id: 9, title: "สัปดาห์ที่ 9: วางผังหน้ากระดาษ", desc: "ปรับแนวนอน/แนวตั้ง (Orientation) และระยะขอบ (Margins)" },
-      { id: 10, title: "สัปดาห์ที่ 10: นักตรวจทานภาษา", desc: "เส้นหยักสีแดง (สะกดผิด) vs เส้นหยักสีฟ้า (วรรคเกิน)" },
-      { id: 11, title: "สัปดาห์ที่ 11: โครงสร้างเล่มรายงาน", desc: "การใช้ Heading 1 และ 2 ปูทางสู่สารบัญอัตโนมัติ" },
-      { id: 12, title: "สัปดาห์ที่ 12: พร้อมเผยแพร่งาน", desc: "การส่งออกเอกสารเป็น PDF ไม่ให้ฟอนต์เลื่อนเพี้ยน" }
+      { id: 1, title: "สัปดาห์ที่ 1: ก้าวแรกสู่นักพิมพ์", desc: "สำรวจหน้าต่างโปรแกรม เมนู Ribbon และเปลี่ยนฟอนต์"[cite: 3]},
+      { id: 2, title: "สัปดาห์ที่ 2: มือใหม่หัดเซฟไฟล์", desc: "การสร้าง, เปิด และคีย์ลัดบันทึกงานด่วน (Ctrl+S)"[cite: 3]},
+      { id: 3, title: "สัปดาห์ที่ 3: ปุ่มวิเศษย้อนเวลา", desc: "การแก้ไขข้อผิดพลาดด้วย Undo & Redo (Ctrl+Z, Ctrl+Y)"[cite: 3]},
+      { id: 4, title: "สัปดาห์ที่ 4: ศิลปะตกแต่งฟอนต์", desc: "ตัวหนา ตัวเอียง จัดกึ่งกลาง และแปรงคัดลอกสไตล์"[cite: 3]},
+      { id: 5, title: "สัปดาห์ที่ 5: จัดแนวย่อหน้าสมดุล", desc: "การจัดชิดซ้าย กึ่งกลาง ชิดขวา และระยะห่างบรรทัด"[cite: 3]},
+      { id: 6, title: "สัปดาห์ที่ 6: จดบันทึกเป็นระเบียบ", desc: "การใช้สัญลักษณ์จุด (Bullets) และลำดับเลข (Numbering)"[cite: 3]},
+      { id: 7, title: "สัปดาห์ที่ 7: นักจัดวางรูปภาพ", desc: "การตัดข้อความล้อมรูปภาพ (Wrap Text: Square, Behind Text)"[cite: 3]},
+      { id: 8, title: "สัปดาห์ที่ 8: สร้างสรรค์ตารางข้อมูล", desc: "คอลัมน์ (แนวตั้ง) x แถว (แนวนอน) และการผสานเซลล์"[cite: 3]},
+      { id: 9, title: "สัปดาห์ที่ 9: วางผังหน้ากระดาษ", desc: "ปรับแนวนอน/แนวตั้ง (Orientation) และระยะขอบ (Margins)"[cite: 3]},
+      { id: 10, title: "สัปดาห์ที่ 10: นักตรวจทานภาษา", desc: "เส้นหยักสีแดง (สะกดผิด) vs เส้นหยักสีฟ้า (วรรคเกิน)"[cite: 3]},
+      { id: 11, title: "สัปดาห์ที่ 11: โครงสร้างเล่มรายงาน", desc: "การใช้ Heading 1 และ 2 ปูทางสู่สารบัญอัตโนมัติ"[cite: 3]},
+      { id: 12, title: "สัปดาห์ที่ 12: พร้อมเผยแพร่งาน", desc: "การส่งออกเอกสารเป็น PDF ไม่ให้ฟอนต์เลื่อนเพี้ยน"[cite: 3]}
     ];
 
-    // ข้อมูลภารกิจย่อยในแต่ละสัปดาห์ (มีตัวเลือกถูก/ผิด + ใบความรู้)
+    // ข้อมูลภารกิจย่อยทั้ง 12 สัปดาห์ (ครบทุกบท ไม่ซ้ำกัน!)
     const workshopCurriculum = {
+      1: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: ศูนย์รวมคำสั่งพิมพ์งาน",
+          desc: "ใน Microsoft Word แถบ Ribbon ด้านบนถูกแบ่งเป็นแท็บต่าง ๆ เพื่อความเป็นระเบียบ",
+          task: "เลือกคลิกแท็บเมนูที่เป็นศูนย์รวมคำสั่งเปลี่ยนฟอนต์ ขนาด และสีตัวอักษร",
+          targetAction: "home", hotkey: null,
+          hintTitle: "แท็บหน้าแรก (Home Ribbon)",
+          hintText: "แท็บ <b>หน้าแรก (Home)</b> คือศูนย์รวมเครื่องมือหลักที่ใช้บ่อยที่สุดในการพิมพ์งาน ส่วน 'แทรก' ใช้เพิ่มรูป/ตาราง และ 'เค้าโครง' ใช้ตั้งค่ากระดาษ[cite: 3]",
+          buttons: [
+            { id: "insert", label: "แทรก (Insert)" },
+            { id: "home", label: "หน้าแรก (Home)" },
+            { id: "layout", label: "เค้าโครง (Layout)" },
+            { id: "view", label: "มุมมอง (View)" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: เปลี่ยนฟอนต์ทางการสำหรับรายงาน",
+          desc: "รายงานและเอกสารราชการในไทย นิยมใช้แบบอักษรมาตรฐานที่อ่านง่ายและเป็นระเบียบ",
+          task: "เลือกเปลี่ยนแบบอักษรของหัวข้อให้เป็นแบบฟอนต์มาตรฐาน 'TH Sarabun PSK'",
+          targetAction: "sarabun", hotkey: null,
+          hintTitle: "แบบอักษรทางการ (Standard Font)",
+          hintText: "ฟอนต์ <b>TH Sarabun PSK</b> เป็นฟอนต์มาตรฐานแห่งชาติที่นิยมใช้ทำรายงานและหนังสือราชการมากที่สุดในประเทศไทย",
+          buttons: [
+            { id: "comic", label: "Comic Sans" },
+            { id: "sarabun", label: "TH Sarabun PSK" },
+            { id: "chiller", label: "Chiller" },
+            { id: "jokerman", label: "Jokerman" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: ปรับขนาดตัวอักษรหัวข้อ",
+          desc: "ขนาดตัวอักษรของชื่อเรื่องรายงานควรมีขนาดใหญ่กว่าเนื้อหาปกติ (ปกติเนื้อหาจะใช้ขนาด 16 pt)",
+          task: "เลือกปรับขนาดตัวอักษรของหัวข้อให้ใหญ่เด่นชัดเป็น 'ขนาด 24 pt'",
+          targetAction: "size24", hotkey: null,
+          hintTitle: "ขนาดตัวอักษร (Font Size)",
+          hintText: "ชื่อเรื่องหลักควรใช้ขนาด 20–24 pt ส่วนเนื้อหาทั่วไปใช้ขนาด 16 pt เพื่อให้อ่านสบายตาและจัดหน้าได้อย่างสมดุล",
+          buttons: [
+            { id: "size12", label: "ขนาด 12 pt" },
+            { id: "size16", label: "ขนาด 16 pt" },
+            { id: "size24", label: "ขนาด 24 pt" },
+            { id: "size8", label: "ขนาด 8 pt" }
+          ]
+        }
+      ],
+      2: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: บันทึกไฟล์ป้องกันงานหาย",
+          desc: "การพิมพ์งานให้ปลอดภัยจากเหตุการณ์ไม่คาดฝัน ต้องกดบันทึกเอกสารเป็นระยะ",
+          task: "กดปุ่มคีย์ลัดบนแป้นพิมพ์ หรือเลือกคำสั่งเพื่อ 'บันทึกเอกสาร (Save)'",
+          targetAction: "save", hotkey: "s",
+          hintTitle: "คีย์ลัดบันทึกไฟล์ (Save)",
+          hintText: "กด <b>Ctrl + S</b> (ย่อมาจาก Save) เป็นประจำเพื่อบันทึกไฟล์ ส่วน Ctrl + P ใช้สั่งพิมพ์ (Print) อย่าจำสับสนกัน[cite: 3]",
+          buttons: [
+            { id: "print", label: "🖨️ สั่งพิมพ์ (Ctrl+P)" },
+            { id: "save", label: "💾 บันทึกไฟล์ (Ctrl+S)" },
+            { id: "close", label: "❌ ปิดเอกสาร" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: เริ่มต้นพิมพ์เอกสารแผ่นใหม่",
+          desc: "เมื่อต้องการเริ่มทำรายงานเรื่องใหม่ ต้องเปิดหน้าต่างเอกสารเปล่าขึ้นมาทำงาน",
+          task: "เลือกคำสั่งหรือกดคีย์ลัดเพื่อ 'สร้างเอกสารใหม่ (New Document)'",
+          targetAction: "new", hotkey: "n",
+          hintTitle: "สร้างเอกสารใหม่ (New)",
+          hintText: "กด <b>Ctrl + N</b> (ย่อมาจาก New) จะเปิดหน้ากระดาษแผ่นใหม่ขึ้นมาทันที[cite: 3]",
+          buttons: [
+            { id: "open", label: "📂 เปิดไฟล์เดิม (Ctrl+O)" },
+            { id: "new", label: "📄 สร้างเอกสารใหม่ (Ctrl+N)" },
+            { id: "saveas", label: "💾 บันทึกเป็น (Save As)" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: เปิดไฟล์เก่าขึ้นมาทำต่อ",
+          desc: "ในสัปดาห์ถัดมา หากต้องการนำไฟล์รายงานเดิมที่เซฟไว้ในเครื่องมาพิมพ์ต่อ",
+          task: "เลือกคำสั่งหรือกดคีย์ลัดเพื่อ 'เปิดไฟล์งานเดิม (Open)'",
+          targetAction: "open", hotkey: "o",
+          hintTitle: "เปิดไฟล์เอกสาร (Open)",
+          hintText: "กด <b>Ctrl + O</b> (ย่อมาจาก Open) เพื่อเปิดหน้าต่างค้นหาไฟล์เดิมที่เคยเซฟไว้ในเครื่อง[cite: 3]",
+          buttons: [
+            { id: "open", label: "📂 เปิดไฟล์ (Ctrl+O)" },
+            { id: "export", label: "📤 ส่งออกไฟล์" },
+            { id: "share", label: "🔗 แชร์ลิงก์" }
+          ]
+        }
+      ],
+      3: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: กู้คืนข้อความที่เผลอลบ",
+          desc: "กำลังพิมพ์งานอยู่แล้วเผลอเอามือไปโดนปุ่ม Delete ลบข้อความสำคัญหายไปทั้งย่อหน้า!",
+          task: "กดคีย์ลัดหรือเลือกปุ่มเพื่อ 'ยกเลิกคำสั่งล่าสุด (Undo)' เพื่อดึงข้อความกลับคืนมา",
+          targetAction: "undo", hotkey: "z",
+          hintTitle: "การยกเลิกคำสั่งล่าสุด (Undo)",
+          hintText: "กด <b>Ctrl + Z</b> (Undo) เพื่อย้อนเวลากลับไปก่อนคำสั่งล่าสุด ดึงข้อความที่ลบผิดกลับมาทันที[cite: 3]",
+          buttons: [
+            { id: "cut", label: "✂️ ตัดข้อความ" },
+            { id: "undo", label: "↩️ ยกเลิก (Ctrl+Z)" },
+            { id: "copy", label: "📋 คัดลอก" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: ทำซ้ำคำสั่งที่เพิ่งยกเลิกไป (Redo)",
+          desc: "หากกดยกเลิก (Undo) ย้อนหลังมากเกินไป แล้วต้องการดึงการกระทำนั้นกลับคืนมา",
+          task: "กดคีย์ลัดหรือเลือกคำสั่งเพื่อ 'ทำซ้ำคำสั่งล่าสุด (Redo)'",
+          targetAction: "redo", hotkey: "y",
+          hintTitle: "การทำซ้ำคำสั่ง (Redo)",
+          hintText: "กด <b>Ctrl + Y</b> (Redo) เป็นคู่ตรงข้ามกับ Undo ใช้ทำซ้ำคำสั่งเดิม ระวัง: Ctrl + R คือจัดชิดขวา[cite: 3]",
+          buttons: [
+            { id: "redo", label: "↪️ ทำซ้ำ (Ctrl+Y)" },
+            { id: "replace", label: "🔍 ค้นหาและแทนที่" },
+            { id: "select", label: "📑 เลือกทั้งหมด" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: เลือกข้อความทั้งหมดในหน้ากระดาษ",
+          desc: "หากต้องการเปลี่ยนแบบฟอนต์ของรายงานทั้งเล่มในคลิกเดียวโดยไม่ต้องลากเมาส์ยาว",
+          task: "เลือกคีย์ลัดที่ใช้คำสั่ง 'เลือกทั้งหมด (Select All)'",
+          targetAction: "selectall", hotkey: "a",
+          hintTitle: "เลือกทั้งหมด (Select All)",
+          hintText: "กด <b>Ctrl + A</b> (ย่อมาจาก All) เพื่อคลุมดำเลือกข้อความและรูปภาพทั้งหมดในเอกสารพร้อมกัน",
+          buttons: [
+            { id: "selectall", label: "📑 เลือกทั้งหมด (Ctrl+A)" },
+            { id: "paste", label: "📋 วาง (Ctrl+V)" },
+            { id: "cut2", label: "✂️ ตัด (Ctrl+X)" }
+          ]
+        }
+      ],
       4: [
         {
           step: 1,
           title: "ภารกิจที่ 1: การเน้นหัวข้อหลักให้เด่นชัด",
-          desc: "ในรายงานวิชาการ ข้อความหัวข้อควรมีความเด่นชัดกว่าเนื้อหาทั่วไป เพื่อให้ผู้อ่านแยกแยะโครงสร้างได้ทันที",
-          task: "เลือกคลิกเครื่องมือบน Ribbon หรือกดคีย์ลัดเพื่อเปลี่ยนหัวข้อให้เป็น 'ตัวหนา (Bold)'",
-          targetAction: "bold",
-          hotkey: "b",
+          desc: "ในรายงานวิชาการ ข้อความหัวข้อควรมีความเด่นชัดกว่าเนื้อหาทั่วไป เพื่อให้ผู้อ่านแยกแยะโครงสร้างได้ทันที[cite: 3]",
+          task: "เลือกคลิกเครื่องมือบน Ribbon หรือกดคีย์ลัดเพื่อเปลี่ยนหัวข้อให้เป็น 'ตัวหนา (Bold)'[cite: 3]",
+          targetAction: "bold", hotkey: "b",
           hintTitle: "เครื่องมือตกแต่งตัวอักษร (Font Styling)",
-          hintText: "• <b>B (Bold)</b> หรือคีย์ลัด <b>Ctrl + B</b> ใช้ทำตัวหนาเพื่อเน้นความเด่นชัด<br>• ปุ่ม <i>I</i> คือตัวเอียง และปุ่ม <u>U</u> คือขีดเส้นใต้",
+          hintText: "• <b>B (Bold)</b> หรือคีย์ลัด <b>Ctrl + B</b> ใช้ทำตัวหนาเพื่อเน้นความเด่นชัด<br>• ปุ่ม <i>I</i> คือตัวเอียง และปุ่ม <u>U</u> คือขีดเส้นใต้[cite: 3]",
           buttons: [
             { id: "italic", label: "<i>I</i> ตัวเอียง" },
             { id: "bold", label: "<b>B</b> ตัวหนา" },
@@ -401,12 +537,11 @@
         {
           step: 2,
           title: "ภารกิจที่ 2: จัดวางตำแหน่งกึ่งกลาง (Center)",
-          desc: "การวางหัวข้อไว้ตรงกลางหน้ากระดาษ ช่วยสร้างความสมดุลและความเป็นทางการของรายงาน",
-          task: "เลือกคลิกเครื่องมือเพื่อวางหัวข้อให้อยู่ 'กึ่งกลางหน้ากระดาษ (Center)'",
-          targetAction: "center",
-          hotkey: "e",
+          desc: "การวางหัวข้อไว้ตรงกลางหน้ากระดาษ ช่วยสร้างความสมดุลและความเป็นทางการของรายงาน[cite: 3]",
+          task: "เลือกคลิกเครื่องมือเพื่อวางหัวข้อให้อยู่ 'กึ่งกลางหน้ากระดาษ (Center)'[cite: 3]",
+          targetAction: "center", hotkey: "e",
           hintTitle: "การจัดแนวย่อหน้า (Paragraph Alignment)",
-          hintText: "• <b>กึ่งกลาง (Center)</b> หรือคีย์ลัด <b>Ctrl + E</b> ใช้วางข้อความตรงกลางกระดาษ<br>• ระวังจำสับสน: Ctrl + C คือ Copy (คัดลอก) ดังนั้นกึ่งกลางจึงใช้ Ctrl + E",
+          hintText: "• <b>กึ่งกลาง (Center)</b> หรือคีย์ลัด <b>Ctrl + E</b> ใช้วางข้อความตรงกลางกระดาษ<br>• ระวังจำสับสน: Ctrl + C คือ Copy (คัดลอก) ดังนั้นกึ่งกลางจึงใช้ Ctrl + E[cite: 3]",
           buttons: [
             { id: "left", label: "ชิดซ้าย (Ctrl+L)" },
             { id: "right", label: "ชิดขวา (Ctrl+R)" },
@@ -417,12 +552,11 @@
         {
           step: 3,
           title: "ภารกิจที่ 3: ใช้แปรงคัดลอกสไตล์ (Format Painter)",
-          desc: "ไม่ต้องเสียเวลาจัดรูปแบบหัวข้อย่อยใหม่! ใช้แปรง Format Painter คัดลอกสไตล์จากหัวข้อแรกไปป้ายทับได้ทันที",
-          task: "คลิกเลือกเครื่องมือ 'ตัวคัดวางรูปแบบ (Format Painter)' เพื่อนำสไตล์ตัวหนาไปใส่หัวข้อย่อย",
-          targetAction: "painter",
-          hotkey: null,
+          desc: "ไม่ต้องเสียเวลาจัดรูปแบบหัวข้อย่อยใหม่! ใช้แปรง Format Painter คัดลอกสไตล์จากหัวข้อแรกไปป้ายทับได้ทันที[cite: 3]",
+          task: "คลิกเลือกเครื่องมือ 'ตัวคัดวางรูปแบบ (Format Painter)' เพื่อนำสไตล์ตัวหนาไปใส่หัวข้อย่อย[cite: 3]",
+          targetAction: "painter", hotkey: null,
           hintTitle: "ตัวคัดวางรูปแบบ (Format Painter)",
-          hintText: "ไอคอนรูป <b>แปรงทาสี (Format Painter)</b> ทำหน้าที่ดูดสไตล์สี ขนาด และฟอนต์ต้นแบบ ไปป้ายทับข้อความอื่นได้ทันทีโดยไม่ต้องตั้งค่าใหม่",
+          hintText: "ไอคอนรูป <b>แปรงทาสี (Format Painter)</b> ทำหน้าที่ดูดสไตล์สี ขนาด และฟอนต์ต้นแบบ ไปป้ายทับข้อความอื่นได้ทันทีโดยไม่ต้องตั้งค่าใหม่[cite: 3]",
           buttons: [
             { id: "copy", label: "📋 คัดลอก (Copy)" },
             { id: "cut", label: "✂️ ตัด (Cut)" },
@@ -430,11 +564,363 @@
             { id: "clear", label: "🧹 ล้างการจัดรูปแบบ" }
           ]
         }
+      ],
+      5: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: จัดเนื้อหาให้ชิดซ้ายเป็นระเบียบ",
+          desc: "เนื้อหารายงานภาษาไทยแบบทางการ มักเริ่มต้นจัดชิดขอบซ้ายของหน้ากระดาษเสมอ",
+          task: "เลือกเครื่องมือจัดแนวเพื่อตั้งค่าให้ย่อหน้าเนื้อหา 'ชิดซ้าย (Left Align)'",
+          targetAction: "alignleft", hotkey: "l",
+          hintTitle: "จัดชิดซ้าย (Left Align)",
+          hintText: "กด <b>Ctrl + L</b> เพื่อจัดข้อความชิดขอบซ้าย เป็นค่ามาตรฐานของการพิมพ์เอกสาร",
+          buttons: [
+            { id: "alignleft", label: "ชิดซ้าย (Ctrl+L)" },
+            { id: "aligncenter", label: "กึ่งกลาง (Ctrl+E)" },
+            { id: "alignright", label: "ชิดขวา (Ctrl+R)" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: จัดชิดขวาสำหรับวันที่และลงชื่อ",
+          desc: "ท้ายจดหมายหรือรายงาน ส่วนที่ระบุวันที่ส่งงานและลายมือชื่อผู้จัดทำ มักวางไว้ทางขวามือสุด",
+          task: "เลือกคำสั่งเพื่อจัดให้ข้อความ 'วันที่ส่งรายงาน' ย้ายไปอยู่ 'ชิดขอบขวา'",
+          targetAction: "alignright", hotkey: "r",
+          hintTitle: "จัดชิดขวา (Right Align)",
+          hintText: "กด <b>Ctrl + R</b> เพื่อส่งข้อความไปอยู่ชิดขอบกระดาษด้านขวา เหมาะกับการลงวันที่และชื่อผู้จัดทำ",
+          buttons: [
+            { id: "aligncenter", label: "กึ่งกลาง" },
+            { id: "alignright", label: "ชิดขวา (Ctrl+R)" },
+            { id: "alignjust", label: "กระจายแบบไทย" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: ปรับระยะห่างระหว่างบรรทัด",
+          desc: "หากบรรทัดอยู่ชิดติดกันเกินไปจะทำให้อ่านยาก ควรเว้นระยะห่างบรรทัดให้พอดี",
+          task: "เลือกคำสั่ง 'ระยะห่างบรรทัด (Line Spacing)' เพื่อเว้นช่องว่างให้อ่านง่าย",
+          targetAction: "spacing", hotkey: null,
+          hintTitle: "ระยะห่างบรรทัด (Line Spacing)",
+          hintText: "ไอคอนรูปลูกศรชี้ขึ้น-ลงติดกับเส้นบรรทัด ใช้ปรับระยะห่างบรรทัด เช่น 1.0, 1.15 หรือ 1.5",
+          buttons: [
+            { id: "shading", label: "🪣 เทสีพื้นหลัง" },
+            { id: "spacing", label: "↕️ ระยะห่างบรรทัด" },
+            { id: "border", label: "🔲 เส้นขอบย่อหน้า" }
+          ]
+        }
+      ],
+      6: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: รายการสิ่งของแบบไม่มีลำดับ",
+          desc: "การระบุรายการอุปกรณ์หรือสิ่งของที่สลับก่อน-หลังได้ ควรใช้สัญลักษณ์หัวข้อย่อย",
+          task: "เลือกคำสั่ง 'สัญลักษณ์แสดงหัวข้อย่อย (Bullets)' เพื่อจัดรายการอุปกรณ์ให้เป็นระเบียบ",
+          targetAction: "bullets", hotkey: null,
+          hintTitle: "สัญลักษณ์หัวข้อย่อย (Bullets)",
+          hintText: "คำสั่ง <b>Bullets</b> แสดงจุดวงกลมนำหน้า เหมาะกับรายการที่ไม่จำเป็นต้องเรียงลำดับก่อนหลัง",
+          buttons: [
+            { id: "numbering", label: "1. 2. 3. ลำดับเลข" },
+            { id: "bullets", label: "• จุด Bullets" },
+            { id: "multilevel", label: "🗂️ รายการหลายระดับ" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: รายการขั้นตอนการทดลอง 1 2 3",
+          desc: "หากเป็นขั้นตอนทางวิทยาศาสตร์ที่ต้องทำตามลำดับก่อนหลังอย่างเคร่งครัด",
+          task: "เลือกคำสั่ง 'ลำดับเลข (Numbering)' เพื่อแสดงขั้นตอนตามลำดับ 1, 2, 3",
+          targetAction: "numbering", hotkey: null,
+          hintTitle: "ลำดับเลข (Numbering)",
+          hintText: "ขั้นตอนที่มีลำดับแน่นอน ห้ามทำสลับขั้น ให้เลือกใช้เครื่องมือ <b>Numbering (ลำดับเลข)</b>",
+          buttons: [
+            { id: "bullets", label: "• สัญลักษณ์จุด" },
+            { id: "numbering", label: "1. 2. 3. ลำดับเลข" },
+            { id: "indent", label: "➡️ เพิ่มการเยื้อง" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: จัดการเยื้องย่อหน้า (Indentation)",
+          desc: "เมื่อต้องการขยับรายการหรือหัวข้อย่อยให้เขยิบเข้าไปด้านในหนึ่งระดับ",
+          task: "เลือกคำสั่ง 'เพิ่มการเยื้อง (Increase Indent)' เพื่อจัดหัวข้อย่อยให้สวยงาม",
+          targetAction: "indent", hotkey: null,
+          hintTitle: "การเยื้องย่อหน้า (Indent)",
+          hintText: "ไอคอนรูปลูกศรชี้ไปทางขวาคู่กับข้อความ (Increase Indent) ใช้เลื่อนข้อความเข้าไปข้างในหนึ่งระดับ",
+          buttons: [
+            { id: "sort", label: "🔤 เรียงลำดับ ก-ฮ" },
+            { id: "indent", label: "➡️ เพิ่มการเยื้อง" },
+            { id: "showall", label: "¶ แสดงสัญลักษณ์ทั้งหมด" }
+          ]
+        }
+      ],
+      7: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: ตัดข้อความล้อมรอบภาพเป็นสี่เหลี่ยม",
+          desc: "เมื่อแทรกรูปภาพลงในหน้าบทความ ต้องการให้ข้อความไหลล้อมรอบกรอบรูปภาพพอดีอย่างสวยงาม",
+          task: "เลือกคำสั่ง Wrap Text รูปแบบ 'Square (จัตุรัส)'",
+          targetAction: "square", hotkey: null,
+          hintTitle: "Wrap Text แบบ Square",
+          hintText: "คำสั่ง <b>Square</b> จะทำให้ข้อความเรียงตัวล้อมรอบกรอบภาพทรงสี่เหลี่ยมพอดี จัดหน้าอ่านง่ายเหมือนนิตยสาร",
+          buttons: [
+            { id: "inline", label: "In Line with Text" },
+            { id: "square", label: "Square (ล้อมรูปสี่เหลี่ยม)" },
+            { id: "topbottom", label: "Top and Bottom" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: วางภาพไว้เป็นลายน้ำหลังตัวหนังสือ",
+          desc: "ต้องการนำรูปโลโก้หรือภาพประกอบไปวางไว้ด้านหลังสุด เพื่อให้พิมพ์ข้อความลอยทับได้",
+          task: "เลือกคำสั่ง Wrap Text แบบ 'Behind Text (อยู่ข้างหลังข้อความ)'",
+          targetAction: "behind", hotkey: null,
+          hintTitle: "Behind Text (อยู่ข้างหลังข้อความ)",
+          hintText: "คำสั่ง <b>Behind Text</b> จะส่งรูปภาพลงไปอยู่ชั้นล่างสุด ทำให้ตัวหนังสือพิมพ์ลอยทับอยู่บนรูปภาพได้ชัดเจน",
+          buttons: [
+            { id: "front", label: "In Front of Text" },
+            { id: "behind", label: "Behind Text (อยู่หลังข้อความ)" },
+            { id: "through", label: "Through" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: นำภาพมาลอยทับหน้าข้อความ",
+          desc: "เมื่อต้องการขยับรูปสติกเกอร์หรือตราสัญลักษณ์ให้ลากไปวางตรงไหนก็ได้โดยไม่ดันข้อความขยับ",
+          task: "เลือกคำสั่ง Wrap Text แบบ 'In Front of Text (ข้างหน้าข้อความ)'",
+          targetAction: "front", hotkey: null,
+          hintTitle: "In Front of Text (ข้างหน้าข้อความ)",
+          hintText: "คำสั่ง <b>In Front of Text</b> จะดึงรูปภาพขึ้นมาลอยอยู่หน้าสุด ลากย้ายไปวางตำแหน่งไหนก็ได้ตามใจชอบ",
+          buttons: [
+            { id: "front", label: "In Front of Text (ข้างหน้าข้อความ)" },
+            { id: "tight", label: "Tight" },
+            { id: "square", label: "Square" }
+          ]
+        }
+      ],
+      8: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: โครงสร้างขนาดของตาราง",
+          desc: "ตารางประกอบด้วย คอลัมน์ (แนวตั้ง) และ แถว (แนวนอน) เช่น ตาราง 3 x 2 คือ 3 แนวตั้ง 2 แนวนอน",
+          task: "เลือกสร้างตารางขนาด '3 คอลัมน์ x 2 แถว' ให้ถูกต้อง",
+          targetAction: "t3x2", hotkey: null,
+          hintTitle: "ขนาดตาราง (Table Dimension)",
+          hintText: "จำให้แม่น: <b>คอลัมน์ = แนวตั้ง</b> และ <b>แถว = แนวนอน</b> ดังนั้นตาราง 3x2 จึงมี 3 คอลัมน์แนวตั้ง และ 2 แถวแนวนอน",
+          buttons: [
+            { id: "t2x3", label: "ตาราง 2 คอลัมน์ x 3 แถว" },
+            { id: "t3x2", label: "ตาราง 3 คอลัมน์ x 2 แถว" },
+            { id: "t4x1", label: "ตาราง 4 คอลัมน์ x 1 แถว" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: รวมช่องทำหัวตาราง (Merge Cells)",
+          desc: "เมื่อต้องการรวมช่องตารางแถวบนสุดหลาย ๆ ช่องให้กลายเป็นช่องกว้างช่องเดียวเพื่อใส่ชื่อตาราง",
+          task: "เลือกคำสั่ง 'ผสานเซลล์ (Merge Cells)' เพื่อรวมช่องตาราง",
+          targetAction: "merge", hotkey: null,
+          hintTitle: "การผสานเซลล์ (Merge Cells)",
+          hintText: "คำสั่ง <b>ผสานเซลล์ (Merge Cells)</b> ในแท็บ Table Layout ใช้รวมหลาย ๆ เซลล์ที่เลือกให้กลายเป็นช่องเดียวกัน",
+          buttons: [
+            { id: "split", label: "✂️ แยกเซลล์ (Split Cells)" },
+            { id: "merge", label: "🔗 ผสานเซลล์ (Merge Cells)" },
+            { id: "deletecell", label: "❌ ลบแถว" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: จัดข้อความให้อยู่กึ่งกลางช่องตาราง",
+          desc: "ข้อความในช่องตารางมักลอยอยู่ชิดขอบบน ต้องการจัดให้อยู่ตรงกลางช่องพอดีทั้งแนวตั้งและแนวนอน",
+          task: "เลือกคำสั่งจัดแนวตาราง 'กึ่งกลางพอดี (Align Center)'",
+          targetAction: "aligncenter", hotkey: null,
+          hintTitle: "การจัดแนวในตาราง (Cell Alignment)",
+          hintText: "ในตารางสามารถจัดข้อความให้อยู่ตรงกลางช่องพอดี ทั้งจากซ้าย-ขวา และบน-ล่าง ได้ด้วยปุ่ม Align Center",
+          buttons: [
+            { id: "aligntop", label: "ชิดด้านบน" },
+            { id: "aligncenter", label: "กึ่งกลางช่องพอดี" },
+            { id: "alignbottom", label: "ชิดด้านล่าง" }
+          ]
+        }
+      ],
+      9: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: วางกระดาษแนวนอนสำหรับตารางกว้าง",
+          desc: "เอกสารที่มีตารางข้อมูลหรือแผนภูมิกว้าง หากวางแนวตั้งข้อมูลจะล้นตกขอบกระดาษ",
+          task: "เลือกคำสั่ง Orientation ปรับแนวกระดาษให้เป็น 'Landscape (แนวนอน)'",
+          targetAction: "landscape", hotkey: null,
+          hintTitle: "แนวกระดาษ (Page Orientation)",
+          hintText: "• <b>Landscape (แนวนอน)</b> เหมาะกับตารางกว้างและกราฟิก<br>• <b>Portrait (แนวตั้ง)</b> คือเอกสารรายงานทั่วไป",
+          buttons: [
+            { id: "portrait", label: "📄 Portrait (แนวตั้ง)" },
+            { id: "landscape", label: "📃 Landscape (แนวนอน)" },
+            { id: "columns", label: "📰 แบ่ง 2 คอลัมน์" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: ปรับระยะขอบกระดาษเข้าเล่ม",
+          desc: "เมื่อต้องการเว้นพื้นที่ว่างรอบหน้ากระดาษ ซ้าย-ขวา-บน-ล่าง ให้พอดีสำหรับการเข้าเล่มรายงาน",
+          task: "เลือกคำสั่งในแท็บ Layout ที่ใช้ตั้งค่า 'ระยะขอบกระดาษ (Margins)'",
+          targetAction: "margins", hotkey: null,
+          hintTitle: "ระยะขอบกระดาษ (Margins)",
+          hintText: "ไอคอน <b>Margins</b> ใช้กำหนดระยะเว้นว่างรอบขอบกระดาษ เช่น ปกติ (Normal) แคบ (Narrow) หรือกำหนดเอง",
+          buttons: [
+            { id: "margins", label: "📐 ระยะขอบ (Margins)" },
+            { id: "size", label: "📏 ขนาดกระดาษ (Size)" },
+            { id: "breaks", label: "✂️ ตัวแบ่งหน้า (Breaks)" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: เลือกขนาดกระดาษมาตรฐานรายงาน",
+          desc: "เอกสารรายงานในโรงเรียนและมหาวิทยาลัยในไทย ใช้กระดาษขนาดมาตรฐานสากล",
+          task: "เลือกขนาดกระดาษมาตรฐานที่นิยมใช้พิมพ์รายงานมากที่สุด",
+          targetAction: "a4", hotkey: null,
+          hintTitle: "ขนาดกระดาษมาตรฐาน (Paper Size)",
+          hintText: "กระดาษขนาด <b>A4</b> (21 x 29.7 ซม.) คือขนาดมาตรฐานที่ใช้ทำรายงานและเอกสารในประเทศไทย",
+          buttons: [
+            { id: "letter", label: "Letter (จดหมาย)" },
+            { id: "a4", label: "A4 (มาตรฐานรายงาน)" },
+            { id: "legal", label: "Legal" }
+          ]
+        }
+      ],
+      10: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: เส้นหยักเตือนคำสะกดผิด",
+          desc: "ระหว่างพิมพ์รายงาน สังเกตเห็นเส้นใต้หยักสีแดงปรากฏใต้คำศัพท์ บ่งบอกถึงสิ่งใด?",
+          task: "เลือกคำอธิบายของ 'เส้นใต้หยักสีแดง' ให้ถูกต้อง",
+          targetAction: "spellerror", hotkey: null,
+          hintTitle: "เส้นใต้หยักสีแดง (Spelling Error)",
+          hintText: "<b>เส้นใต้หยักสีแดง</b> หมายถึง โปรแกรมตรวจพบว่าพิมพ์ตัวสะกดผิดจากพจนานุกรม ให้คลิกขวาเพื่อเลือกคำที่ถูกต้อง",
+          buttons: [
+            { id: "spellerror", label: "🚨 โปรแกรมตรวจพบคำสะกดผิด" },
+            { id: "grammerror", label: "⚠️ เคาะเว้นวรรคเกินความจำเป็น" },
+            { id: "fontmissing", label: "❌ เครื่องไม่มีฟอนต์นี้" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: เส้นหยักสีฟ้าเตือนไวยากรณ์และวรรคตอน",
+          desc: "มีเส้นหยักสีฟ้าปรากฏใต้ข้อความที่เคาะ Spacebar เว้นวรรคห่างผิดปกติ เกิดจากสาเหตุใด?",
+          task: "เลือกสาเหตุของ 'เส้นหยักสีฟ้า' ให้ถูกต้อง",
+          targetAction: "spacingerror", hotkey: null,
+          hintTitle: "เส้นหยักสีฟ้า (Grammar & Spacing)",
+          hintText: "<b>เส้นหยักสีฟ้า</b> เตือนเมื่อมีข้อผิดพลาดด้านไวยากรณ์ หรือมีการเคาะ Spacebar เว้นวรรคซ้ำเกิน 1 ครั้ง",
+          buttons: [
+            { id: "spell2", label: "สะกดตัวการันต์ผิด" },
+            { id: "spacingerror", label: "⚠️ เคาะวรรคซ้ำซ้อนหรือไวยากรณ์ผิด" },
+            { id: "notsaved", label: "ยังไม่ได้กดบันทึกไฟล์" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: ปุ่มคีย์ลัดเปิดหน้าต่างตรวจคำผิด",
+          desc: "เมื่อพิมพ์รายงานเสร็จทั้งเล่ม ต้องการสั่งให้โปรแกรมตรวจคำผิดตั้งแต่ต้นจนจบเอกสาร",
+          task: "เลือกปุ่มฟังก์ชันบนคีย์บอร์ดที่ใช้เปิดหน้าต่าง 'ตรวจตัวสะกดและไวยากรณ์'",
+          targetAction: "f7", hotkey: null,
+          hintTitle: "คีย์ลัดตรวจสะกด (Spell Check)",
+          hintText: "กดปุ่ม <b>F7</b> บนคีย์บอร์ด โปรแกรม Word จะเปิดแผงตรวจคำผิดขึ้นมาไล่ตรวจทีละคำจนจบเอกสารทันที",
+          buttons: [
+            { id: "f1", label: "ปุ่ม F1" },
+            { id: "f7", label: "ปุ่ม F7 (ตรวจสะกด)" },
+            { id: "f12", label: "ปุ่ม F12" }
+          ]
+        }
+      ],
+      11: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: กำหนดสไตล์หัวข้อหลักทำสารบัญ",
+          desc: "ในการเตรียมทำสารบัญอัตโนมัติ ต้องกำหนดสไตล์ให้กับชื่อบทและหัวข้อหลักของรายงาน",
+          task: "เลือกสไตล์ที่ต้องกำหนดให้กับชื่อหัวข้อหลักของแต่ละบท",
+          targetAction: "heading1", hotkey: null,
+          hintTitle: "สไตล์ Heading 1 (หัวเรื่อง 1)",
+          hintText: "สารบัญอัตโนมัติจะดึงข้อความที่ถูกตั้งเป็น <b>Heading 1 (หัวเรื่อง 1)</b> มาเรียงเป็นหัวข้อหลักในสารบัญ",
+          buttons: [
+            { id: "title", label: "Title (ชื่อเรื่อง)" },
+            { id: "heading1", label: "Heading 1 (หัวเรื่อง 1)" },
+            { id: "normal", label: "Normal (ปกติ)" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: กำหนดสไตล์ให้กับหัวข้อย่อย",
+          desc: "หัวข้อย่อยที่อยู่ด้านในของแต่ละบท ต้องกำหนดสไตล์ระดับที่ 2 เพื่อให้ในสารบัญแสดงการเยื้องย่อยลงไป",
+          task: "เลือกสไตล์สำหรับกำหนดหัวข้อย่อย",
+          targetAction: "heading2", hotkey: null,
+          hintTitle: "สไตล์ Heading 2 (หัวเรื่อง 2)",
+          hintText: "หัวข้อย่อยภายในบทให้ตั้งเป็น <b>Heading 2</b> จะทำให้สารบัญแสดงเยื้องเข้าไปอย่างถูกต้อง",
+          buttons: [
+            { id: "heading2", label: "Heading 2 (หัวเรื่อง 2)" },
+            { id: "subtitle", label: "Subtitle" },
+            { id: "quote", label: "Quote (คำพูด)" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: แทรกหน้าสารบัญอัตโนมัติ",
+          desc: "หลังจากตั้ง Heading ครบแล้ว ต้องการดึงรายการสารบัญพร้อมเลขหน้าออกมาแสดงในหน้าแรก",
+          task: "เลือกแท็บเมนูที่บรรจุคำสั่ง 'สารบัญ (Table of Contents)'",
+          targetAction: "references", hotkey: null,
+          hintTitle: "แท็บการอ้างอิง (References Tab)",
+          hintText: "คำสั่งแทรกสารบัญอัตโนมัติ (Table of Contents) อยู่ในแท็บ <b>การอ้างอิง (References)</b>",
+          buttons: [
+            { id: "inserttab", label: "แท็บ แทรก (Insert)" },
+            { id: "references", label: "แท็บ การอ้างอิง (References)" },
+            { id: "viewtab", label: "แท็บ มุมมอง (View)" }
+          ]
+        }
+      ],
+      12: [
+        {
+          step: 1,
+          title: "ภารกิจที่ 1: ส่งออกไฟล์พิมพ์งานไม่ให้ฟอนต์เพี้ยน",
+          desc: "เมื่อทำรูปเล่มรายงานเสร็จสมบูรณ์ และต้องนำไฟล์ไปเปิดพิมพ์ที่ร้านคอมพิวเตอร์",
+          task: "เลือกนามสกุลไฟล์ที่ช่วยล็อกหน้ากระดาษและฟอนต์ไม่ให้เลื่อนเพี้ยนเมื่อเปิดเครื่องอื่น",
+          targetAction: "pdf", hotkey: null,
+          hintTitle: "ไฟล์เอกสาร PDF",
+          hintText: "ไฟล์นามสกุล <b>.pdf</b> จะล็อกตำแหน่งตัวอักษรและรูปภาพคงที่ 100% เปิดเครื่องไหนก็ไม่เลื่อนเพี้ยน",
+          buttons: [
+            { id: "docx", label: "ไฟล์ .docx" },
+            { id: "pdf", label: "ไฟล์ .pdf (ไม่เลื่อนเพี้ยน)" },
+            { id: "txt", label: "ไฟล์ .txt" }
+          ]
+        },
+        {
+          step: 2,
+          title: "ภารกิจที่ 2: รหัสผ่านล็อกเอกสารสำคัญ",
+          desc: "หากเอกสารมีข้อมูลสำคัญ และต้องการใส่รหัสผ่านก่อนเปิดอ่านเพื่อความปลอดภัย",
+          task: "เลือกเมนูในหมวดไฟล์ที่ใช้ 'เข้ารหัสลับด้วยรหัสผ่าน (Encrypt with Password)'",
+          targetAction: "protect", hotkey: null,
+          hintTitle: "การป้องกันเอกสาร (Protect Document)",
+          hintText: "ในเมนู File > Info > Protect Document สามารถตั้งค่าใส่รหัสผ่านป้องกันคนอื่นเปิดดูเอกสารได้",
+          buttons: [
+            { id: "protect", label: "🔒 ป้องกันเอกสาร (ใส่รหัสผ่าน)" },
+            { id: "inspect", label: "🔍 ตรวจสอบเอกสาร" },
+            { id: "manage", label: "📂 จัดการเอกสาร" }
+          ]
+        },
+        {
+          step: 3,
+          title: "ภารกิจที่ 3: สั่งพิมพ์เอกสารออกทางเครื่องพิมพ์",
+          desc: "ขั้นตอนสุดท้ายในการส่งงาน คือสั่งพิมพ์เอกสารออกทางเครื่องพิมพ์ (Printer)",
+          task: "เลือกคีย์ลัดสากลที่ใช้เปิดหน้าต่าง 'สั่งพิมพ์งาน (Print)'",
+          targetAction: "ctrlp", hotkey: "p",
+          hintTitle: "คีย์ลัดสั่งพิมพ์ (Print)",
+          hintText: "กด <b>Ctrl + P</b> (ย่อมาจาก Print) เพื่อเปิดหน้าต่างดูตัวอย่างก่อนพิมพ์และสั่งพิมพ์งานออกเครื่องปริ้นเตอร์",
+          buttons: [
+            { id: "ctrlp", label: "🖨️ สั่งพิมพ์ (Ctrl+P)" },
+            { id: "ctrlf", label: "🔍 ค้นหา (Ctrl+F)" },
+            { id: "ctrlh", label: "🔄 แทนที่ (Ctrl+H)" }
+          ]
+        }
       ]
     };
 
     let masteredChapters = [];
-    let selectedChapterId = 4;
+    let selectedChapterId = 1;
     let scene = null, camera = null, renderer = null, carGroup = null;
     let checkpoints = [], obstacles = [];
     let isModalOpen = false, isGameRunning = false;
@@ -446,7 +932,6 @@
       turnSpeed: 0.032, angularDamping: 0.92, spinTimer: 0
     };
 
-    // เปิดหน้า Hub อัตโนมัติเมื่อเว็บโหลดเสร็จ
     window.onload = () => {
       renderChaptersGrid();
     };
@@ -490,7 +975,11 @@
       const chData = chaptersMeta.find(c => c.id === chapterId);
       document.getElementById("hud-stage").innerText = chData.title;
 
+      // แก้ปัญหาเพลงหาย: ปลุก AudioContext ให้ทำงานต่อเสมอเมื่อเข้าบทใหม่
       initAudio();
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
 
       if (!scene) {
         init3DWorld();
@@ -774,7 +1263,7 @@
       renderMinimap();
     }
 
-    // MULTI-STEP WORKSHOP LOGIC
+    // MULTI-STEP WORKSHOP LOGIC (รองรับเนื้อหาเฉพาะของแต่ละสัปดาห์)
     let currentStepIndex = 1;
     let currentWeekSteps = [];
     let currentTaskData = null;
@@ -784,10 +1273,17 @@
       const chData = chaptersMeta.find(c => c.id === chId);
       document.getElementById("studio-week-title").innerText = chData.title;
       
-      currentWeekSteps = workshopCurriculum[chId] || workshopCurriculum[4];
+      // ดึงเนื้อหาเฉพาะบทนั้น ๆ
+      currentWeekSteps = workshopCurriculum[chId] || workshopCurriculum[1];
       
+      // รีเซ็ตหน้ากระดาษ
+      document.getElementById("sim-title").innerText = chData.title.split(': ')[1] || chData.title;
       document.getElementById("sim-title").style.fontWeight = "400";
       document.getElementById("sim-title").style.textAlign = "left";
+      document.getElementById("sim-title").style.fontFamily = "'Kanit', sans-serif";
+      document.getElementById("sim-title").style.fontSize = "1.3rem";
+      document.getElementById("sim-p1").innerText = "เนื้อหาจำลองการฝึกปฏิบัติงานประจำสัปดาห์นี้";
+      document.getElementById("sim-p2").innerText = "หัวข้อย่อยหรือส่วนขยาย";
       document.getElementById("sim-p2").style.fontWeight = "400";
       document.getElementById("sim-p2").style.color = "#64748b";
 
@@ -813,6 +1309,7 @@
       document.getElementById("task-action-box").innerHTML = currentTaskData.task;
       document.getElementById("lab-feedback").innerText = "💡 ทดลองคลิกเครื่องมือที่เหมาะสมบนแถบ Ribbon หรือกดคีย์ลัดจริงได้เลย";
 
+      // เรนเดอร์ปุ่มตัวเลือกเฉพาะข้อนั้น ๆ
       const ribbon = document.getElementById("sim-ribbon-tools");
       ribbon.innerHTML = "";
       currentTaskData.buttons.forEach(btn => {
@@ -839,22 +1336,36 @@
           }
         }, 800);
       } else {
-        // เลือกผิด: แสดงใบความรู้ช่วยจำ
+        // เลือกผิด: แสดงใบความรู้ช่วยจำเฉพาะหัวข้อนั้น
         playCrashSound();
         showHintModal(currentTaskData.hintTitle, currentTaskData.hintText);
       }
     }
 
     function applyVisualEffect(actionId) {
-      if (actionId === "bold") {
-        document.getElementById("sim-title").style.fontWeight = "900";
-      } else if (actionId === "center") {
-        document.getElementById("sim-title").style.textAlign = "center";
-      } else if (actionId === "painter") {
-        const sub = document.getElementById("sim-p2");
-        sub.style.fontWeight = "900";
-        sub.style.color = "#0284c7";
-      }
+      const title = document.getElementById("sim-title");
+      const p1 = document.getElementById("sim-p1");
+      const p2 = document.getElementById("sim-p2");
+
+      if (actionId === "bold") title.style.fontWeight = "900";
+      else if (actionId === "center" || actionId === "aligncenter") title.style.textAlign = "center";
+      else if (actionId === "alignright") title.style.textAlign = "right";
+      else if (actionId === "alignleft") title.style.textAlign = "left";
+      else if (actionId === "painter") { p2.style.fontWeight = "900"; p2.style.color = "#0284c7"; }
+      else if (actionId === "sarabun") { title.style.fontFamily = "'Sarabun', 'Kanit', sans-serif"; title.innerText += " (TH Sarabun)"; }
+      else if (actionId === "size24") title.style.fontSize = "1.8rem";
+      else if (actionId === "save") p1.innerText = "💾 เอกสารถูกบันทึกเรียบร้อยแล้ว (Saved)";
+      else if (actionId === "new") { title.innerText = "เอกสารว่าง 1 (สร้างใหม่)"; p1.innerText = ""; }
+      else if (actionId === "undo") p1.innerText = "↩️ ข้อความที่ลบถูกกู้คืนกลับมาแล้ว!";
+      else if (actionId === "bullets") p1.innerHTML = "• หัวข้อแรก<br>• หัวข้อที่สอง<br>• หัวข้อที่สาม";
+      else if (actionId === "numbering") p1.innerHTML = "1. ขั้นตอนที่หนึ่ง<br>2. ขั้นตอนที่สอง<br>3. ขั้นตอนที่สาม";
+      else if (actionId === "square") p1.innerHTML = "🖼️ [รูปภาพ] ข้อความไหลล้อมรอบรูปภาพทรงสี่เหลี่ยมพอดีอย่างสวยงาม";
+      else if (actionId === "behind") p1.innerHTML = "📜 ข้อความลอยทับอยู่บนรูปภาพฉากหลัง (Behind Text)";
+      else if (actionId === "t3x2") p1.innerHTML = "📊 [ ตาราง 3 คอลัมน์ x 2 แถว ถูกสร้างแล้ว ]";
+      else if (actionId === "landscape") p1.innerHTML = "📃 หน้ากระดาษถูกปรับเป็น 'แนวนอน' กว้างขึ้น";
+      else if (actionId === "spellerror") p1.innerHTML = "🔍 ระบบทำการแก้ไขคำสะกดผิดเรียบร้อย";
+      else if (actionId === "heading1") { title.style.color = "#0284c7"; title.style.fontSize = "1.6rem"; title.innerText = "Heading 1: " + title.innerText; }
+      else if (actionId === "pdf") p1.innerHTML = "📕 เอกสารถูกส่งออกเป็นไฟล์ PDF เรียบร้อย ฟอนต์ไม่เลื่อนเพี้ยน";
     }
 
     function showHintModal(title, text) {
@@ -894,7 +1405,7 @@
         }
       });
 
-      alert("🎉 ยอดเยี่ยมมาก! คุณผ่านภารกิจสัปดาห์นี้ครบถ้วนแล้ว ระบบกำลังพาคุณกลับสู่หน้าเลือกบทเรียน");
+      alert("🎉 ยอดเยี่ยมมาก! คุณผ่านเวิร์กช็อปสัปดาห์นี้ครบถ้วนแล้ว ระบบกำลังพาคุณกลับสู่หน้าเลือกบทเรียน");
       returnToHub();
     }
 
