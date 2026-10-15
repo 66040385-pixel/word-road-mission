@@ -149,10 +149,11 @@
     @keyframes zoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .rbx-green-btn {
-      width: 100%; padding: 15px; border-radius: 18px; border: none;
+      width: 100%; padding: 16px; border-radius: 18px; border: none;
       background: linear-gradient(180deg, #10b981 0%, #059669 100%);
       color: #fff; font-size: 1.2rem; font-weight: 900; cursor: pointer;
       box-shadow: 0 5px 0 #047857; display: flex; justify-content: center; align-items: center; gap: 8px;
+      transition: transform 0.08s, box-shadow 0.08s;
     }
     .rbx-green-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #047857; }
 
@@ -256,7 +257,7 @@
       display: flex; justify-content: space-between; align-items: center;
     }
 
-    /* MODAL ใบความรู้เมื่อเลือกผิด (LEARNING HINT MODAL) */
+    /* MODAL ใบความรู้เมื่อเลือกผิด */
     #hint-modal {
       position: fixed; inset: 0;
       background: rgba(10, 12, 16, 0.92); backdrop-filter: blur(14px);
@@ -349,10 +350,10 @@
       <div style="font-size: 2.2rem; font-weight: 900; color: #0284c7; font-family: 'Chakra Petch';">WORD STUDIO 3D</div>
       <p style="color: #64748b; font-size: 0.92rem; margin-bottom: 20px;">ห้องปฏิบัติการจำลองการพิมพ์งาน Microsoft Word ประจำภาคเรียน (12 สัปดาห์)</p>
       
-      <input type="text" id="player-input" style="width:100%; padding:14px; border-radius:14px; border:2px solid #cbd5e1; font-size:1.05rem; font-weight:700; text-align:center; outline:none; margin-bottom:14px;" placeholder="พิมพ์ชื่อ - สกุล หรือ เลขที่ของผู้เรียน..." />
+      <input type="text" id="player-input" style="width:100%; padding:14px; border-radius:14px; border:2px solid #cbd5e1; font-size:1.05rem; font-weight:700; text-align:center; outline:none; margin-bottom:14px;" placeholder="พิมพ์ชื่อ - สกุล หรือ เลขที่ของผู้เรียน (เว้นว่างได้)..." autocomplete="off" />
 
-      <button class="rbx-green-btn" onclick="submitPlayerName()">
-        เข้าสู่ห้องเรียน (ENTER STUDIO)
+      <button type="button" class="rbx-green-btn" id="btn-enter-studio" onclick="submitPlayerName()">
+        เข้าสู่ห้องเรียน (ENTER STUDIO)[cite: 2]
       </button>
     </div>
   </div>
@@ -401,9 +402,7 @@
 
         <!-- ฝั่งหน้าต่าง Microsoft Word จำลอง -->
         <div class="word-sim-window">
-          <div class="ribbon-ui" id="sim-ribbon-tools">
-            <!-- ปุ่มเครื่องมือจะถูกเรนเดอร์ตามแต่ละภารกิจย่อย -->
-          </div>
+          <div class="ribbon-ui" id="sim-ribbon-tools"></div>
 
           <div class="doc-page" id="sim-doc-canvas">
             <div class="doc-title" id="sim-title">การศึกษาความหลากหลายทางชีวภาพ ม.1</div>
@@ -423,7 +422,7 @@
     </div>
   </div>
 
-  <!-- MODAL ใบความรู้เมื่อเลือกผิด (LEARNING HINT) -->
+  <!-- MODAL ใบความรู้เมื่อเลือกผิด -->
   <div id="hint-modal">
     <div class="hint-card">
       <div class="hint-header">
@@ -476,7 +475,6 @@
       { id: 12, title: "สัปดาห์ที่ 12: พร้อมเผยแพร่งาน", desc: "การส่งออกเอกสารเป็น PDF ไม่ให้ฟอนต์เลื่อนเพี้ยน"[cite: 1]}
     ];
 
-    // ข้อมูลขั้นตอนย่อยในเวิร์กช็อป (มีตัวเลือกถูก/ผิด + ใบความรู้)
     const workshopCurriculum = {
       4: [
         {
@@ -503,7 +501,7 @@
           targetAction: "center",
           hotkey: "e",
           hintTitle: "การจัดแนวย่อหน้า (Paragraph Alignment)",
-          hintText: "• <mark>กึ่งกลาง (Center)</mark> หรือคีย์ลัด <b>Ctrl + E</b> ใช้วางข้อความตรงกลางกระดาษ<br>• ระวังจำสับสน: Ctrl + C คือ Copy (คัดลอก) ดังนั้นคึ่งกลางจึงใช้ Ctrl + E[cite: 1]",
+          hintText: "• <mark>กึ่งกลาง (Center)</mark> หรือคีย์ลัด <b>Ctrl + E</b> ใช้วางข้อความตรงกลางกระดาษ<br>• ระวังจำสับสน: Ctrl + C คือ Copy (คัดลอก) ดังนั้นกึ่งกลางจึงใช้ Ctrl + E[cite: 1]",
           buttons: [
             { id: "left", label: "ชิดซ้าย (Ctrl+L)" },
             { id: "right", label: "ชิดขวา (Ctrl+R)" },
@@ -535,30 +533,34 @@
 
     function initAudio() {
       if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        engineFilter = audioCtx.createBiquadFilter();
-        engineFilter.type = "lowpass";
-        engineFilter.frequency.setValueAtTime(140, audioCtx.currentTime);
+        try {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          engineFilter = audioCtx.createBiquadFilter();
+          engineFilter.type = "lowpass";
+          engineFilter.frequency.setValueAtTime(140, audioCtx.currentTime);
 
-        engineGain = audioCtx.createGain();
-        engineGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+          engineGain = audioCtx.createGain();
+          engineGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
 
-        engineOsc = audioCtx.createOscillator();
-        engineOsc.type = "triangle";
-        engineOsc.frequency.setValueAtTime(36, audioCtx.currentTime);
+          engineOsc = audioCtx.createOscillator();
+          engineOsc.type = "triangle";
+          engineOsc.frequency.setValueAtTime(36, audioCtx.currentTime);
 
-        engineSubOsc = audioCtx.createOscillator();
-        engineSubOsc.type = "sine";
-        engineSubOsc.frequency.setValueAtTime(18, audioCtx.currentTime);
+          engineSubOsc = audioCtx.createOscillator();
+          engineSubOsc.type = "sine";
+          engineSubOsc.frequency.setValueAtTime(18, audioCtx.currentTime);
 
-        engineOsc.connect(engineFilter);
-        engineSubOsc.connect(engineFilter);
-        engineFilter.connect(engineGain);
-        engineGain.connect(audioCtx.destination);
+          engineOsc.connect(engineFilter);
+          engineSubOsc.connect(engineFilter);
+          engineFilter.connect(engineGain);
+          engineGain.connect(audioCtx.destination);
 
-        engineOsc.start();
-        engineSubOsc.start();
-        startBGM();
+          engineOsc.start();
+          engineSubOsc.start();
+          startBGM();
+        } catch(e) {
+          console.warn("Audio init prevented:", e);
+        }
       }
     }
 
@@ -622,13 +624,19 @@
 
     function toggleAudio() {
       isMuted = !isMuted;
-      if (engineGain) engineGain.gain.setValueAtTime(isMuted ? 0 : 0.04, audioCtx.currentTime);
+      if (engineGain && audioCtx) engineGain.gain.setValueAtTime(isMuted ? 0 : 0.04, audioCtx.currentTime);
       document.getElementById("audio-icon").style.fill = isMuted ? "#94a3b8" : "#38bdf8";
     }
 
-    // STATE & PROGRESSION (LocalStorage)
-    let playerName = localStorage.getItem("wr3d_hands_name") || "";
-    let masteredChapters = JSON.parse(localStorage.getItem("wr3d_hands_mastered") || "[]");
+    // STATE & PROGRESSION (LocalStorage พร้อมระบบ Fallback)
+    let playerName = "";
+    let masteredChapters = [];
+    try {
+      playerName = localStorage.getItem("wr3d_hands_name") || "";
+      masteredChapters = JSON.parse(localStorage.getItem("wr3d_hands_mastered") || "[]");
+    } catch(e) {
+      console.warn("Storage access warning:", e);
+    }
     let selectedChapterId = 4;
 
     let scene, camera, renderer, carGroup;
@@ -642,26 +650,49 @@
       turnSpeed: 0.032, angularDamping: 0.92, spinTimer: 0
     };
 
-    window.onload = () => {
-      if (playerName) {
-        document.getElementById("player-input").value = playerName;
-        showHubScreen();
+    window.addEventListener("DOMContentLoaded", () => {
+      const pInput = document.getElementById("player-input");
+      if (pInput) {
+        if (playerName) pInput.value = playerName;
+        pInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            submitPlayerName();
+          }
+        });
       }
-    };
+      
+      const btnEnter = document.getElementById("btn-enter-studio");
+      if (btnEnter) {
+        btnEnter.addEventListener("click", submitPlayerName);
+      }
+    });
 
+    // ฟังก์ชันแก้ไขปุ่มเข้าสู่ห้องเรียน (ENTER STUDIO) ไม่ให้ติดขัด[cite: 2]
     function submitPlayerName() {
-      const input = document.getElementById("player-input").value.trim();
-      if (!input) { alert("กรุณาพิมพ์ชื่อหรือเลขที่ผู้เรียนก่อนเริ่มต้นครับ"); return; }
-      playerName = input;
-      localStorage.setItem("wr3d_hands_name", playerName);
+      const input = document.getElementById("player-input");
+      let val = input ? input.value.trim() : "";
+      
+      // ถ้าไม่ได้พิมพ์ชื่อ ให้ตั้งชื่อเริ่มต้นทันที ป้องกันปุ่มไม่ทำงาน
+      if (!val) {
+        val = "ผู้เรียน";
+      }
+      
+      playerName = val;
+      try {
+        localStorage.setItem("wr3d_hands_name", playerName);
+      } catch (e) {
+        console.warn("ไม่สามารถบันทึกลง LocalStorage ได้:", e);
+      }
+      
       showHubScreen();
     }
 
     function showHubScreen() {
       document.getElementById("start-screen").style.display = "none";
       document.getElementById("chapter-clear-modal").style.display = "none";
-      document.getElementById("hub-username").innerText = playerName;
-      document.getElementById("hud-name").innerText = playerName;
+      document.getElementById("hub-username").innerText = playerName || "ผู้เรียน";
+      document.getElementById("hud-name").innerText = playerName || "ผู้เรียน";
       renderChaptersGrid();
       document.getElementById("hub-screen").style.display = "flex";
       isGameRunning = false;
@@ -669,6 +700,7 @@
 
     function renderChaptersGrid() {
       const grid = document.getElementById("chapters-grid");
+      if (!grid) return;
       grid.innerHTML = "";
 
       chaptersMeta.forEach((ch) => {
@@ -687,7 +719,8 @@
         grid.appendChild(card);
       });
 
-      document.getElementById("hud-progress").innerText = `ผ่าน ${masteredChapters.length} / 12 บท`;
+      const prog = document.getElementById("hud-progress");
+      if (prog) prog.innerText = `ผ่าน ${masteredChapters.length} / 12 บท`;
     }
 
     function returnToHub() {
@@ -923,6 +956,7 @@
 
       const bindTouch = (id, action) => {
         const el = document.getElementById(id);
+        if (!el) return;
         el.addEventListener("touchstart", (e) => { e.preventDefault(); keys[action] = true; });
         el.addEventListener("touchend", () => keys[action] = false);
       };
@@ -983,8 +1017,10 @@
 
       if (!laserBlocked) carPhysics.z = nextZ;
 
-      carGroup.position.set(carPhysics.x, 0, carPhysics.z);
-      carGroup.rotation.y = carPhysics.angle;
+      if (carGroup) {
+        carGroup.position.set(carPhysics.x, 0, carPhysics.z);
+        carGroup.rotation.y = carPhysics.angle;
+      }
 
       const idealCam = new THREE.Vector3(0, 5.6, 13.8);
       idealCam.applyAxisAngle(new THREE.Vector3(0, 1, 0), carPhysics.angle * 0.7);
@@ -996,13 +1032,15 @@
       camera.lookAt(lookAhead);
 
       const mph = Math.round(Math.abs(carPhysics.speed) * 52);
-      document.getElementById("speed-val").innerText = mph;
-      document.getElementById("gear-val").innerText = carPhysics.speed > 0.05 ? 'D' : (carPhysics.speed < -0.05 ? 'R' : 'N');
+      const spd = document.getElementById("speed-val");
+      const gr = document.getElementById("gear-val");
+      if (spd) spd.innerText = mph;
+      if (gr) gr.innerText = carPhysics.speed > 0.05 ? 'D' : (carPhysics.speed < -0.05 ? 'R' : 'N');
 
       renderMinimap();
     }
 
-    // MULTI-STEP WORKSHOP WITH BRANCHING (ตัวเลือกถูก/ผิด + ใบความรู้)
+    // MULTI-STEP WORKSHOP WITH BRANCHING
     let currentStepIndex = 1;
     let currentWeekSteps = [];
     let currentTaskData = null;
@@ -1012,10 +1050,8 @@
       const chData = chaptersMeta.find(c => c.id === chId);
       document.getElementById("studio-week-title").innerText = chData.title;
       
-      // ดึงบทเรียนย่อย (หากไม่มีใน mock จะใช้ของบทที่ 4 เป็นแกนหลัก)
       currentWeekSteps = workshopCurriculum[chId] || workshopCurriculum[4];
       
-      // รีเซ็ตหน้ากระดาษ
       document.getElementById("sim-title").style.fontWeight = "400";
       document.getElementById("sim-title").style.textAlign = "left";
       document.getElementById("sim-p2").style.fontWeight = "400";
@@ -1031,7 +1067,6 @@
 
       document.getElementById("mission-step-indicator").innerText = `ภารกิจ ${stepNumber} / ${currentWeekSteps.length}`;
 
-      // อัปเดตจุดสถานะ
       for (let i = 1; i <= 3; i++) {
         const dot = document.getElementById(`dot-${i}`);
         if (dot) {
@@ -1044,7 +1079,6 @@
       document.getElementById("task-action-box").innerHTML = currentTaskData.task;
       document.getElementById("lab-feedback").innerText = "💡 ทดลองคลิกเครื่องมือที่เหมาะสมบนแถบ Ribbon หรือกดคีย์ลัดจริงได้เลย";
 
-      // เรนเดอร์ปุ่มตัวเลือกบน Ribbon
       const ribbon = document.getElementById("sim-ribbon-tools");
       ribbon.innerHTML = "";
       currentTaskData.buttons.forEach(btn => {
@@ -1058,7 +1092,6 @@
 
     function handleUserToolSelect(actionId) {
       if (actionId === currentTaskData.targetAction) {
-        // ตอบถูก! ทำการแสดงผลลัพธ์บนกระดาษแบบ Real-time
         playSuccessSound();
         applyVisualEffect(actionId);
         document.getElementById("lab-feedback").innerText = "✔ ยอดเยี่ยมมาก! การจัดรูปแบบถูกต้อง";
@@ -1067,12 +1100,10 @@
           if (currentStepIndex < currentWeekSteps.length) {
             loadStep(currentStepIndex + 1);
           } else {
-            // สำเร็จครบทุกภารกิจย่อยในบทนี้!
             completeChapterMission();
           }
         }, 800);
       } else {
-        // ตอบผิด -> เด้งใบความรู้ขึ้นมาให้อ่าน
         playCrashSound();
         showHintModal(currentTaskData.hintTitle, currentTaskData.hintText);
       }
@@ -1100,7 +1131,6 @@
       document.getElementById("hint-modal").style.display = "none";
     }
 
-    // Hotkey Listener รองรับเด็กที่กดคีย์ลัดจริงบนคีย์บอร์ด
     window.addEventListener("keydown", (e) => {
       if (isModalOpen && currentTaskData && currentTaskData.hotkey) {
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === currentTaskData.hotkey) {
@@ -1114,10 +1144,11 @@
       document.getElementById("studio-modal").style.display = "none";
       isModalOpen = false;
 
-      // บันทึกความเชี่ยวชาญลง LocalStorage
       if (!masteredChapters.includes(selectedChapterId)) {
         masteredChapters.push(selectedChapterId);
-        localStorage.setItem("wr3d_hands_mastered", JSON.stringify(masteredChapters));
+        try {
+          localStorage.setItem("wr3d_hands_mastered", JSON.stringify(masteredChapters));
+        } catch(e) {}
       }
 
       checkpoints.forEach(cp => {
@@ -1140,6 +1171,7 @@
 
     function renderMinimap() {
       const mCanvas = document.getElementById("minimapCanvas");
+      if (!mCanvas) return;
       const mCtx = mCanvas.getContext("2d");
       mCtx.clearRect(0, 0, 155, 155);
 
