@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Word Studio 3D: ห้องปฏิบัติการเรียนรู้ Microsoft Word</title>
+  <title>Word Studio 3D: Roblox Learning Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800;900&family=Chakra+Petch:wght@700;800&display=swap" rel="stylesheet">
@@ -13,7 +13,6 @@
     :root {
       --primary: #00a2ff;
       --word-blue: #185abd;
-      --word-dark: #103f84;
       --yellow: #facc15;
       --green: #00b06f;
       --red: #ef4444;
@@ -22,11 +21,13 @@
     }
     * {
       box-sizing: border-box; margin: 0; padding: 0;
-      font-family: 'Kanit', sans-serif;
+      user-select: none; -webkit-user-select: none;
+      touch-action: manipulation;
     }
     html, body {
       width: 100vw; height: 100vh; overflow: hidden;
       background: #7dd3fc; position: fixed; inset: 0;
+      font-family: 'Kanit', sans-serif;
     }
 
     #three-container {
@@ -57,6 +58,7 @@
       background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3);
       color: #fff; padding: 5px 14px; border-radius: 999px; font-size: 0.84rem;
       font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: all 0.15s;
     }
     .hud-btn-menu:hover { background: #0284c7; border-color: #38bdf8; }
     .hud-pill {
@@ -117,7 +119,9 @@
       border: 2px solid rgba(255, 255, 255, 0.35); backdrop-filter: blur(8px);
       display: flex; justify-content: center; align-items: center;
       box-shadow: 0 10px 24px rgba(0,0,0,0.5); cursor: pointer;
+      transition: transform 0.08s;
     }
+    .v-btn:active { transform: scale(0.92); border-color: #facc15; background: rgba(250, 204, 21, 0.35); }
     .v-btn svg { width: 34px; height: 34px; fill: #ffffff; }
 
     #audio-toggle {
@@ -130,7 +134,6 @@
     }
     #audio-toggle svg { width: 22px; height: 22px; fill: #38bdf8; }
 
-    /* Modal Screens */
     .overlay-screen {
       position: fixed; inset: 0;
       display: flex; justify-content: center; align-items: center; padding: 18px;
@@ -139,30 +142,24 @@
     .modal-card {
       background: var(--surface); border: 3px solid #00a2ff; border-radius: 28px;
       padding: 32px 28px; max-width: 520px; width: 100%; text-align: center; color: #fff;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 35px rgba(0, 162, 255, 0.3);
+      animation: zoomIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+    @keyframes zoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .rbx-green-btn {
-      width: 100%; padding: 16px; border-radius: 18px; border: none;
+      width: 100%; padding: 15px; border-radius: 18px; border: none;
       background: linear-gradient(180deg, #10b981 0%, #059669 100%);
       color: #fff; font-size: 1.2rem; font-weight: 900; cursor: pointer;
       box-shadow: 0 5px 0 #047857; display: flex; justify-content: center; align-items: center; gap: 8px;
     }
     .rbx-green-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #047857; }
 
-    /* หน้าแรก */
-    #start-screen {
-      position: fixed; inset: 0; z-index: 9999;
-      display: flex; justify-content: center; align-items: center;
-      background: radial-gradient(circle at 50% 40%, rgba(14, 165, 233, 0.6) 0%, rgba(15, 23, 42, 0.98) 80%);
-    }
-
     /* CHAPTER HUB */
     #hub-screen {
-      position: fixed; inset: 0; z-index: 8000; display: none;
       background: radial-gradient(circle at 50% 30%, rgba(14, 165, 233, 0.45) 0%, rgba(15, 23, 42, 0.96) 80%);
       backdrop-filter: blur(14px);
-      overflow-y: auto; padding: 30px 14px;
+      z-index: 150; overflow-y: auto; padding: 30px 14px; align-items: flex-start;
     }
     .hub-container {
       background: #ffffff; border: 4px solid #38bdf8; border-radius: 30px;
@@ -188,12 +185,12 @@
     }
     .chapter-card.mastered { border-color: #10b981; background: #f0fdf4; }
 
-    /* STUDIO MODAL */
+    /* INTERACTIVE STUDIO WORKSHOP MODAL */
     #studio-modal {
       position: fixed; inset: 0;
       background: rgba(10, 12, 16, 0.92); backdrop-filter: blur(14px);
       display: none; justify-content: center; align-items: center;
-      padding: 16px; z-index: 8500;
+      padding: 16px; z-index: 120;
     }
     .studio-box {
       background: #f8fafc; border: 4px solid #38bdf8; border-radius: 26px;
@@ -210,12 +207,13 @@
     }
     @media (max-width: 768px) { .studio-body { grid-template-columns: 1fr; } }
 
+    /* ฝั่งคู่มือ & บันไดภารกิจ (Multi-step Guide) */
     .guide-card {
       background: #fff; border: 2px solid #cbd5e1; border-radius: 16px;
       padding: 16px; display: flex; flex-direction: column; gap: 12px;
     }
     .step-tracker { display: flex; gap: 6px; }
-    .step-dot { flex: 1; height: 6px; border-radius: 4px; background: #e2e8f0; }
+    .step-dot { flex: 1; height: 6px; border-radius: 4px; background: #e2e8f0; transition: all 0.3s; }
     .step-dot.active { background: #0284c7; }
     .step-dot.done { background: #10b981; }
 
@@ -226,6 +224,7 @@
     .task-label { font-size: 0.85rem; font-weight: 800; color: #166534; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
     .task-text { font-size: 0.88rem; color: #1e293b; font-weight: 600; line-height: 1.5; }
 
+    /* ฝั่งหน้าต่างจำลอง Microsoft Word */
     .word-sim-window {
       background: #fff; border: 2px solid #cbd5e1; border-radius: 16px;
       display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06);
@@ -235,45 +234,32 @@
       display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-height: 50px;
     }
     .tool-btn {
-      padding: 7px 13px; background: #fff; border: 1.5px solid #cbd5e1; border-radius: 8px;
+      padding: 7px 14px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px;
       font-size: 0.86rem; font-weight: 700; color: #334155; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 6px;
+      display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
     }
     .tool-btn:hover { background: #e0f2fe; border-color: #38bdf8; color: #0284c7; }
+    .tool-btn.active { background: #0284c7; color: #fff; border-color: #0369a1; }
+    .tool-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
     .doc-page {
       background: #fff; min-height: 250px; padding: 24px; position: relative;
+      user-select: text; -webkit-user-select: text; /* ให้เด็กลากคลุมข้อความได้จริง */
       display: flex; flex-direction: column; justify-content: center;
     }
-    .doc-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .doc-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; transition: all 0.2s ease; }
     .doc-p { font-size: 0.95rem; color: #334155; line-height: 1.6; }
 
     .studio-footer {
       background: #fff; border-top: 2px solid #e2e8f0; padding: 12px 20px;
       display: flex; justify-content: space-between; align-items: center;
     }
-
-    #hint-modal {
-      position: fixed; inset: 0;
-      background: rgba(10, 12, 16, 0.92); backdrop-filter: blur(14px);
-      display: none; justify-content: center; align-items: center;
-      padding: 18px; z-index: 9000;
+    .btn-next-step {
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+      color: #fff; border: none; padding: 10px 22px; border-radius: 12px;
+      font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px;
     }
-    .hint-card {
-      background: #0f172a; border: 3px solid #38bdf8; border-radius: 28px;
-      padding: 26px; max-width: 520px; width: 100%; color: #fff; text-align: left;
-    }
-    .hint-box {
-      background: #1e293b; border-left: 5px solid #facc15;
-      padding: 16px 18px; border-radius: 12px; margin-bottom: 18px;
-    }
-
-    #chapter-clear-modal {
-      position: fixed; inset: 0;
-      background: rgba(10, 12, 16, 0.92); backdrop-filter: blur(14px);
-      display: none; justify-content: center; align-items: center;
-      padding: 18px; z-index: 9500;
-    }
+    .btn-next-step:disabled { background: #cbd5e1; cursor: not-allowed; opacity: 0.6; }
   </style>
 </head>
 <body>
@@ -287,11 +273,11 @@
   <div id="top-hud">
     <button class="hud-btn-menu" onclick="returnToHub()">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="#fff"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-      เลือกบทเรียน
+      เลือก 12 บทเรียน
     </button>
     <div class="hud-chip player-chip">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="#38bdf8"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span id="hud-name">ผู้เรียน</span>
+      <span id="hud-name">-</span>
     </div>
     <div class="hud-chip">
       <span class="hud-pill" id="hud-stage">สัปดาห์ที่ 4 : ศิลปะตกแต่งฟอนต์</span>
@@ -329,36 +315,35 @@
     </div>
   </div>
 
-  <!-- หน้าลงทะเบียนเริ่มต้น -->
-  <div id="start-screen">
-    <div class="modal-card" style="background: #ffffff; color: #0f172a; border-color: #38bdf8;">
+  <!-- หน้าลงทะเบียน -->
+  <div id="start-screen" class="overlay-screen" style="background: radial-gradient(circle at 50% 40%, rgba(14, 165, 233, 0.45) 0%, rgba(15, 23, 42, 0.95) 80%);">
+    <div class="modal-card" style="background: #fff; color: #0f172a; border-color: #38bdf8;">
       <div style="font-size: 2.2rem; font-weight: 900; color: #0284c7; font-family: 'Chakra Petch';">WORD STUDIO 3D</div>
       <p style="color: #64748b; font-size: 0.92rem; margin-bottom: 20px;">ห้องปฏิบัติการจำลองการพิมพ์งาน Microsoft Word ประจำภาคเรียน (12 สัปดาห์)</p>
       
-      <input type="text" id="player-input" style="width:100%; padding:14px; border-radius:14px; border:2px solid #cbd5e1; font-size:1.05rem; font-weight:700; text-align:center; outline:none; margin-bottom:16px;" placeholder="พิมพ์ชื่อผู้เรียน (หรือกดเข้าได้ทันที)..." />
+      <input type="text" id="player-input" style="width:100%; padding:14px; border-radius:14px; border:2px solid #cbd5e1; font-size:1.05rem; font-weight:700; text-align:center; outline:none; margin-bottom:14px;" placeholder="พิมพ์ชื่อ - สกุล หรือ เลขที่ของผู้เรียน..." />
 
-      <!-- ปุ่มเข้าสู่ห้องเรียน -->
-      <button type="button" class="rbx-green-btn" id="btn-enter-studio" onclick="enterStudioClick()">
-        เข้าสู่ห้องเรียน (ENTER STUDIO)[cite: 2]
+      <button class="rbx-green-btn" onclick="submitPlayerName()">
+        เข้าสู่ห้องเรียน (ENTER STUDIO)
       </button>
     </div>
   </div>
 
-  <!-- CHAPTER HUB -->
-  <div id="hub-screen">
+  <!-- CHAPTER HUB (หน้าเลือกบท 12 สัปดาห์) -->
+  <div id="hub-screen" class="overlay-screen" style="display:none;">
     <div class="hub-container">
       <div class="hub-header">
         <div style="text-align:left;">
           <div style="font-size:1.6rem; font-weight:900; font-family:'Chakra Petch';">แผนผังการเรียนรู้ 12 สัปดาห์</div>
           <div style="font-size:0.88rem; color:#bae6fd;">เลือกบทเรียนเพื่อเริ่มขับรถเข้าสู่ห้องปฏิบัติการจำลอง</div>
         </div>
-        <div id="hub-username" style="font-weight:800; background:rgba(255,255,255,0.2); padding:6px 16px; border-radius:999px;">ผู้เรียน</div>
+        <div id="hub-username" style="font-weight:800; background:rgba(255,255,255,0.2); padding:6px 16px; border-radius:999px;">-</div>
       </div>
       <div class="chapters-grid" id="chapters-grid"></div>
     </div>
   </div>
 
-  <!-- STUDIO WORKSHOP MODAL -->
+  <!-- STUDIO WORKSHOP MODAL (Interactive Sandbox พร้อมระบบหลายภารกิจย่อย) -->
   <div id="studio-modal">
     <div class="studio-box">
       <div class="studio-header">
@@ -367,6 +352,7 @@
       </div>
 
       <div class="studio-body">
+        <!-- ฝั่งคู่มือ & สถานะความก้าวหน้า -->
         <div class="guide-card">
           <div class="step-tracker">
             <div class="step-dot active" id="dot-1"></div>
@@ -374,19 +360,29 @@
             <div class="step-dot" id="dot-3"></div>
           </div>
           <div style="font-size: 1.1rem; font-weight: 800; color: #0f172a;" id="task-title">ภารกิจที่ 1: การเน้นหัวข้อหลัก</div>
-          <div style="font-size: 0.88rem; color: #475569; line-height: 1.6;" id="task-desc">คำอธิบายภารกิจ...</div>
+          <div style="font-size: 0.88rem; color: #475569; line-height: 1.6;" id="task-desc">
+            ในรายงานวิชาการ ข้อความหัวข้อควรมีความเด่นชัดกว่าเนื้อหาทั่วไป เพื่อให้ผู้อ่านแยกแยะโครงสร้างได้ทันที
+          </div>
 
           <div class="guide-task-box">
             <div class="task-label">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="#166534"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
               สิ่งที่ต้องทำ:
             </div>
-            <div class="task-text" id="task-action-box">คำสั่ง...</div>
+            <div class="task-text" id="task-action-box">
+              กดปุ่ม <b>Ctrl + B</b> บนคีย์บอร์ดจริง หรือคลิกปุ่ม <b>B (ตัวหนา)</b> บนแถบเครื่องมือ
+            </div>
           </div>
         </div>
 
+        <!-- ฝั่งหน้าต่าง Microsoft Word จำลอง -->
         <div class="word-sim-window">
-          <div class="ribbon-ui" id="sim-ribbon-tools"></div>
+          <div class="ribbon-ui" id="sim-ribbon-tools">
+            <button class="tool-btn" id="btn-bold" onclick="actionToggleBold()"><b>B</b> ตัวหนา</button>
+            <button class="tool-btn" id="btn-italic" onclick="actionToggleItalic()"><i>I</i> ตัวเอียง</button>
+            <button class="tool-btn" id="btn-center" onclick="actionToggleCenter()">กึ่งกลาง (Center)</button>
+            <button class="tool-btn" id="btn-format-painter" onclick="actionFormatPainter()">🖌️ ตัวคัดวางรูปแบบ</button>
+          </div>
 
           <div class="doc-page" id="sim-doc-canvas">
             <div class="doc-title" id="sim-title">การศึกษาความหลากหลายทางชีวภาพ ม.1</div>
@@ -401,121 +397,134 @@
       </div>
 
       <div class="studio-footer">
-        <span style="font-size: 0.86rem; color: #64748b;" id="lab-feedback">💡 ทดลองคลิกเครื่องมือที่เหมาะสมบนแถบ Ribbon หรือกดคีย์ลัดจริงได้เลย</span>
+        <span style="font-size: 0.85rem; color: #64748b;" id="lab-feedback">💡 กดปุ่มคีย์บอร์ดจริง หรือคลิกเครื่องมือบน Ribbon ได้เลย</span>
+        <button class="btn-next-step" id="btn-next-task" disabled onclick="nextSubTask()">
+          ภารกิจถัดไป
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+        </button>
       </div>
-    </div>
-  </div>
-
-  <!-- MODAL ใบความรู้เมื่อเลือกผิด -->
-  <div id="hint-modal">
-    <div class="hint-card">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; color:#38bdf8; font-size:1.25rem; font-weight:800;">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="#38bdf8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-        <span>เกือบถูกแล้ว! มาดูใบความรู้ช่วยจำ</span>
-      </div>
-      <div class="hint-box">
-        <div style="font-size:1.05rem; font-weight:800; color:#facc15; margin-bottom:8px;" id="hint-title">เทคนิคสำคัญ</div>
-        <div style="font-size:0.95rem; color:#e2e8f0; line-height:1.65;" id="hint-desc">คำอธิบาย...</div>
-      </div>
-      <button class="rbx-green-btn" onclick="closeHintModal()">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-        เข้าใจแล้ว ลองใหม่อีกครั้ง!
-      </button>
-    </div>
-  </div>
-
-  <!-- CHAPTER CLEAR MODAL -->
-  <div id="chapter-clear-modal">
-    <div class="modal-card">
-      <div style="font-size: 2.8rem; margin-bottom: 6px;">🎉</div>
-      <div style="font-size: 1.8rem; font-weight: 900; color: #4ade80; font-family:'Chakra Petch'; margin-bottom: 6px;">CHAPTER COMPLETED!</div>
-      <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 18px;">ยินดีด้วย! คุณผ่านเวิร์กช็อปประจำสัปดาห์นี้ครบทุกภารกิจย่อยแล้ว</p>
-
-      <div style="background: #030712; border: 2px dashed #facc15; border-radius: 18px; padding: 18px; margin-bottom: 20px;">
-        <div style="font-size: 0.85rem; color: #94a3b8;">บันทึกสถานะการเรียนรู้</div>
-        <div style="font-size: 1.5rem; font-weight: 900; color: #facc15;" id="clear-ch-badge">สัปดาห์ที่ 4: สำเร็จแล้ว ✔</div>
-      </div>
-
-      <button class="rbx-green-btn" onclick="finishAndGoToHub()">
-        กลับสู่หน้าเลือกบทเรียน (SELECT CHAPTER)
-      </button>
     </div>
   </div>
 
   <script>
-    // 12 สัปดาห์
+    // ข้อมูลหลักสูตร 12 สัปดาห์
     const chaptersMeta = [
-      { id: 1, title: "สัปดาห์ที่ 1: ก้าวแรกสู่นักพิมพ์", desc: "สำรวจหน้าต่างโปรแกรม เมนู Ribbon และเปลี่ยนฟอนต์"[cite: 1]},
-      { id: 2, title: "สัปดาห์ที่ 2: มือใหม่หัดเซฟไฟล์", desc: "การสร้าง, เปิด และคีย์ลัดบันทึกงานด่วน (Ctrl+S)"[cite: 1]},
-      { id: 3, title: "สัปดาห์ที่ 3: ปุ่มวิเศษย้อนเวลา", desc: "การแก้ไขข้อผิดพลาดด้วย Undo & Redo (Ctrl+Z, Ctrl+Y)"[cite: 1]},
-      { id: 4, title: "สัปดาห์ที่ 4: ศิลปะตกแต่งฟอนต์", desc: "ตัวหนา ตัวเอียง จัดกึ่งกลาง และแปรงคัดลอกสไตล์"[cite: 1]},
-      { id: 5, title: "สัปดาห์ที่ 5: จัดแนวย่อหน้าสมดุล", desc: "การจัดชิดซ้าย กึ่งกลาง ชิดขวา และระยะห่างบรรทัด"[cite: 1]},
-      { id: 6, title: "สัปดาห์ที่ 6: จดบันทึกเป็นระเบียบ", desc: "การใช้สัญลักษณ์จุด (Bullets) และลำดับเลข (Numbering)"[cite: 1]},
-      { id: 7, title: "สัปดาห์ที่ 7: นักจัดวางรูปภาพ", desc: "การตัดข้อความล้อมรูปภาพ (Wrap Text: Square, Behind Text)"[cite: 1]},
-      { id: 8, title: "สัปดาห์ที่ 8: สร้างสรรค์ตารางข้อมูล", desc: "คอลัมน์ (แนวตั้ง) x แถว (แนวนอน) และการผสานเซลล์"[cite: 1]},
-      { id: 9, title: "สัปดาห์ที่ 9: วางผังหน้ากระดาษ", desc: "ปรับแนวนอน/แนวตั้ง (Orientation) และระยะขอบ (Margins)"[cite: 1]},
-      { id: 10, title: "สัปดาห์ที่ 10: นักตรวจทานภาษา", desc: "เส้นหยักสีแดง (สะกดผิด) vs เส้นหยักสีฟ้า (วรรคเกิน)"[cite: 1]},
-      { id: 11, title: "สัปดาห์ที่ 11: โครงสร้างเล่มรายงาน", desc: "การใช้ Heading 1 และ 2 ปูทางสู่สารบัญอัตโนมัติ"[cite: 1]},
-      { id: 12, title: "สัปดาห์ที่ 12: พร้อมเผยแพร่งาน", desc: "การส่งออกเอกสารเป็น PDF ไม่ให้ฟอนต์เลื่อนเพี้ยน"[cite: 1]}
+      { id: 1, title: "สัปดาห์ที่ 1: ก้าวแรกสู่นักพิมพ์", desc: "สำรวจหน้าต่างโปรแกรม เมนู Ribbon และเปลี่ยนฟอนต์" },
+      { id: 2, title: "สัปดาห์ที่ 2: มือใหม่หัดเซฟไฟล์", desc: "การสร้าง, เปิด และคีย์ลัดบันทึกงานด่วน (Ctrl+S)" },
+      { id: 3, title: "สัปดาห์ที่ 3: ปุ่มวิเศษย้อนเวลา", desc: "การแก้ไขข้อผิดพลาดด้วย Undo & Redo (Ctrl+Z, Ctrl+Y)" },
+      { id: 4, title: "สัปดาห์ที่ 4: ศิลปะตกแต่งฟอนต์", desc: "ตัวหนา ตัวเอียง จัดกึ่งกลาง และแปรงคัดลอกสไตล์" },
+      { id: 5, title: "สัปดาห์ที่ 5: จัดแนวย่อหน้าสมดุล", desc: "การจัดชิดซ้าย กึ่งกลาง ชิดขวา และระยะห่างบรรทัด" },
+      { id: 6, title: "สัปดาห์ที่ 6: จดบันทึกเป็นระเบียบ", desc: "การใช้สัญลักษณ์จุด (Bullets) และลำดับเลข (Numbering)" },
+      { id: 7, title: "สัปดาห์ที่ 7: นักจัดวางรูปภาพ", desc: "การตัดข้อความล้อมรูปภาพ (Wrap Text: Square, Behind Text)" },
+      { id: 8, title: "สัปดาห์ที่ 8: สร้างสรรค์ตารางข้อมูล", desc: "คอลัมน์ (แนวตั้ง) x แถว (แนวนอน) และการผสานเซลล์" },
+      { id: 9, title: "สัปดาห์ที่ 9: วางผังหน้ากระดาษ", desc: "ปรับแนวนอน/แนวตั้ง (Orientation) และระยะขอบ (Margins)" },
+      { id: 10, title: "สัปดาห์ที่ 10: นักตรวจทานภาษา", desc: "เส้นหยักสีแดง (สะกดผิด) vs เส้นหยักสีฟ้า (วรรคเกิน)" },
+      { id: 11, title: "สัปดาห์ที่ 11: โครงสร้างเล่มรายงาน", desc: "การใช้ Heading 1 และ 2 ปูทางสู่สารบัญอัตโนมัติ" },
+      { id: 12, title: "สัปดาห์ที่ 12: พร้อมเผยแพร่งาน", desc: "การส่งออกเอกสารเป็น PDF ไม่ให้ฟอนต์เลื่อนเพี้ยน" }
     ];
 
-    const workshopCurriculum = {
-      4: [
-        {
-          step: 1,
-          title: "ภารกิจที่ 1: การเน้นหัวข้อหลักให้เด่นชัด",
-          desc: "ในรายงานวิชาการ ข้อความหัวข้อควรมีความเด่นชัดกว่าเนื้อหาทั่วไป เพื่อให้ผู้อ่านแยกแยะโครงสร้างได้ทันที",
-          task: "เลือกคลิกเครื่องมือบน Ribbon หรือกดคีย์ลัดเพื่อเปลี่ยนหัวข้อให้เป็น 'ตัวหนา (Bold)'",
-          targetAction: "bold",
-          hotkey: "b",
-          hintTitle: "เครื่องมือตกแต่งตัวอักษร (Font Styling)",
-          hintText: "• B (Bold) หรือคีย์ลัด Ctrl + B ใช้ทำตัวหนาเพื่อเน้นความเด่นชัด<br>• ปุ่ม I คือตัวเอียง และปุ่ม U คือขีดเส้นใต้[cite: 1]",
-          buttons: [
-            { id: "italic", label: "<i>I</i> ตัวเอียง" },
-            { id: "bold", label: "<b>B</b> ตัวหนา" },
-            { id: "underline", label: "<u>U</u> ขีดเส้นใต้" },
-            { id: "color", label: "🎨 สีข้อความ" }
-          ]
-        },
-        {
-          step: 2,
-          title: "ภารกิจที่ 2: จัดวางตำแหน่งกึ่งกลาง (Center)",
-          desc: "การวางหัวข้อไว้ตรงกลางหน้ากระดาษ ช่วยสร้างความสมดุลและความเป็นทางการของรายงาน",
-          task: "เลือกคลิกเครื่องมือเพื่อวางหัวข้อให้อยู่ 'กึ่งกลางหน้ากระดาษ (Center)'",
-          targetAction: "center",
-          hotkey: "e",
-          hintTitle: "การจัดแนวย่อหน้า (Paragraph Alignment)",
-          hintText: "• กึ่งกลาง (Center) หรือคีย์ลัด Ctrl + E ใช้วางข้อความตรงกลางกระดาษ<br>• ระวังจำสับสน: Ctrl + C คือ Copy (คัดลอก) ดังนั้นกึ่งกลางจึงใช้ Ctrl + E[cite: 1]",
-          buttons: [
-            { id: "left", label: "ชิดซ้าย (Ctrl+L)" },
-            { id: "right", label: "ชิดขวา (Ctrl+R)" },
-            { id: "center", label: "กึ่งกลาง (Ctrl+E)" },
-            { id: "justify", label: "กระจายเท่ากัน" }
-          ]
-        },
-        {
-          step: 3,
-          title: "ภารกิจที่ 3: ใช้แปรงคัดลอกสไตล์ (Format Painter)",
-          desc: "ไม่ต้องเสียเวลาจัดรูปแบบหัวข้อย่อยใหม่! ใช้แปรง Format Painter คัดลอกสไตล์จากหัวข้อแรกไปป้ายทับได้ทันที",
-          task: "คลิกเลือกเครื่องมือ 'ตัวคัดวางรูปแบบ (Format Painter)' เพื่อนำสไตล์ตัวหนาไปใส่หัวข้อย่อย",
-          targetAction: "painter",
-          hotkey: null,
-          hintTitle: "ตัวคัดวางรูปแบบ (Format Painter)",
-          hintText: "ไอคอนรูป แปรงทาสี (Format Painter) ทำหน้าที่ดูดสไตล์สี ขนาด และฟอนต์ต้นแบบ ไปป้ายทับข้อความอื่นได้ทันทีโดยไม่ต้องตั้งค่าใหม่[cite: 1]",
-          buttons: [
-            { id: "copy", label: "📋 คัดลอก (Copy)" },
-            { id: "cut", label: "✂️ ตัด (Cut)" },
-            { id: "painter", label: "🖌️ แปรงคัดลอกสไตล์" },
-            { id: "clear", label: "🧹 ล้างการจัดรูปแบบ" }
-          ]
-        }
-      ]
-    };
+    // Web Audio API ระบบเสียงเต็มชุด
+    let audioCtx = null, isMuted = false, engineOsc = null, engineSubOsc = null, engineFilter = null, engineGain = null, bgmInterval = null;
 
-    let playerName = "ผู้เรียน";
-    let masteredChapters = [];
-    let selectedChapterId = 4;
-    let scene = null, camera = null, renderer = null, carGroup = null;
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        engineFilter = audioCtx.createBiquadFilter();
+        engineFilter.type = "lowpass";
+        engineFilter.frequency.setValueAtTime(140, audioCtx.currentTime);
+
+        engineGain = audioCtx.createGain();
+        engineGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+
+        engineOsc = audioCtx.createOscillator();
+        engineOsc.type = "triangle";
+        engineOsc.frequency.setValueAtTime(36, audioCtx.currentTime);
+
+        engineSubOsc = audioCtx.createOscillator();
+        engineSubOsc.type = "sine";
+        engineSubOsc.frequency.setValueAtTime(18, audioCtx.currentTime);
+
+        engineOsc.connect(engineFilter);
+        engineSubOsc.connect(engineFilter);
+        engineFilter.connect(engineGain);
+        engineGain.connect(audioCtx.destination);
+
+        engineOsc.start();
+        engineSubOsc.start();
+        startBGM();
+      }
+    }
+
+    function updateEngineSound(speedRatio) {
+      if (!audioCtx || isMuted || !engineOsc || !engineFilter) return;
+      const absRatio = Math.min(1.0, Math.abs(speedRatio));
+      const targetFreq = 36 + absRatio * 44; 
+      engineOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.1);
+      engineSubOsc.frequency.setTargetAtTime(targetFreq * 0.5, audioCtx.currentTime, 0.1);
+      const targetFilter = 140 + absRatio * 220;
+      engineFilter.frequency.setTargetAtTime(targetFilter, audioCtx.currentTime, 0.1);
+      engineGain.gain.setTargetAtTime(0.035 + absRatio * 0.045, audioCtx.currentTime, 0.1);
+    }
+
+    function playCrashSound() {
+      if (!audioCtx || isMuted) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "square";
+      osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.35);
+      gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+    }
+
+    function playSuccessSound() {
+      if (!audioCtx || isMuted) return;
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.1 + 0.25);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + idx * 0.1);
+        osc.stop(audioCtx.currentTime + idx * 0.1 + 0.25);
+      });
+    }
+
+    function startBGM() {
+      if (bgmInterval) clearInterval(bgmInterval);
+      const melody = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 349.23];
+      let step = 0;
+      bgmInterval = setInterval(() => {
+        if (!audioCtx || isMuted) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(melody[step % melody.length], audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.22);
+        step++;
+      }, 300);
+    }
+
+    function toggleAudio() {
+      isMuted = !isMuted;
+      if (engineGain) engineGain.gain.setValueAtTime(isMuted ? 0 : 0.04, audioCtx.currentTime);
+      document.getElementById("audio-icon").style.fill = isMuted ? "#94a3b8" : "#38bdf8";
+    }
+
+    // STATE & PROGRESSION (LocalStorage)
+    let playerName = localStorage.getItem("wr3d_hands_name") || "";
+    let masteredChapters = JSON.parse(localStorage.getItem("wr3d_hands_mastered") || "[]");
+    let selectedChapterId = 4; // เริ่มต้นที่บทที่ 4 ซึ่งมี Hands-on ครบ 3 สเต็ป
+
+    let scene, camera, renderer, carGroup;
     let checkpoints = [], obstacles = [];
     let isModalOpen = false, isGameRunning = false;
     let keys = { up: false, down: false, left: false, right: false };
@@ -526,33 +535,32 @@
       turnSpeed: 0.032, angularDamping: 0.92, spinTimer: 0
     };
 
-    // ปุ่มเข้าสู่ห้องเรียน: ปิดหน้าแรกและเปิด Hub ทันทีแบบเด็ดขาด[cite: 2]
-    function enterStudioClick() {
-      const input = document.getElementById("player-input");
-      if (input && input.value.trim() !== "") {
-        playerName = input.value.trim();
-      } else {
-        playerName = "ผู้เรียน";
+    window.onload = () => {
+      if (playerName) {
+        document.getElementById("player-input").value = playerName;
+        showHubScreen();
       }
+    };
 
-      // ซ่อนหน้าเริ่มต้นแบบถาวร
+    function submitPlayerName() {
+      const input = document.getElementById("player-input").value.trim();
+      if (!input) { alert("กรุณาพิมพ์ชื่อหรือเลขที่ผู้เรียนก่อนเริ่มต้นครับ"); return; }
+      playerName = input;
+      localStorage.setItem("wr3d_hands_name", playerName);
+      showHubScreen();
+    }
+
+    function showHubScreen() {
       document.getElementById("start-screen").style.display = "none";
-      
-      // อัปเดตชื่อ
       document.getElementById("hub-username").innerText = playerName;
       document.getElementById("hud-name").innerText = playerName;
-
-      // แสดงหน้าเลือกบทเรียน
       renderChaptersGrid();
-      document.getElementById("hub-screen").style.display = "block";
-      
-      // เริ่มต้นระบบเสียง (ถ้าเบราว์เซอร์อนุญาต)
-      initAudio();
+      document.getElementById("hub-screen").style.display = "flex";
+      isGameRunning = false;
     }
 
     function renderChaptersGrid() {
       const grid = document.getElementById("chapters-grid");
-      if (!grid) return;
       grid.innerHTML = "";
 
       chaptersMeta.forEach((ch) => {
@@ -571,16 +579,12 @@
         grid.appendChild(card);
       });
 
-      const prog = document.getElementById("hud-progress");
-      if (prog) prog.innerText = `ผ่าน ${masteredChapters.length} / 12 บท`;
+      document.getElementById("hud-progress").innerText = `ผ่าน ${masteredChapters.length} / 12 บท`;
     }
 
     function returnToHub() {
       document.getElementById("studio-modal").style.display = "none";
-      document.getElementById("hint-modal").style.display = "none";
-      document.getElementById("chapter-clear-modal").style.display = "none";
-      document.getElementById("hub-screen").style.display = "block";
-      isGameRunning = false;
+      showHubScreen();
     }
 
     function startChapterSession(chapterId) {
@@ -590,7 +594,7 @@
       const chData = chaptersMeta.find(c => c.id === chapterId);
       document.getElementById("hud-stage").innerText = chData.title;
 
-      // สร้างโลก 3D ครั้งแรก
+      initAudio();
       if (!scene) {
         init3DWorld();
         setupInputListeners();
@@ -629,19 +633,20 @@
       checkpoints.push({ group: gate, laser: laser, z: gateZ, chapterId: chapterId, passed: false });
     }
 
+    // 3D Scene Initialization
     function init3DWorld() {
       scene = new THREE.Scene();
       scene.background = new THREE.Color(0x7dd3fc);
       scene.fog = new THREE.Fog(0x7dd3fc, 80, 500);
 
       camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
       document.getElementById("three-container").appendChild(renderer.domElement);
 
       window.addEventListener("resize", () => {
-        if (!camera || !renderer) return;
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -652,6 +657,7 @@
 
       const dirLight = new THREE.DirectionalLight(0xfff7ed, 0.9);
       dirLight.position.set(60, 120, 60);
+      dirLight.castShadow = true;
       scene.add(dirLight);
 
       buildWorldEnvironment();
@@ -672,6 +678,7 @@
       road.rotation.x = -Math.PI / 2; road.position.y = 0.05; road.position.z = -1200;
       scene.add(road);
 
+      // เส้นประกลางถนน
       for (let z = 50; z > -2600; z -= 14) {
         const lineGeo = new THREE.PlaneGeometry(0.35, 8);
         const lineMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
@@ -683,6 +690,7 @@
         scene.add(rightYellow);
       }
 
+      // ขอบฟุตบาท
       const curbGeo = new THREE.BoxGeometry(4, 0.5, 3000);
       const curbMat = new THREE.MeshLambertMaterial({ color: 0xe2e8f0 });
       const leftCurb = new THREE.Mesh(curbGeo, curbMat);
@@ -693,6 +701,7 @@
       rightCurb.position.set(18, 0.25, -1200);
       scene.add(rightCurb);
 
+      // ตึกอาคารริมทาง
       const colors = [0xef4444, 0x3b82f6, 0xf59e0b, 0x10b981, 0x8b5cf6, 0xec4899, 0x06b6d4];
       for (let z = 20; z > -2500; z -= 38) {
         const bH = 28 + Math.random() * 35;
@@ -781,7 +790,7 @@
         const cone = new THREE.Mesh(coneGeo, coneMat);
         cone.position.set(laneX, 1.2, z);
         scene.add(cone);
-        obstacles.push({ mesh: cone, x: laneX, z: z, radius: 1.7 });
+        obstacles.push({ mesh: cone, x: laneX, z: z, radius: 1.7, hit: false });
       }
     }
 
@@ -805,7 +814,6 @@
 
       const bindTouch = (id, action) => {
         const el = document.getElementById(id);
-        if (!el) return;
         el.addEventListener("touchstart", (e) => { e.preventDefault(); keys[action] = true; });
         el.addEventListener("touchend", () => keys[action] = false);
       };
@@ -816,19 +824,25 @@
     function updateGamePhysics() {
       if (isModalOpen || !isGameRunning) return;
 
-      if (keys.up) carPhysics.speed += carPhysics.accel;
-      else if (keys.down) carPhysics.speed -= carPhysics.accel * 1.4;
-      else {
-        if (carPhysics.speed > 0) carPhysics.speed = Math.max(0, carPhysics.speed - carPhysics.friction);
-        if (carPhysics.speed < 0) carPhysics.speed = Math.min(0, carPhysics.speed + carPhysics.friction);
-      }
-      carPhysics.speed = Math.max(-0.45, Math.min(carPhysics.speed, carPhysics.maxSpeed));
+      if (carPhysics.spinTimer > 0) {
+        carPhysics.spinTimer--;
+        carPhysics.angle += 0.22;
+        carPhysics.speed *= 0.94;
+      } else {
+        if (keys.up) carPhysics.speed += carPhysics.accel;
+        else if (keys.down) carPhysics.speed -= carPhysics.accel * 1.4;
+        else {
+          if (carPhysics.speed > 0) carPhysics.speed = Math.max(0, carPhysics.speed - carPhysics.friction);
+          if (carPhysics.speed < 0) carPhysics.speed = Math.min(0, carPhysics.speed + carPhysics.friction);
+        }
+        carPhysics.speed = Math.max(-0.45, Math.min(carPhysics.speed, carPhysics.maxSpeed));
 
-      if (carPhysics.speed !== 0) {
-        const dir = carPhysics.speed > 0 ? 1 : -1;
-        if (keys.left) carPhysics.angle += carPhysics.turnSpeed * dir;
-        else if (keys.right) carPhysics.angle -= carPhysics.turnSpeed * dir;
-        else carPhysics.angle *= carPhysics.angularDamping;
+        if (carPhysics.speed !== 0) {
+          const dir = carPhysics.speed > 0 ? 1 : -1;
+          if (keys.left) carPhysics.angle += carPhysics.turnSpeed * dir;
+          else if (keys.right) carPhysics.angle -= carPhysics.turnSpeed * dir;
+          else carPhysics.angle *= carPhysics.angularDamping;
+        }
       }
 
       updateEngineSound(carPhysics.speed / carPhysics.maxSpeed);
@@ -836,6 +850,18 @@
       const nextX = carPhysics.x - Math.sin(carPhysics.angle) * carPhysics.speed;
       const nextZ = carPhysics.z - Math.cos(carPhysics.angle) * carPhysics.speed;
       carPhysics.x = Math.max(-13.5, Math.min(13.5, nextX));
+
+      obstacles.forEach(ob => {
+        if (!ob.hit) {
+          const dist = Math.hypot(carPhysics.x - ob.x, carPhysics.z - ob.z);
+          if (dist < ob.radius + 1.8) {
+            ob.hit = true;
+            carPhysics.spinTimer = 22;
+            carPhysics.speed *= 0.35;
+            playCrashSound();
+          }
+        }
+      });
 
       let laserBlocked = false;
       checkpoints.forEach((cp) => {
@@ -848,151 +874,142 @@
 
       if (!laserBlocked) carPhysics.z = nextZ;
 
-      if (carGroup) {
-        carGroup.position.set(carPhysics.x, 0, carPhysics.z);
-        carGroup.rotation.y = carPhysics.angle;
-      }
+      carGroup.position.set(carPhysics.x, 0, carPhysics.z);
+      carGroup.rotation.y = carPhysics.angle;
 
-      if (camera) {
-        const idealCam = new THREE.Vector3(0, 5.6, 13.8);
-        idealCam.applyAxisAngle(new THREE.Vector3(0, 1, 0), carPhysics.angle * 0.7);
-        camera.position.x += (carPhysics.x + idealCam.x - camera.position.x) * 0.12;
-        camera.position.y += (5.6 - camera.position.y) * 0.12;
-        camera.position.z += (carPhysics.z + idealCam.z - camera.position.z) * 0.12;
+      const idealCam = new THREE.Vector3(0, 5.6, 13.8);
+      idealCam.applyAxisAngle(new THREE.Vector3(0, 1, 0), carPhysics.angle * 0.7);
+      camera.position.x += (carPhysics.x + idealCam.x - camera.position.x) * 0.12;
+      camera.position.y += (5.6 - camera.position.y) * 0.12;
+      camera.position.z += (carPhysics.z + idealCam.z - camera.position.z) * 0.12;
 
-        const lookAhead = new THREE.Vector3(carPhysics.x - Math.sin(carPhysics.angle * 0.7) * 9, 1.8, carPhysics.z - Math.cos(carPhysics.angle * 0.7) * 9);
-        camera.lookAt(lookAhead);
-      }
+      const lookAhead = new THREE.Vector3(carPhysics.x - Math.sin(carPhysics.angle * 0.7) * 9, 1.8, carPhysics.z - Math.cos(carPhysics.angle * 0.7) * 9);
+      camera.lookAt(lookAhead);
 
       const mph = Math.round(Math.abs(carPhysics.speed) * 52);
-      const spd = document.getElementById("speed-val");
-      const gr = document.getElementById("gear-val");
-      if (spd) spd.innerText = mph;
-      if (gr) gr.innerText = carPhysics.speed > 0.05 ? 'D' : (carPhysics.speed < -0.05 ? 'R' : 'N');
+      document.getElementById("speed-val").innerText = mph;
+      document.getElementById("gear-val").innerText = carPhysics.speed > 0.05 ? 'D' : (carPhysics.speed < -0.05 ? 'R' : 'N');
 
       renderMinimap();
     }
 
-    // MULTI-STEP WORKSHOP LOGIC
+    // MULTI-STEP HANDS-ON WORKSHOP SYSTEM
     let currentStepIndex = 1;
-    let currentWeekSteps = [];
-    let currentTaskData = null;
+    let stepFlags = { bold: false, center: false, painter: false };
 
     function openHandsOnStudio(chId) {
       isModalOpen = true;
       const chData = chaptersMeta.find(c => c.id === chId);
       document.getElementById("studio-week-title").innerText = chData.title;
-      
-      currentWeekSteps = workshopCurriculum[chId] || workshopCurriculum[4];
-      
-      document.getElementById("sim-title").style.fontWeight = "400";
-      document.getElementById("sim-title").style.textAlign = "left";
-      document.getElementById("sim-p2").style.fontWeight = "400";
-      document.getElementById("sim-p2").style.color = "#64748b";
-
       document.getElementById("studio-modal").style.display = "flex";
-      loadStep(1);
+      loadSubTaskStep(1);
     }
 
-    function loadStep(stepNumber) {
-      currentStepIndex = stepNumber;
-      currentTaskData = currentWeekSteps.find(s => s.step === stepNumber);
-
-      document.getElementById("mission-step-indicator").innerText = `ภารกิจ ${stepNumber} / ${currentWeekSteps.length}`;
+    function loadSubTaskStep(step) {
+      currentStepIndex = step;
+      document.getElementById("mission-step-indicator").innerText = `ภารกิจ ${step} / 3`;
+      document.getElementById("btn-next-task").disabled = true;
 
       for (let i = 1; i <= 3; i++) {
         const dot = document.getElementById(`dot-${i}`);
-        if (dot) {
-          dot.className = "step-dot" + (i < stepNumber ? " done" : (i === stepNumber ? " active" : ""));
-        }
+        dot.className = "step-dot" + (i < step ? " done" : (i === step ? " active" : ""));
       }
 
-      document.getElementById("task-title").innerText = currentTaskData.title;
-      document.getElementById("task-desc").innerText = currentTaskData.desc;
-      document.getElementById("task-action-box").innerHTML = currentTaskData.task;
-      document.getElementById("lab-feedback").innerText = "💡 ทดลองคลิกเครื่องมือที่เหมาะสมบนแถบ Ribbon หรือกดคีย์ลัดจริงได้เลย";
-
-      const ribbon = document.getElementById("sim-ribbon-tools");
-      ribbon.innerHTML = "";
-      currentTaskData.buttons.forEach(btn => {
-        const b = document.createElement("button");
-        b.className = "tool-btn";
-        b.innerHTML = btn.label;
-        b.onclick = () => handleUserToolSelect(btn.id);
-        ribbon.appendChild(b);
-      });
+      if (step === 1) {
+        document.getElementById("task-title").innerText = "ภารกิจที่ 1: การเน้นหัวข้อหลัก";
+        document.getElementById("task-desc").innerText = "หัวข้อหลักของเอกสารควรมีน้ำหนักสายตาชัดเจน เพื่อให้ผู้อ่านแยกแยะโครงสร้างได้ทันที คีย์ลัดยอดนิยมคือ Ctrl + B";
+        document.getElementById("task-action-box").innerHTML = "👉 <b>สิ่งที่ต้องทำ:</b> กดปุ่ม <b>Ctrl + B</b> บนคีย์บอร์ดจริง หรือคลิกปุ่ม <b>B</b> บนแถบเครื่องมือ";
+      } else if (step === 2) {
+        document.getElementById("task-title").innerText = "ภารกิจที่ 2: จัดตำแหน่งกึ่งกลาง (Center)";
+        document.getElementById("task-desc").innerText = "การวางหัวข้อไว้ตรงกลางหน้ากระดาษ ช่วยสร้างความสมดุลและความเป็นทางการของรายงาน คีย์ลัดคือ Ctrl + E";
+        document.getElementById("task-action-box").innerHTML = "👉 <b>สิ่งที่ต้องทำ:</b> คลิกปุ่ม <b>กึ่งกลาง (Center)</b> เพื่อจัดให้หัวข้ออยู่ตรงกลางหน้ากระดาษ";
+      } else if (step === 3) {
+        document.getElementById("task-title").innerText = "ภารกิจที่ 3: ใช้แปรงคัดลอกสไตล์ (Format Painter)";
+        document.getElementById("task-desc").innerText = "ไม่ต้องเสียเวลาจัดรูปแบบหัวข้อย่อยใหม่! ใช้แปรง Format Painter คัดลอกสไตล์จากหัวข้อแรกไปป้ายทับ";
+        document.getElementById("task-action-box").innerHTML = "👉 <b>สิ่งที่ต้องทำ:</b> คลิกปุ่ม <b>แปรงทาสี</b> เพื่อดูดสไตล์ตัวหนาไปใส่หัวข้อย่อยด้านล่าง";
+      }
     }
 
-    function handleUserToolSelect(actionId) {
-      if (actionId === currentTaskData.targetAction) {
+    function actionToggleBold() {
+      stepFlags.bold = !stepFlags.bold;
+      document.getElementById("sim-title").style.fontWeight = stepFlags.bold ? "900" : "400";
+      document.getElementById("btn-bold").classList.toggle("active", stepFlags.bold);
+
+      if (currentStepIndex === 1 && stepFlags.bold) {
+        document.getElementById("lab-feedback").innerText = "✔ เยี่ยมมาก! หัวข้อกลายเป็นตัวหนาแล้ว สังเกตว่าเด่นชัดขึ้นทันที";
+        document.getElementById("btn-next-task").disabled = false;
         playSuccessSound();
-        applyVisualEffect(actionId);
-        document.getElementById("lab-feedback").innerText = "✔ ยอดเยี่ยมมาก! การจัดรูปแบบถูกต้อง";
-
-        setTimeout(() => {
-          if (currentStepIndex < currentWeekSteps.length) {
-            loadStep(currentStepIndex + 1);
-          } else {
-            completeChapterMission();
-          }
-        }, 800);
-      } else {
-        playCrashSound();
-        showHintModal(currentTaskData.hintTitle, currentTaskData.hintText);
       }
     }
 
-    function applyVisualEffect(actionId) {
-      if (actionId === "bold") {
-        document.getElementById("sim-title").style.fontWeight = "900";
-      } else if (actionId === "center") {
-        document.getElementById("sim-title").style.textAlign = "center";
-      } else if (actionId === "painter") {
+    function actionToggleCenter() {
+      stepFlags.center = !stepFlags.center;
+      document.getElementById("sim-title").style.textAlign = stepFlags.center ? "center" : "left";
+      document.getElementById("btn-center").classList.toggle("active", stepFlags.center);
+
+      if (currentStepIndex === 2 && stepFlags.center) {
+        document.getElementById("lab-feedback").innerText = "✔ สวยงาม! ชื่อเรื่องอยู่กึ่งกลางหน้ากระดาษเรียบร้อย";
+        document.getElementById("btn-next-task").disabled = false;
+        playSuccessSound();
+      }
+    }
+
+    function actionFormatPainter() {
+      if (currentStepIndex === 3) {
         const sub = document.getElementById("sim-p2");
         sub.style.fontWeight = "900";
         sub.style.color = "#0284c7";
+        document.getElementById("btn-format-painter").classList.add("active");
+        document.getElementById("lab-feedback").innerText = "✔ แปรงทาสีทำงานแล้ว! สไตล์ถูกคัดลอกมายังหัวข้อย่อยอัตโนมัติ";
+        document.getElementById("btn-next-task").disabled = false;
+        document.getElementById("btn-next-task").innerText = "สำเร็จสัปดาห์นี้! ปลดม่านพลัง ➔";
+        playSuccessSound();
       }
     }
 
-    function showHintModal(title, text) {
-      document.getElementById("hint-title").innerText = title;
-      document.getElementById("hint-desc").innerHTML = text;
-      document.getElementById("hint-modal").style.display = "flex";
+    function actionToggleItalic() {
+      const p1 = document.getElementById("sim-p1");
+      p1.style.fontStyle = p1.style.fontStyle === "italic" ? "normal" : "italic";
+      document.getElementById("btn-italic").classList.toggle("active");
     }
 
-    function closeHintModal() {
-      document.getElementById("hint-modal").style.display = "none";
-    }
-
-    function completeChapterMission() {
-      document.getElementById("studio-modal").style.display = "none";
-      isModalOpen = false;
-
-      if (!masteredChapters.includes(selectedChapterId)) {
-        masteredChapters.push(selectedChapterId);
+    // Hotkey Listener สำหรับเด็กที่ชอบกดแป้นพิมพ์จริง
+    window.addEventListener("keydown", (e) => {
+      if (isModalOpen && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        actionToggleBold();
       }
+    });
 
-      checkpoints.forEach(cp => {
-        if (cp.chapterId === selectedChapterId) {
-          cp.passed = true;
-          cp.laser.material.color.setHex(0x10b981);
-          cp.laser.material.opacity = 0.15;
+    function nextSubTask() {
+      if (currentStepIndex < 3) {
+        loadSubTaskStep(currentStepIndex + 1);
+      } else {
+        // เสร็จสิ้นทั้ง 3 สเต็ป
+        document.getElementById("studio-modal").style.display = "none";
+        isModalOpen = false;
+
+        if (!masteredChapters.includes(selectedChapterId)) {
+          masteredChapters.push(selectedChapterId);
+          localStorage.setItem("wr3d_hands_mastered", JSON.stringify(masteredChapters));
         }
-      });
 
-      const chData = chaptersMeta.find(c => c.id === selectedChapterId);
-      document.getElementById("clear-ch-badge").innerText = `${chData.title} : เชี่ยวชาญแล้ว ✔`;
-      document.getElementById("chapter-clear-modal").style.display = "flex";
-    }
+        checkpoints.forEach(cp => {
+          if (cp.chapterId === selectedChapterId) {
+            cp.passed = true;
+            cp.laser.material.color.setHex(0x10b981);
+            cp.laser.material.opacity = 0.15;
+          }
+        });
 
-    function finishAndGoToHub() {
-      document.getElementById("chapter-clear-modal").style.display = "none";
-      returnToHub();
+        carPhysics.z -= 6;
+        document.getElementById("hud-progress").innerText = `ผ่าน ${masteredChapters.length} / 12 บท`;
+        alert("🎉 ยอดเยี่ยมมาก! คุณผ่านการฝึกฝนครบทั้ง 3 ภารกิจย่อยแล้ว ม่านพลังเปิดทางให้ขับรถเดินทางต่อไปได้!");
+      }
     }
 
     function renderMinimap() {
       const mCanvas = document.getElementById("minimapCanvas");
-      if (!mCanvas) return;
       const mCtx = mCanvas.getContext("2d");
       mCtx.clearRect(0, 0, 155, 155);
 
@@ -1013,107 +1030,7 @@
       if (!isGameRunning) return;
       requestAnimationFrame(animate);
       updateGamePhysics();
-      if (renderer && scene && camera) {
-        renderer.render(scene, camera);
-      }
-    }
-
-    // Audio Web API
-    let audioCtx = null, isMuted = false, engineOsc = null, engineSubOsc = null, engineFilter = null, engineGain = null, bgmInterval = null;
-
-    function initAudio() {
-      if (!audioCtx) {
-        try {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          engineFilter = audioCtx.createBiquadFilter();
-          engineFilter.type = "lowpass";
-          engineFilter.frequency.setValueAtTime(140, audioCtx.currentTime);
-
-          engineGain = audioCtx.createGain();
-          engineGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-
-          engineOsc = audioCtx.createOscillator();
-          engineOsc.type = "triangle";
-          engineOsc.frequency.setValueAtTime(36, audioCtx.currentTime);
-
-          engineSubOsc = audioCtx.createOscillator();
-          engineSubOsc.type = "sine";
-          engineSubOsc.frequency.setValueAtTime(18, audioCtx.currentTime);
-
-          engineOsc.connect(engineFilter);
-          engineSubOsc.connect(engineFilter);
-          engineFilter.connect(engineGain);
-          engineGain.connect(audioCtx.destination);
-
-          engineOsc.start();
-          engineSubOsc.start();
-          startBGM();
-        } catch(e) {}
-      }
-    }
-
-    function updateEngineSound(speedRatio) {
-      if (!audioCtx || isMuted || !engineOsc || !engineFilter) return;
-      const absRatio = Math.min(1.0, Math.abs(speedRatio));
-      const targetFreq = 36 + absRatio * 44; 
-      engineOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.1);
-      engineSubOsc.frequency.setTargetAtTime(targetFreq * 0.5, audioCtx.currentTime, 0.1);
-      const targetFilter = 140 + absRatio * 220;
-      engineFilter.frequency.setTargetAtTime(targetFilter, audioCtx.currentTime, 0.1);
-      engineGain.gain.setTargetAtTime(0.035 + absRatio * 0.045, audioCtx.currentTime, 0.1);
-    }
-
-    function playCrashSound() {
-      if (!audioCtx || isMuted) return;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = "square";
-      osc.frequency.setValueAtTime(120, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.35);
-      gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.35);
-    }
-
-    function playSuccessSound() {
-      if (!audioCtx || isMuted) return;
-      const notes = [523.25, 659.25, 783.99, 1046.50];
-      notes.forEach((freq, idx) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.1);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.1 + 0.25);
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.start(audioCtx.currentTime + idx * 0.1);
-        osc.stop(audioCtx.currentTime + idx * 0.1 + 0.25);
-      });
-    }
-
-    function startBGM() {
-      if (bgmInterval) clearInterval(bgmInterval);
-      const melody = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 293.66, 349.23];
-      let step = 0;
-      bgmInterval = setInterval(() => {
-        if (!audioCtx || isMuted) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(melody[step % melody.length], audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.22);
-        step++;
-      }, 300);
-    }
-
-    function toggleAudio() {
-      isMuted = !isMuted;
-      if (engineGain && audioCtx) engineGain.gain.setValueAtTime(isMuted ? 0 : 0.04, audioCtx.currentTime);
-      document.getElementById("audio-icon").style.fill = isMuted ? "#94a3b8" : "#38bdf8";
+      renderer.render(scene, camera);
     }
   </script>
 </body>
